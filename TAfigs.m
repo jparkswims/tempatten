@@ -5,6 +5,7 @@ for j = 1:6
     ymin = min(min(trialmat(:,:,j)));
     ymax = max(max(trialmat(:,:,j)));
 
+    %individual subject conditions raw data
     figure
     subplot(3,1,1)
     plot(window(1):window(2),t1(:,:,j),'color',[.7 .7 .75])
@@ -45,6 +46,7 @@ for j = 1:6
     ymin = -0.3;
     ymax = 0.3;
     
+    %individual subject conditions normalized data
     figure
     subplot(3,1,1)
     plot(window(1):window(2),t1norm(:,:,j),'color',[.7 .7 .75])
@@ -113,6 +115,7 @@ end
 ymin = -0.1;
 ymax = 0.3;
 
+%subject means
 figure
 subplot(3,1,1)
 plot(window(1):window(2),nanmean(t1norm(:,:,1)),'b')
@@ -121,6 +124,7 @@ plot(window(1):window(2),nanmean(t1norm(:,:,2)),'c')
 plot(window(1):window(2),nanmean(t1norm(:,:,3)),'g')
 plot(window(1):window(2),nanmean(t1norm(:,:,4)),'m')
 plot(window(1):window(2),nanmean(t1norm(:,:,5)),'r')
+plot(window(1):window(2),nanmean(t1norm(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([1250 1250],[ymin ymax],'k')
@@ -128,7 +132,7 @@ plot([1750 1750],[ymin ymax],'k')
 title('t1 subject averages of normalized data')
 xlabel('time (ms)')
 ylabel('pupil area (normalized)')
-legend('bl','ec','ty','vp','zw')
+legend('ad','bl','ec','ty','vp','zw')
 ylim([-0.1 0.3])
 
 subplot(3,1,2)
@@ -138,6 +142,7 @@ plot(window(1):window(2),nanmean(t2norm(:,:,2)),'c')
 plot(window(1):window(2),nanmean(t2norm(:,:,3)),'g')
 plot(window(1):window(2),nanmean(t2norm(:,:,4)),'m')
 plot(window(1):window(2),nanmean(t2norm(:,:,5)),'r')
+plot(window(1):window(2),nanmean(t2norm(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([1250 1250],[ymin ymax],'k')
@@ -145,7 +150,7 @@ plot([1750 1750],[ymin ymax],'k')
 title('t2 subject averages of normalized data')
 xlabel('time (ms)')
 ylabel('pupil area (normalized)')
-legend('bl','ec','ty','vp','zw')
+legend('ad','bl','ec','ty','vp','zw')
 ylim([-0.1 0.3])
 
 subplot(3,1,3)
@@ -155,6 +160,7 @@ plot(window(1):window(2),nanmean(neutralnorm(:,:,2)),'c')
 plot(window(1):window(2),nanmean(neutralnorm(:,:,3)),'g')
 plot(window(1):window(2),nanmean(neutralnorm(:,:,4)),'m')
 plot(window(1):window(2),nanmean(neutralnorm(:,:,5)),'r')
+plot(window(1):window(2),nanmean(neutralnorm(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([1250 1250],[ymin ymax],'k')
@@ -162,12 +168,13 @@ plot([1750 1750],[ymin ymax],'k')
 title('neutral subject averages of normalized data')
 xlabel('time (ms)')
 ylabel('pupil area (normalized)')
-legend('bl','ec','ty','vp','zw')
+legend('ad','bl','ec','ty','vp','zw')
 ylim([-0.1 0.3])
 
 ymin = -0.05;
 ymax = 0.25;
 
+%group means
 figure
 shadedErrorBar(window(1):window(2),nanmean(nanmean(t1norm),3),nanmean(nanstd(t1norm),3),'b',1)
 hold on
