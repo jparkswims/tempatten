@@ -1,39 +1,132 @@
-%define study specific variables
-subjects = {'ad' 'bl' 'ec' 'ty' 'vp' 'zw'}; %ad bl ec ty vp zw
-
-homedir = pwd;
-
-%directories of folders containing specific data files
-TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
-TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E0_cb/';
-
-trials = 640;
-
-runs = 2;
-
-window = [-400 2200];
-
-duration = window(2)-window(1)+1;
-
-trialmat = zeros(trials,duration,length(subjects));
-
-%t1, t2, and neutral (the 3 conditions of the experiment) preloaded
-%norm means the set of data has been normalized
-t1 = zeros(trials*.4,duration,length(subjects));
-t1norm = zeros(trials*.4,duration,length(subjects));
-
-t2 = zeros(trials*.4,duration,length(subjects));
-t2norm = zeros(trials*.4,duration,length(subjects));
-
-neutral = zeros(trials*.2,duration,length(subjects));
-neutralnorm = zeros(trials*.2,duration,length(subjects));
+% % define study specific variables
+% close all
+% 
+% study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nSelect Study:');
+% 
+% homedir = '/Users/jakeparker/Documents/MATLAB';
+% 
+% if study == 0
+%     
+%     subjects = {'ad' 'bl' 'ec' 'ty' 'vp' 'zw'}; %E0 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'
+%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
+%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E0_cb/';
+%     filedir = '/Users/jakeparker/Documents/tempatten/E0_cb';
+%     trials = 640;
+%     t1time = 1000;
+%     t2time = 1250;
+%     postcue = t2time + 500;
+%     t1p = 0.4;
+%     t2p = 0.4;
+%     ntp = 0.2;
+%     runs = 2;
+%     window = [-400 2500];
+%     duration = window(2)-window(1)+1;
+%     trialmat = zeros(trials,duration,length(subjects));
+%     t1 = zeros(trials*.4,duration,length(subjects));
+%     t1norm = zeros(trials*.4,duration,length(subjects));
+%     t2 = zeros(trials*.4,duration,length(subjects));
+%     t2norm = zeros(trials*.4,duration,length(subjects));
+%     neutral = zeros(trials*.2,duration,length(subjects));
+%     neutralnorm = zeros(trials*.2,duration,length(subjects));
+% 
+% elseif study == 3
+%     
+%     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'}; %E3 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'
+%     % subject id sample rate = 500
+%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
+%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
+%     filedir = '/Users/jakeparker/Documents/tempatten/E3_adjust';
+%     trials = 640;
+%     t2time = 1250;
+%     postcue = t2time + 500;
+%     t1p = 0.4;
+%     t2p = 0.4;
+%     ntp = 0.2;
+%     runs = 4;
+%     window = [-400 2500];
+%     duration = window(2)-window(1)+1;
+%     trialmat = zeros(trials,duration,length(subjects));
+%     t1 = zeros(trials*.4,duration,length(subjects));
+%     t1norm = zeros(trials*.4,duration,length(subjects));
+%     t2 = zeros(trials*.4,duration,length(subjects));
+%     t2norm = zeros(trials*.4,duration,length(subjects));
+%     neutral = zeros(trials*.2,duration,length(subjects));
+%     neutralnorm = zeros(trials*.2,duration,length(subjects));
+%     
+% elseif study == 2
+%     
+%     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'}; %E3 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'
+%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
+%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
+%     filedir = '/Users/jakeparker/Documents/tempatten/E3_adjust';
+%     trials = 640;
+%     t1time = 1000;
+%     t2time = 1250;
+%     postcue = t2time + 500;
+%     t1p = 0.4;
+%     t2p = 0.4;
+%     ntp = 0.2;
+%     runs = 4;
+%     window = [-400 2500];
+%     duration = window(2)-window(1)+1;
+%     trialmat = zeros(trials,duration,length(subjects));
+%     t1 = zeros(trials*.4,duration,length(subjects));
+%     t1norm = zeros(trials*.4,duration,length(subjects));
+%     t2 = zeros(trials*.4,duration,length(subjects));
+%     t2norm = zeros(trials*.4,duration,length(subjects));
+%     neutral = zeros(trials*.2,duration,length(subjects));
+%     neutralnorm = zeros(trials*.2,duration,length(subjects));
+%     soa = 9;
+%     
+%     fprintf('No\n')
+% end
 
 for i = 1:length(subjects)
     
     for r = 1:runs
+        
+        if study == 2
+            
+            zz = s;
+            filedir = ['/Users/jakeparker/Documents/tempatten/E2_soa_cbD6/' int2str(t2time - t1time)];
+        else
+            zz = r;
+            
+        end
+            
+%             switch z
+%                 case 1
+%                     r = 1;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/250';
+%                 case 2
+%                     r = 2;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/300';
+%                 case 3
+%                     r = 3;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/350';
+%                 case 4
+%                     r = 4;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/400';
+%                 case 5
+%                     r = 5;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/450';
+%                 case 6
+%                     r = 6;
+%                     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa/500';
+%                 case 7
+%                     r = 
+                    
     
         %temp string variable used to find specific edf file
-        a = dir(sprintf('%s/%s/*0_run0%d*.edf',TAeyepath, subjects{i},r));
+        if study == 0 || study == 3
+            
+            a = dir(sprintf('%s/%s/*0_run0%d*.edf',TAeyepath, subjects{i},r));
+            
+        else
+            
+            a = dir(sprintf('%s/%s/*%d_run0%d*.edf',TAeyepath, subjects{i},t2time,r)); 
+            
+        end
 
         %string of exact name of edffile to be extracted
         if length(a) == 1
@@ -57,7 +150,15 @@ for i = 1:length(subjects)
         end
 
         %temp string for study specific .mat file
-        b = dir(sprintf('%s/%s/*0_run0%d*Temp*.mat',TAdatapath, subjects{i},r));
+        if study == 0 || study == 3
+            
+            b = dir(sprintf('%s/%s/*0_run0%d*Temp*.mat',TAdatapath, subjects{i},r));
+            
+        else
+            
+            b = dir(sprintf('%s/%s/*%d_run0%d*Temp*.mat',TAdatapath, subjects{i},t2time,r));
+            
+        end
 
         %string of exact .mat file name
         if length(b) == 1
@@ -75,7 +176,7 @@ for i = 1:length(subjects)
         %temporary matrix containing a trial-time series of all trials of
         %one run of a subject
         if length(a) == 1
-            [trialmatx, rawpa] = eventtimeseries(eye,'pa','EVENT_CUE',window,0);
+            [trialmatx, rawpa] = eventtimeseries(eye,'pa','EVENT_CUE',window,1000,0);
         else
             for k = 1:length(a)
                 eval(sprintf('[trialmatx%d rawpa%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',window,0);',k,k,k))
@@ -87,13 +188,13 @@ for i = 1:length(subjects)
 
         figure
         plot(1:length(rawpa),rawpa)
-        title(sprintf('pa vs time (run %d, subject %s)',r,subjects{i}))
+        title(sprintf('pa vs time (run %d, subject %s)',zz,subjects{i}))
         xlabel('time (ms)')
         ylabel('pa')
 
         figure
         imagesc(trialmatx)
-        title(sprintf('imagesc (run %d, subject %s)',r,subjects{i}))
+        title(sprintf('imagesc (run %d, subject %s)',zz,subjects{i}))
         
 
         %variables of data from .mat file defined to allow data to be
@@ -111,12 +212,12 @@ for i = 1:length(subjects)
                 trialmatx(j,:) = [];
                 trialsPresented(j,:) = [];
                 trialOrder(j,:) = [];
-            elseif all(trialmatx(j,-window(1):1750-window(1))) == 0
+            elseif all(trialmatx(j,-window(1):postcue-window(1))) == 0  
                 trialmatx(j,:) = nan(1,duration);
             end
         end
         
-        for j = 1:(trials/2)
+        for j = 1:(trials/runs)
             if all(trialmatx(j,1:-window(1))) == 0
                 I(1) = find(trialmatx(j,1:-window(1)) == 0,1,'first');
                 if I(1) < 21
@@ -130,18 +231,18 @@ for i = 1:length(subjects)
                 end
                 trialmatx(j,I(1)-20:I(2)+50) = nan(1,I(2)-I(1)+71);
             end
-            if all(trialmatx(j,1750-window(1)+1:duration)) == 0
-                I(1) = find(trialmatx(j,1750-window(1)+1:duration) == 0,1,'first');
+            if all(trialmatx(j,postcue-window(1)+1:duration)) == 0
+                I(1) = find(trialmatx(j,postcue-window(1)+1:duration) == 0,1,'first');
                 if I(1) < 21
                     
                     I(1) = 21;
                 end
-                I(2) = find(trialmatx(j,1750-window(1)+1:duration) == 0,1,'last');
-                if I(2) > 401
+                I(2) = find(trialmatx(j,postcue-window(1)+1:duration) == 0,1,'last');
+                if I(2) > window(2)-postcue-50+1
         
-                    I(2) = 401;
+                    I(2) = window(2)-postcue-50+1;
                 end
-                trialmatx(j,I(1)-20+1750-window(1):I(2)+50+1750-window(1)) = nan(1,I(2)-I(1)+71);
+                trialmatx(j,I(1)-20+postcue-window(1):I(2)+50+postcue-window(1)) = nan(1,I(2)-I(1)+71);
             end
         end
         
@@ -149,20 +250,37 @@ for i = 1:length(subjects)
         imagesc(trialmatx)
         title(sprintf('imagesc (run %d, subject %s)',r,subjects{i}))
         
-        switch i
-            case 2
-            figdir = '/Users/jakeparker/Documents/tempatten/bl';
-            case 3
-            figdir = '/Users/jakeparker/Documents/tempatten/ec';
-            case 4
-            figdir = '/Users/jakeparker/Documents/tempatten/ty';
-            case 5
-            figdir = '/Users/jakeparker/Documents/tempatten/vp';
-            case 6
-            figdir = '/Users/jakeparker/Documents/tempatten/zw';
-            case 1
-            figdir = '/Users/jakeparker/Documents/tempatten/ad';
-        end
+        figdir = [filedir '/' subjects{i}];
+        
+        
+        
+%             switch i
+%                 case 2
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ca';
+%                 case 3
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ec';
+%                 case 4
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/en';
+%                 case 5
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ew';
+%                 case 6
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jl';
+%                 case 7
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jx';
+%                 case 8
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ld';
+%                 case 9
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/rd';
+%                 case 10
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/sj';
+%                 case 11
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ml';
+%                 case 12
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/id';    
+%                 case 1
+%                 figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/bl';
+%             end
+            
         
         fig = [(3*r-2)+(i-1)*6 (3*r-1)+(i-1)*6 (3*r)+(i-1)*6];
         
@@ -223,20 +341,20 @@ for i = 1:length(subjects)
         
         %generate a value based on the predifined variables so that the global time series
         %matrices can be ammended with data in the temprary variables
-        ir = abs((trials/2) - (trials/2)*r);
+        ir = abs((trials/runs) - (trials/runs)*r);
         
         %input data from the temporary (x) variables into the corresponding
         %global matrices
-        trialmat(ir+1:ir+(trials/2),1:duration,i) = trialmatx;
+        trialmat(ir+1:ir+(trials/runs),1:duration,i) = trialmatx;
 
-        t1((ir*0.4)+1:(ir*0.4)+(trials*0.2),1:duration,i) = t1x;
-        t1norm((ir*0.4)+1:(ir*0.4)+(trials*0.2),1:duration,i) = t1normx;
+        t1((ir*t1p)+1:(ir*t1p)+(trials/runs*t1p),1:duration,i) = t1x;
+        t1norm((ir*t1p)+1:(ir*t1p)+(trials/runs*t1p),1:duration,i) = t1normx;
 
-        t2((ir*0.4)+1:(ir*0.4)+(trials*0.2),1:duration,i) = t2x;
-        t2norm((ir*0.4)+1:(ir*0.4)+(trials*0.2),1:duration,i) = t2normx;
+        t2((ir*t2p)+1:(ir*t2p)+(trials/runs*t2p),1:duration,i) = t2x;
+        t2norm((ir*t2p)+1:(ir*t2p)+(trials/runs*t2p),1:duration,i) = t2normx;
 
-        neutral((ir*0.2)+1:(ir*0.2)+(trials*0.1),1:duration,i) = neutralx;
-        neutralnorm((ir*0.2)+1:(ir*0.2)+(trials*0.1),1:duration,i) = neutralnormx;
+        neutral((ir*ntp)+1:(ir*ntp)+(trials/runs*ntp),1:duration,i) = neutralx;
+        neutralnorm((ir*ntp)+1:(ir*ntp)+(trials/runs*ntp),1:duration,i) = neutralnormx;
         
     end
    
@@ -244,3 +362,22 @@ for i = 1:length(subjects)
 end
 
 cd(homedir)
+
+close all
+
+TAfigs
+
+close all
+
+TAdetrend
+
+TAfigsdet
+
+close all
+
+switch study
+    case 0
+        save eyedataE0.mat
+    case 3
+        save eyedataE3.mat
+end

@@ -1,4 +1,4 @@
-function [output, datapoints, timepoints, ind] = eventtimeseries(edf,data,eventmessage,window,plotfig)
+function [output, datapoints, etimepoints, ind] = eventtimeseries(edf,data,eventmessage,window,samplerate,plotfig)
 
 %Function: eventtimeseries(edf,'data','eventmessage',window,plotfig)
 %Inputs 
@@ -14,7 +14,7 @@ function [output, datapoints, timepoints, ind] = eventtimeseries(edf,data,eventm
 %   
 %   datapoints: row vector of every data point of the chosen data type
 %
-%   timepoints: row vector of all of the timepoints at which the given
+%   etimepoints: row vector of all of the etimepoints at which the given
 %   event begins
 %
 %   ind: row vector of the index numbers indicating the data points
@@ -22,7 +22,7 @@ function [output, datapoints, timepoints, ind] = eventtimeseries(edf,data,eventm
 %
 %   example: eventtimesseries(edf,'pa','EVENT_BLACK',[-1000 5000],1)
 
-if nargin < 5
+if nargin < 6
     plotfig = 0;
 end
 
@@ -33,19 +33,32 @@ x = 1;
 for i = 1:length(edf.FEVENT)
     if length(edf.FEVENT(i).message) == length(eventmessage) % strcmp
         if all(edf.FEVENT(i).message == eventmessage)
-            timepoints(x) = edf.FEVENT(i).sttime;
+            etimepoints(x) = edf.FEVENT(i).sttime;
             x = x+1;
         end
     end
 end
 
-ind = zeros(1,length(timepoints));
+timepoints = double(edf.FSAMPLE.time);
 
-for i = 1:length(timepoints)
-    ind(i) = find(edf.FSAMPLE.time == timepoints(i));
+if edf.RECORDINGS(1).sample_rate < samplerate
+    sf = round(samplerate/(edf.RECORDINGS(1).sample_rate));  
+    timepoints = round(interp(timepoints,sf));   %interp1
 end
 
-output = nan(length(timepoints),diff(window)+1);
+ind = zeros(1,length(etimepoints));
+
+for i = 1:length(etimepoints)
+    ind0 = find(timepoints == etimepoints(i));
+    if isempty(ind0)
+        fprintf('Sample Rate %d , advanced 1 ms at %d\n',edf.RECORDINGS(1).sample_rate,etimepoints(i))
+        ind0 = find(timepoints == etimepoints(i)+1);
+    end
+    ind(i) = ind0;
+%     ind(i) = find(edf.FSAMPLE.time == etimepoints(i));
+end
+
+output = nan(length(etimepoints),diff(window)+1);
 
 datapoints = eval(sprintf('edf.FSAMPLE.%s',data)); % edf.FSAMPLE.(data)
 
@@ -55,12 +68,14 @@ else
     datapoints = [datapoints(1,:) nan(1,window(2)+1)];
 end
 
-for i = 1:length(timepoints)
+if edf.RECORDINGS(1).sample_rate < samplerate
+    datapoints = round(interp(datapoints,sf));
+end
+
+for i = 1:length(etimepoints)
     output(i,1:diff(window)+1) = ...
         [datapoints(ind(i)+window(1):ind(i)+window(2))];
 end
-
-avg = nanmean(output,1);
 
 if plotfig == 1
     plot(window(1):window(2),avg)
@@ -73,8 +88,8 @@ if plotfig == 1
     figure(2)
     plot(edf.FSAMPLE.time,edf.FSAMPLE.(data)(end,:))
     hold on
-    for i = 1:length(timepoints)
-        plot([timepoints(i) timepoints(i)],[0 max(datapoints)],'k')
+    for i = 1:length(etimepoints)
+        plot([etimepoints(i) etimepoints(i)],[0 max(datapoints)],'k')
         hold on
     end
 end
