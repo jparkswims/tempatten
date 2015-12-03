@@ -42,8 +42,7 @@ end
 timepoints = double(edf.FSAMPLE.time);
 
 if edf.RECORDINGS(1).sample_rate < samplerate
-    sf = round(samplerate/(edf.RECORDINGS(1).sample_rate));  
-    timepoints = round(interp(timepoints,sf));   %interp1
+    timepoints = interp1(1:length(timepoints),timepoints,1:0.5:length(timepoints));  %interp1
 end
 
 ind = zeros(1,length(etimepoints));
@@ -69,7 +68,7 @@ else
 end
 
 if edf.RECORDINGS(1).sample_rate < samplerate
-    datapoints = round(interp(datapoints,sf));
+    datapoints = interp1(1:length(datapoints),datapoints,1:0.5:length(datapoints));
 end
 
 for i = 1:length(etimepoints)

@@ -45,9 +45,9 @@ for i = 1:length(subjects)
         
         drift = polyfit(0:1750,nanmean(trialmatnorm(:,401:2151,i)),1);
         
-        t1det2(1,:,i) = nanmean(t1norm(:,:,i)) - (drift(1) .* [-400:2500] + drift(2));
-        t2det2(1,:,i) = nanmean(t2norm(:,:,i)) - (drift(1) .* [-400:2500] + drift(2));
-        neutraldet2(1,:,i) = nanmean(neutralnorm(:,:,i)) - (drift(1) .* [-400:2500] + drift(2));
+        t1det2(1,:,i) = nanmean(t1norm(:,:,i)) - (drift(1) .* [window(1):window(2)] + drift(2));
+        t2det2(1,:,i) = nanmean(t2norm(:,:,i)) - (drift(1) .* [window(1):window(2)] + drift(2));
+        neutraldet2(1,:,i) = nanmean(neutralnorm(:,:,i)) - (drift(1) .* [window(1):window(2)] + drift(2));
         
 %         for j = 1:size(t1norm,1)
 %             
