@@ -6,7 +6,7 @@ homedir = '/Users/jakeparker/Documents/MATLAB';
 
 if study == 0
     
-    subjects = {'ad' 'bl' 'ec' 'ty' 'vp' 'zw'}; %E0 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'
+    subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'}; %E0 'ma' 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'
     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E0_cb/';
     filedir = '/Users/jakeparker/Documents/tempatten/E0_cb';
@@ -18,7 +18,7 @@ if study == 0
     t2p = 0.4;
     ntp = 0.2;
     runs = 2;
-    window = [-400 2500];
+    window = [-400 3000];
     duration = window(2)-window(1)+1;
     trialmat = zeros(trials,duration,length(subjects));
     t1 = zeros(trials*.4,duration,length(subjects));
@@ -27,6 +27,8 @@ if study == 0
     t2norm = zeros(trials*.4,duration,length(subjects));
     neutral = zeros(trials*.2,duration,length(subjects));
     neutralnorm = zeros(trials*.2,duration,length(subjects));
+    soas = 250;
+    mblink = 5;
 
 elseif study == 3
     
@@ -43,7 +45,7 @@ elseif study == 3
     t2p = 0.4;
     ntp = 0.2;
     runs = 4;
-    window = [-400 2500];
+    window = [-400 3000];
     duration = window(2)-window(1)+1;
     trialmat = zeros(trials,duration,length(subjects));
     t1 = zeros(trials*.4,duration,length(subjects));
@@ -52,22 +54,28 @@ elseif study == 3
     t2norm = zeros(trials*.4,duration,length(subjects));
     neutral = zeros(trials*.2,duration,length(subjects));
     neutralnorm = zeros(trials*.2,duration,length(subjects));
+    soas = 250;
+    mblink = 5;
     
 elseif study == 2
     
-    subjects = {'hl' 'ho' 'rd' 'vp'}; %E2 'hl' 'ho' 'rd' 'vp'
+    subjects = {'hl' 'ho' 'rd' 'vp'}; %E2 'hl' 'ho' 'kc' 'rd' 'vp'
+    % subject kc has no .mat files
+    % subject vp run 1 soa 400 trialmatx incorrectly loaded for some
+    % reason, 325 in length instead of 160
+    % subject ho run 1 soa 450 trialmatx length 333
     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E2_soa_cbD6/';
     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E2_soa_cbD6/';
     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa_cbD6';
-    trials = 160;
+    trials = 480;
     t1time = 1000;
     t2time = 1100;
     postcue = t2time + 500;
     t1p = 0.4;
     t2p = 0.4;
     ntp = 0.2;
-    runs = 1;
-    window = [-400 2500];
+    runs = 3;
+    window = [-400 3000];
     duration = window(2)-window(1)+1;
     trialmat = zeros(trials,duration,length(subjects));
     t1 = zeros(trials*.4,duration,length(subjects));
@@ -76,8 +84,8 @@ elseif study == 2
     t2norm = zeros(trials*.4,duration,length(subjects));
     neutral = zeros(trials*.2,duration,length(subjects));
     neutralnorm = zeros(trials*.2,duration,length(subjects));
-    soa = 10;
-    soas = [100:50:500 800];
+    soas = [100:50:500 800]; %100:50:500 800
+    mblink = 5;
     
 else
     
@@ -85,35 +93,41 @@ else
 end
 
 for iSOA = 1:numel(soas)
-    soa = soas(iSOA);
-    t2time = t1time + soa;
+    
+    t2time = t1time + soas(iSOA);
     postcue = t2time + 500;
+    
+    if study == 2
+           
+        filedir = ['/Users/jakeparker/Documents/tempatten/E2_soa_cbD6/' int2str(soas(iSOA))];
+            
+    end
     
     pa_TempAtten
 end
 
-if study == 0 || study == 3
-    
-    pa_TempAtten
-    
-elseif study == 2
-    
-    for s=1:soa
-        
-        pa_TempAtten
-        
-        if t2time < 1500
-            
-            t2time = t2time + 50;
-            
-            postcue = t2time + 500;
-            
-            
-        else
-            
-            t2time = t2time + 300;
-            
-            postcue = t2time + 500;
-        end
-    end
-end
+% if study == 0 || study == 3
+%     
+%     pa_TempAtten
+%     
+% elseif study == 2
+%     
+%     for s=1:soa
+%         
+%         pa_TempAtten
+%         
+%         if t2time < 1500
+%             
+%             t2time = t2time + 50;
+%             
+%             postcue = t2time + 500;
+%             
+%             
+%         else
+%             
+%             t2time = t2time + 300;
+%             
+%             postcue = t2time + 500;
+%         end
+%     end
+% end

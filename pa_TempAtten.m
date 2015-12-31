@@ -229,7 +229,7 @@ for i = 1:length(subjects)
         
         figdir = [filedir '/' subjects{i}];            
         
-        fig = [(3*r-2)+(i-1)*6 (3*r-1)+(i-1)*6 (3*r)+(i-1)*6];
+        fig = [1 2 3];
         
         fignames = {sprintf('run%d',r) sprintf('run%dpreblink',r) sprintf('run%dpostblink',r)};
         
@@ -303,10 +303,34 @@ for i = 1:length(subjects)
         neutral((ir*ntp)+1:(ir*ntp)+(trials/runs*ntp),1:duration,i) = neutralx;
         neutralnorm((ir*ntp)+1:(ir*ntp)+(trials/runs*ntp),1:duration,i) = neutralnormx;
         
+        close all
+        
+       
+        
     end
    
     
 end
+
+t1normwm = zeros(1,duration);
+t2normwm = zeros(1,duration);
+neutralnormwm = zeros(1,duration);
+countt1 = zeros(length(subjects),size(t1norm,2));
+countt2 = zeros(length(subjects),size(t1norm,2));
+countn = zeros(length(subjects),size(t1norm,2));
+
+for fs = 1:length(subjects)
+    countt1(fs,:) = sum(~isnan(t1norm(:,:,fs)),1);
+    t1normwm = t1normwm + (nanmean(t1norm(:,:,fs),1) .* countt1(fs,:));
+    countt2(fs,:) = sum(~isnan(t2norm(:,:,fs)),1);
+    t2normwm = t2normwm + (nanmean(t2norm(:,:,fs),1) .* countt2(fs,:));
+    countn(fs,:) = sum(~isnan(neutralnorm(:,:,fs)),1);
+    neutralnormwm = neutralnormwm + (nanmean(neutralnorm(:,:,fs),1) .* countn(fs,:));
+end
+
+t1normwm = t1normwm ./ sum(countt1,1);
+t2normwm = t2normwm ./ sum(countt2,1);
+neutralnormwm = neutralnormwm ./ sum(countn,1);
 
 cd(homedir)
 

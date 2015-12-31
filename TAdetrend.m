@@ -1,7 +1,13 @@
-
+%%%% weightoption
 t1det1 = zeros(1,size(t1norm,2),size(t1norm,3));
+t1det1wm = zeros(1,size(t1norm,2));
+
 t2det1 = zeros(1,size(t2norm,2),size(t2norm,3));
+t2det1wm = zeros(1,size(t1norm,2));
+
 neutraldet1 = zeros(1,size(neutralnorm,2),size(neutralnorm,3));
+neutraldet1wm = zeros(1,size(t1norm,2));
+
 t1det2 = zeros(1,size(t1norm,2),size(t1norm,3));
 t2det2 = zeros(1,size(t2norm,2),size(t2norm,3));
 neutraldet2 = zeros(1,size(neutralnorm,2),size(neutralnorm,3));
@@ -20,8 +26,16 @@ for i = 1:length(subjects)
     for i = 1:length(subjects)
         
         t1det1(1,:,i) = nanmean(t1norm(:,:,i)) - nanmean(trialmatnorm(:,:,i),1);
+        
+        t1det1wm = t1det1wm + (t1det1(1,:,i) .* countt1(i,:));
         t2det1(1,:,i) = nanmean(t2norm(:,:,i)) - nanmean(trialmatnorm(:,:,i),1);
+        
+        t2det1wm = t2det1wm + (t2det1(1,:,i) .* countt2(i,:));
         neutraldet1(1,:,i) = nanmean(neutralnorm(:,:,i)) - nanmean(trialmatnorm(:,:,i),1);
+        
+        neutraldet1wm = neutraldet1wm + (neutraldet1(1,:,i) .* countn(i,:));
+        
+        
 
 %         for j = 1:size(t1norm,1)
 % 
@@ -38,6 +52,10 @@ for i = 1:length(subjects)
 %         end
 
     end
+    
+    t1det1wm = t1det1wm ./ sum(countt1,1);
+    t2det1wm = t2det1wm ./ sum(countt2,1);
+    neutraldet1wm = neutraldet1wm ./ sum(countn,1);
     
 %elseif det == 2
     

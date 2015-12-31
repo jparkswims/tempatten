@@ -184,10 +184,10 @@ ymax = 0.25;
 
 %group means
 figure
-shadedErrorBar(window(1):window(2),nanmean(nanmean(t1norm),3),nanstd(nanmean(t1norm),0,3)./(sqrt(numel(subjects))),'b',1) %%%%%
+shadedErrorBar(window(1):window(2),t1normwm,wstd(flipud(rot90(squeeze(nanmean(t1norm)))),t1normwm,countt1)/sqrt(numel(subjects)),'b',1) %%%%%
 hold on
-shadedErrorBar(window(1):window(2),nanmean(nanmean(t2norm),3),nanstd(nanmean(t2norm),0,3)./(sqrt(numel(subjects))),'r',1) %%%%
-shadedErrorBar(window(1):window(2),nanmean(nanmean(neutralnorm),3),nanstd(nanmean(neutralnorm),0,3)./(sqrt(numel(subjects))),'g',1) %%%%
+shadedErrorBar(window(1):window(2),t2normwm,wstd(flipud(rot90(squeeze(nanmean(t2norm)))),t2normwm,countt2)/sqrt(numel(subjects)),'r',1) %%%%
+shadedErrorBar(window(1):window(2),neutralnormwm,wstd(flipud(rot90(squeeze(nanmean(neutralnorm)))),neutralnormwm,countn)/sqrt(numel(subjects)),'g',1) %%%%
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')

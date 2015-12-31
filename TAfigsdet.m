@@ -91,13 +91,6 @@ figure
 subplot(3,1,1)
 plot(window(1):window(2), squeeze(t1det1))
 hold on
-% plot(window(1):window(2),nanmean(t1det(:,:,1)),'b')
-% hold on
-% plot(window(1):window(2),nanmean(t1det(:,:,2)),'c')
-% plot(window(1):window(2),nanmean(t1det(:,:,3)),'g')
-% plot(window(1):window(2),nanmean(t1det(:,:,4)),'m')
-% plot(window(1):window(2),nanmean(t1det(:,:,5)),'r')
-% plot(window(1):window(2),nanmean(t1det(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -111,13 +104,6 @@ ylim([-0.01 0.01])
 subplot(3,1,2)
 plot(window(1):window(2), squeeze(t2det1))
 hold on
-% plot(window(1):window(2),nanmean(t2det(:,:,1)),'b')
-% hold on
-% plot(window(1):window(2),nanmean(t2det(:,:,2)),'c')
-% plot(window(1):window(2),nanmean(t2det(:,:,3)),'g')
-% plot(window(1):window(2),nanmean(t2det(:,:,4)),'m')
-% plot(window(1):window(2),nanmean(t2det(:,:,5)),'r')
-% plot(window(1):window(2),nanmean(t2det(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -129,14 +115,8 @@ ylabel('pupil area (detrended)')
 ylim([-0.01 0.01])
 
 subplot(3,1,3)
+hold on
 plot(window(1):window(2), squeeze(neutraldet1))
-% plot(window(1):window(2),nanmean(neutraldet(:,:,1)),'b')
-% hold on
-% plot(window(1):window(2),nanmean(neutraldet(:,:,2)),'c')
-% plot(window(1):window(2),nanmean(neutraldet(:,:,3)),'g')
-% plot(window(1):window(2),nanmean(neutraldet(:,:,4)),'m')
-% plot(window(1):window(2),nanmean(neutraldet(:,:,5)),'r')
-% plot(window(1):window(2),nanmean(neutraldet(:,:,6)),'y')
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -145,6 +125,7 @@ title('neutral subject averages of detrended1 data')
 xlabel('time (ms)')
 ylabel('pupil area (detrended)')
 % legend('ad','bl','ec','ty','vp','zw')
+xlim([window(1) window(2)])
 ylim([-0.01 0.01])
 
 ymin = -0.1;
@@ -154,10 +135,10 @@ ymax = 0.1;
 
 %group means
 figure
-shadedErrorBar(window(1):window(2),nanmean(t1det1,3),nanstd(t1det1,0,3)./(sqrt(numel(subjects))),'b',1) %%%%
+shadedErrorBar(window(1):window(2),t1det1wm,wstd(flipud(rot90(squeeze(t1det1))),t1det1wm,countt1)/sqrt(numel(subjects)),'b',1) %%%%
 hold on
-shadedErrorBar(window(1):window(2),nanmean(t2det1,3),nanstd(t2det1,0,3)./(sqrt(numel(subjects))),'r',1) %%%%
-shadedErrorBar(window(1):window(2),nanmean(neutraldet1,3),nanstd(neutraldet1,0,3)./(sqrt(numel(subjects))),'g',1) %%%%
+shadedErrorBar(window(1):window(2),t2det1wm,wstd(flipud(rot90(squeeze(t2det1))),t2det1wm,countt2)/sqrt(numel(subjects)),'r',1) %%%%
+shadedErrorBar(window(1):window(2),neutraldet1wm,wstd(flipud(rot90(squeeze(neutraldet1))),neutraldet1wm,countn)/sqrt(numel(subjects)),'g',1) %%%%
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -199,6 +180,7 @@ ylim([-0.01 0.01])
 
 subplot(3,1,3)
 plot(window(1):window(2), squeeze(neutraldet2))
+hold on
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -207,6 +189,7 @@ title('neutral subject averages of detrended2 data')
 xlabel('time (ms)')
 ylabel('pupil area (detrended)')
 % legend('ad','bl','ec','ty','vp','zw')
+xlim([window(1) window(2)])
 ylim([-0.01 0.01])
 
 %group means
@@ -238,10 +221,10 @@ for j = 1:length(subjects)
     ymax = 0.02;
     
     figure
-    plot(window(1):window(2),nanmean(t1det1(:,:,j)),'b')
+    plot(window(1):window(2),t1det1(:,:,j),'b')
     hold on
-    plot(window(1):window(2),nanmean(t2det1(:,:,j)),'r')
-    plot(window(1):window(2),nanmean(neutraldet1(:,:,j)),'g')
+    plot(window(1):window(2),t2det1(:,:,j),'r')
+    plot(window(1):window(2),neutraldet1(:,:,j),'g')
     plot([0 0],[ymin ymax],'k')
     plot([1000 1000],[ymin ymax],'k')
     plot([t2time t2time],[ymin ymax],'k')
@@ -252,10 +235,10 @@ for j = 1:length(subjects)
     legend('t1','t2','neutral')
     
     figure
-    plot(window(1):window(2),nanmean(t1det2(:,:,j)),'b')
+    plot(window(1):window(2),t1det2(:,:,j),'b')
     hold on
-    plot(window(1):window(2),nanmean(t2det2(:,:,j)),'r')
-    plot(window(1):window(2),nanmean(neutraldet2(:,:,j)),'g')
+    plot(window(1):window(2),t2det2(:,:,j),'r')
+    plot(window(1):window(2),neutraldet2(:,:,j),'g')
     plot([0 0],[ymin ymax],'k')
     plot([1000 1000],[ymin ymax],'k')
     plot([t2time t2time],[ymin ymax],'k')
