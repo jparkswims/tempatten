@@ -1,87 +1,10 @@
+t1gmean = t1det1wm; % m: nanmean(t1det1,3)  wm: t1det1wm
+t2gmean = t2det1wm; % m: nanmean(t2det1,3)  wm: t2det1wm
+ngmean = neutraldet1wm; % m: nanmean(neutraldet1,3) wm: neutraldet1wm
 
-
-% for j = 1:length(subjects)
-%     
-%     ymin = -0.1;
-%     ymax = 0.1;
-%     
-%     %individual subject conditions normalized data
-%     figure
-%     subplot(3,1,1)
-%     plot(window(1):window(2),t1det(:,:,j),'color',[.7 .7 .75])
-%     hold on
-%     plot([0 0],[ymin ymax],'k')
-%     plot([1000 1000],[ymin ymax],'k')
-%     plot([1250 1250],[ymin ymax],'k')
-%     plot([1750 1750],[ymin ymax],'k')
-%     plot(window(1):window(2),nanmean(t1det(:,:,j)),'b','LineWidth',3)
-%     title([subjects{j} ' t1 detrended'])
-%     xlabel('time (ms)')
-%     ylabel('pupil area (detrended)')
-%     ylim([-0.015 0.015])
-%     
-%     subplot(3,1,2)
-%     plot(window(1):window(2),t2det(:,:,j),'color',[.75 .7 .7])
-%     hold on
-%     plot([0 0],[ymin ymax],'k')
-%     plot([1000 1000],[ymin ymax],'k')
-%     plot([1250 1250],[ymin ymax],'k')
-%     plot([1750 1750],[ymin ymax],'k')
-%     plot(window(1):window(2),nanmean(t2det(:,:,j)),'r','LineWidth',3)
-%     title([subjects{j} ' t2 detrended'])
-%     xlabel('time (ms)')
-%     ylabel('pupil area (detrended)')
-%     ylim([-0.015 0.015])
-%     
-%     subplot(3,1,3)
-%     plot(window(1):window(2),neutraldet(:,:,j),'color',[.7 .75 .7])
-%     hold on
-%     plot([0 0],[ymin ymax],'k')
-%     plot([1000 1000],[ymin ymax],'k')
-%     plot([1250 1250],[ymin ymax],'k')
-%     plot([1750 1750],[ymin ymax],'k')
-%     plot(window(1):window(2),nanmean(neutraldet(:,:,j)),'g','LineWidth',3)
-%     title([subjects{j} ' neutral detrended'])
-%     xlabel('time (ms)')
-%     ylabel('pupil area (detrended)')
-%     ylim([-0.015 0.015])
-%     
-%     switch j
-%         case 2
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ca';
-%             case 3
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ec';
-%             case 4
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/en';
-%             case 5
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ew';
-%             case 6
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jl';
-%             case 7
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jx';
-%             case 8
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ld';
-%             case 9
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/rd';
-%             case 10
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/sj';
-%             case 11
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ml';
-%             case 12
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/id';    
-%             case 1
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/bl';
-%     end
-%     
-%     fig = j;
-%     
-%     fignames = {'conditions_detrended'};
-%     
-%     figprefix = 'ta';
-%     
-%     rd_saveAllFigs(fig,fignames,figprefix, figdir)
-%     
-% end
+t1se = nanstd(t1det1,0,3)/sqrt(numel(subjects)); % std: nanstd(t1det1,0,3) wstd: wstd(squeeze(t1det1)',t1det1wm,countt1)
+t2se = nanstd(t2det1,0,3)/sqrt(numel(subjects)); % std: nanstd(t2det1,0,3) wstd: wstd(squeeze(t2det1)',t2det1wm,countt2)
+nse = nanstd(neutraldet1,0,3)/sqrt(numel(subjects)); % std: nanstd(neutraldet1,0,3)  wstd: wstd(squeeze(neutraldet1)',neutraldet1wm,countn)
 
 ymin = -0.1;
 ymax = 0.1;
@@ -135,10 +58,10 @@ ymax = 0.1;
 
 %group means
 figure
-shadedErrorBar(window(1):window(2),t1det1wm,wstd(flipud(rot90(squeeze(t1det1))),t1det1wm,countt1)/sqrt(numel(subjects)),'b',1) %%%%
+shadedErrorBar(window(1):window(2),t1gmean,t1se,'b',1) %%%%
 hold on
-shadedErrorBar(window(1):window(2),t2det1wm,wstd(flipud(rot90(squeeze(t2det1))),t2det1wm,countt2)/sqrt(numel(subjects)),'r',1) %%%%
-shadedErrorBar(window(1):window(2),neutraldet1wm,wstd(flipud(rot90(squeeze(neutraldet1))),neutraldet1wm,countn)/sqrt(numel(subjects)),'g',1) %%%%
+shadedErrorBar(window(1):window(2),t2gmean,t2se,'r',1) %%%%
+shadedErrorBar(window(1):window(2),ngmean,nse,'g',1) %%%%
 plot([0 0],[ymin ymax],'k')
 plot([1000 1000],[ymin ymax],'k')
 plot([t2time t2time],[ymin ymax],'k')
@@ -249,33 +172,6 @@ for j = 1:length(subjects)
     legend('t1','t2','neutral')
     
     figdir = [filedir '/' subjects{j}];
-    
-%     switch j
-%         case 2
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ca';
-%             case 3
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ec';
-%             case 4
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/en';
-%             case 5
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ew';
-%             case 6
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jl';
-%             case 7
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/jx';
-%             case 8
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ld';
-%             case 9
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/rd';
-%             case 10
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/sj';
-%             case 11
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/ml';
-%             case 12
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/id';    
-%             case 1
-%             figdir = '/Users/jakeparker/Documents/tempatten/E3_adjust/bl';
-%     end
     
     fig = [2*j-1+4 2*j+4];
     

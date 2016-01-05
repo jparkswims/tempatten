@@ -67,14 +67,14 @@ elseif study == 2
     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E2_soa_cbD6/';
     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E2_soa_cbD6/';
     filedir = '/Users/jakeparker/Documents/tempatten/E2_soa_cbD6';
-    trials = 480;
+    trials = 960;
     t1time = 1000;
     t2time = 1100;
     postcue = t2time + 500;
     t1p = 0.4;
     t2p = 0.4;
     ntp = 0.2;
-    runs = 3;
+    runs = 6;
     window = [-400 3000];
     duration = window(2)-window(1)+1;
     trialmat = zeros(trials,duration,length(subjects));

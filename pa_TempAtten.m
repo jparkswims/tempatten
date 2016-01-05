@@ -1,86 +1,3 @@
-% % define study specific variables
-% close all
-% 
-% study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nSelect Study:');
-% 
-% homedir = '/Users/jakeparker/Documents/MATLAB';
-% 
-% if study == 0
-%     
-%     subjects = {'ad' 'bl' 'ec' 'ty' 'vp' 'zw'}; %E0 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'
-%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
-%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E0_cb/';
-%     filedir = '/Users/jakeparker/Documents/tempatten/E0_cb';
-%     trials = 640;
-%     t1time = 1000;
-%     t2time = 1250;
-%     postcue = t2time + 500;
-%     t1p = 0.4;
-%     t2p = 0.4;
-%     ntp = 0.2;
-%     runs = 2;
-%     window = [-400 2500];
-%     duration = window(2)-window(1)+1;
-%     trialmat = zeros(trials,duration,length(subjects));
-%     t1 = zeros(trials*.4,duration,length(subjects));
-%     t1norm = zeros(trials*.4,duration,length(subjects));
-%     t2 = zeros(trials*.4,duration,length(subjects));
-%     t2norm = zeros(trials*.4,duration,length(subjects));
-%     neutral = zeros(trials*.2,duration,length(subjects));
-%     neutralnorm = zeros(trials*.2,duration,length(subjects));
-% 
-% elseif study == 3
-%     
-%     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'}; %E3 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'
-%     % subject id sample rate = 500
-%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
-%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
-%     filedir = '/Users/jakeparker/Documents/tempatten/E3_adjust';
-%     trials = 640;
-%     t2time = 1250;
-%     postcue = t2time + 500;
-%     t1p = 0.4;
-%     t2p = 0.4;
-%     ntp = 0.2;
-%     runs = 4;
-%     window = [-400 2500];
-%     duration = window(2)-window(1)+1;
-%     trialmat = zeros(trials,duration,length(subjects));
-%     t1 = zeros(trials*.4,duration,length(subjects));
-%     t1norm = zeros(trials*.4,duration,length(subjects));
-%     t2 = zeros(trials*.4,duration,length(subjects));
-%     t2norm = zeros(trials*.4,duration,length(subjects));
-%     neutral = zeros(trials*.2,duration,length(subjects));
-%     neutralnorm = zeros(trials*.2,duration,length(subjects));
-%     
-% elseif study == 2
-%     
-%     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'}; %E3 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'
-%     TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
-%     TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
-%     filedir = '/Users/jakeparker/Documents/tempatten/E3_adjust';
-%     trials = 640;
-%     t1time = 1000;
-%     t2time = 1250;
-%     postcue = t2time + 500;
-%     t1p = 0.4;
-%     t2p = 0.4;
-%     ntp = 0.2;
-%     runs = 4;
-%     window = [-400 2500];
-%     duration = window(2)-window(1)+1;
-%     trialmat = zeros(trials,duration,length(subjects));
-%     t1 = zeros(trials*.4,duration,length(subjects));
-%     t1norm = zeros(trials*.4,duration,length(subjects));
-%     t2 = zeros(trials*.4,duration,length(subjects));
-%     t2norm = zeros(trials*.4,duration,length(subjects));
-%     neutral = zeros(trials*.2,duration,length(subjects));
-%     neutralnorm = zeros(trials*.2,duration,length(subjects));
-%     soa = 9;
-%     
-%     fprintf('No\n')
-% end
-
 for i = 1:length(subjects)
     
     for r = 1:runs
@@ -93,6 +10,11 @@ for i = 1:length(subjects)
            
 
         %string of exact name of edffile to be extracted
+        if isempty(a)
+            fprintf('Broke on subject %s run %d',i,r)
+            break
+        end
+        
         if length(a) == 1
             edffile = a.name;
         else
@@ -179,50 +101,6 @@ for i = 1:length(subjects)
         
         trialmatx = noblink(trialmatx,postcue-window(1),duration,100,-window(1)+1,-window(1)+1000,0,0,mblink);
         
-%         for j = 1:(trials/runs)
-%             if all(trialmatx(j,1:-window(1))) == 0
-%                 I(1) = find(trialmatx(j,1:-window(1)) == 0,1,'first');
-%                 if I(1) < 100
-%                    
-%                     bmat = trialmatx(j,1:I(1));
-%                 else
-%                   	bmat = trialmatx(j,I(1)-100:I(1));
-%                 end
-%                 preb = find(max(diff(diff(bmat))) == diff(diff(bmat)));
-%                 I(2) = find(trialmatx(j,1:-window(1)) == 0,1,'last');
-%                 if I(2) > -window(1)-100
-%                     
-%                    bmat = trialmatx(j,I(2):-window(1));
-%                 else
-%                     bmat = trialmatx(j,I(2):I(2) + 100);
-%                 end
-%                 postb = find(max(diff(diff(bmat))) == diff(diff(bmat)));
-%                 trialmatx(j,I(1)-preb:I(2)+postb(1)) = nan(1,I(2)-I(1)+preb+postb(1)+1);
-%             end
-%             if all(trialmatx(j,postcue-window(1)+1:duration)) == 0
-%                 I(1) = find(trialmatx(j,postcue-window(1)+1:duration) == 0,1,'first');
-%                 if I(1) < 100
-%                     
-%                     bmat = trialmatx(j,postcue-window(1)+1:I(1));
-%                 else
-%                     bmat = trialmatx(j,postcue-window(1)+1+I(1)-100:postcue-window(1)+1+I(1));
-%                 end
-%                 preb = find(max(diff(diff(bmat))) == diff(diff(bmat)));
-%                 I(2) = find(trialmatx(j,postcue-window(1)+1:duration) == 0,1,'last');
-%                 if I(2) > window(2)-postcue-100+1
-%         
-%                     bmat = trialmatx(j,I(2)+postcue-window(1)+1:duration);
-%                 else
-%                     bmat = trialmatx(j,I(2)+postcue-window(1)+1:I(2)+postcue-window(1)+1+100);
-%                 end
-%                 postb = find(max(diff(diff(bmat))) == diff(diff(bmat)));
-%                 if isempty(bmat)
-%                     postb = 0;
-%                 end
-%                 trialmatx(j,I(1)-preb+postcue-window(1):I(2)+postb(1)+postcue-window(1)) = nan(1,I(2)-I(1)+preb+postb(1)+1);
-%             end
-%         end
-        
         figure
         imagesc(trialmatx)
         title(sprintf('imagesc (run %d, subject %s)',r,subjects{i}))
@@ -305,6 +183,8 @@ for i = 1:length(subjects)
         
         close all
         
+        fprintf('\n')
+        
        
         
     end
@@ -321,11 +201,11 @@ countn = zeros(length(subjects),size(t1norm,2));
 
 for fs = 1:length(subjects)
     countt1(fs,:) = sum(~isnan(t1norm(:,:,fs)),1);
-    t1normwm = t1normwm + (nanmean(t1norm(:,:,fs),1) .* countt1(fs,:));
+    t1normwm = t1normwm + (nanmean(t1norm(:,:,fs),1) .* countt1(fs,:)); %nansum
     countt2(fs,:) = sum(~isnan(t2norm(:,:,fs)),1);
-    t2normwm = t2normwm + (nanmean(t2norm(:,:,fs),1) .* countt2(fs,:));
+    t2normwm = t2normwm + (nanmean(t2norm(:,:,fs),1) .* countt2(fs,:)); %nansum
     countn(fs,:) = sum(~isnan(neutralnorm(:,:,fs)),1);
-    neutralnormwm = neutralnormwm + (nanmean(neutralnorm(:,:,fs),1) .* countn(fs,:));
+    neutralnormwm = neutralnormwm + (nanmean(neutralnorm(:,:,fs),1) .* countn(fs,:)); %nansum
 end
 
 t1normwm = t1normwm ./ sum(countt1,1);
@@ -349,6 +229,8 @@ close all
 switch study
     case 0
         save eyedataE0.mat
+    case 2
+        eval(sprintf('save eyedataE2soa%d.mat',soas(iSOA)))
     case 3
         save eyedataE3.mat
 end

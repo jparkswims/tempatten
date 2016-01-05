@@ -1,3 +1,10 @@
+t1gmean = t1normwm; % m: nanmean(nanmean(t1norm),3) wm: t1normwm
+t2gmean = t2normwm; % m: nanmean(nanmean(t2norm),3) wm: t2normwm
+ngmean = neutralnormwm; % m :nanmean(nanmean(neutralnorm),3)    wm: neutralnormwm
+
+t1se = nanstd(nanmean(t1norm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(t1norm),0,3)   wstd: wstd(squeeze(nanmean(t1norm))',t1normwm,countt1)
+t2se = nanstd(nanmean(t2norm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(t2norm),0,3)   wstd: wstd(squeeze(nanmean(t2norm))',t2normwm,countt2)
+nse = nanstd(nanmean(neutralnorm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(neutralnorm),0,3)  wstd: wstd(squeeze(nanmean(neutralnorm))',neutralnormwm,countn)
 
 for j = 1:length(subjects)
     
@@ -203,34 +210,3 @@ fignames = {'subject_avgs' 'group_avgs'};
 figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, figdir)
-
-% for j = 1:length(subjects)
-%     
-%     ymin = -0.1;
-%     ymax = 0.3;
-%     
-%     figure
-%     plot(window(1):window(2),nanmean(t1norm(:,:,j)),'b')
-%     hold on
-%     plot(window(1):window(2),nanmean(t2norm(:,:,j)),'r')
-%     plot(window(1):window(2),nanmean(neutralnorm(:,:,j)),'g')
-%     plot([0 0],[ymin ymax],'k')
-%     plot([1000 1000],[ymin ymax],'k')
-%     plot([1250 1250],[ymin ymax],'k')
-%     plot([1750 1750],[ymin ymax],'k')
-%     title([subjects{j} ' all conditions'])
-%     xlabel('time (ms)')
-%     ylabel('pupil area (normalized)')
-%     legend('t1','t2','neutral')
-%     
-%     figdir = [filedir '/' subjects{j}];
-%     
-%     fig = 22 + j;
-%     
-%     fignames = {'all conditions'};
-%     
-%     figprefix = 'ta';
-%     
-%     rd_saveAllFigs(fig,fignames,figprefix, figdir)
-%     
-% end
