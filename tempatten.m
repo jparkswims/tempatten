@@ -20,13 +20,13 @@ if study == 0
     runs = 2;
     window = [-400 3000];
     duration = window(2)-window(1)+1;
-    trialmat = zeros(trials,duration,length(subjects));
-    t1 = zeros(trials*.4,duration,length(subjects));
-    t1norm = zeros(trials*.4,duration,length(subjects));
-    t2 = zeros(trials*.4,duration,length(subjects));
-    t2norm = zeros(trials*.4,duration,length(subjects));
-    neutral = zeros(trials*.2,duration,length(subjects));
-    neutralnorm = zeros(trials*.2,duration,length(subjects));
+    trialmat = nan(trials,duration,length(subjects));
+    t1 = nan(trials*.4,duration,length(subjects));
+    t1norm = nan(trials*.4,duration,length(subjects));
+    t2 = nan(trials*.4,duration,length(subjects));
+    t2norm = nan(trials*.4,duration,length(subjects));
+    neutral = nan(trials*.2,duration,length(subjects));
+    neutralnorm = nan(trials*.2,duration,length(subjects));
     soas = 250;
     mblink = 5;
 
@@ -47,13 +47,13 @@ elseif study == 3
     runs = 4;
     window = [-400 3000];
     duration = window(2)-window(1)+1;
-    trialmat = zeros(trials,duration,length(subjects));
-    t1 = zeros(trials*.4,duration,length(subjects));
-    t1norm = zeros(trials*.4,duration,length(subjects));
-    t2 = zeros(trials*.4,duration,length(subjects));
-    t2norm = zeros(trials*.4,duration,length(subjects));
-    neutral = zeros(trials*.2,duration,length(subjects));
-    neutralnorm = zeros(trials*.2,duration,length(subjects));
+    trialmat = nan(trials,duration,length(subjects));
+    t1 = nan(trials*.4,duration,length(subjects));
+    t1norm = nan(trials*.4,duration,length(subjects));
+    t2 = nan(trials*.4,duration,length(subjects));
+    t2norm = nan(trials*.4,duration,length(subjects));
+    neutral = nan(trials*.2,duration,length(subjects));
+    neutralnorm = nan(trials*.2,duration,length(subjects));
     soas = 250;
     mblink = 5;
     
@@ -77,13 +77,13 @@ elseif study == 2
     runs = 6;
     window = [-400 3000];
     duration = window(2)-window(1)+1;
-    trialmat = zeros(trials,duration,length(subjects));
-    t1 = zeros(trials*.4,duration,length(subjects));
-    t1norm = zeros(trials*.4,duration,length(subjects));
-    t2 = zeros(trials*.4,duration,length(subjects));
-    t2norm = zeros(trials*.4,duration,length(subjects));
-    neutral = zeros(trials*.2,duration,length(subjects));
-    neutralnorm = zeros(trials*.2,duration,length(subjects));
+    trialmat = nan(trials,duration,length(subjects));
+    t1 = nan(trials*.4,duration,length(subjects));
+    t1norm = nan(trials*.4,duration,length(subjects));
+    t2 = nan(trials*.4,duration,length(subjects));
+    t2norm = nan(trials*.4,duration,length(subjects));
+    neutral = nan(trials*.2,duration,length(subjects));
+    neutralnorm = nan(trials*.2,duration,length(subjects));
     soas = [100:50:500 800]; %100:50:500 800
     mblink = 5;
     
@@ -105,29 +105,3 @@ for iSOA = 1:numel(soas)
     
     pa_TempAtten
 end
-
-% if study == 0 || study == 3
-%     
-%     pa_TempAtten
-%     
-% elseif study == 2
-%     
-%     for s=1:soa
-%         
-%         pa_TempAtten
-%         
-%         if t2time < 1500
-%             
-%             t2time = t2time + 50;
-%             
-%             postcue = t2time + 500;
-%             
-%             
-%         else
-%             
-%             t2time = t2time + 300;
-%             
-%             postcue = t2time + 500;
-%         end
-%     end
-% end

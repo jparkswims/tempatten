@@ -2,9 +2,9 @@ t1gmean = t1normwm; % m: nanmean(nanmean(t1norm),3) wm: t1normwm
 t2gmean = t2normwm; % m: nanmean(nanmean(t2norm),3) wm: t2normwm
 ngmean = neutralnormwm; % m :nanmean(nanmean(neutralnorm),3)    wm: neutralnormwm
 
-t1se = nanstd(nanmean(t1norm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(t1norm),0,3)   wstd: wstd(squeeze(nanmean(t1norm))',t1normwm,countt1)
-t2se = nanstd(nanmean(t2norm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(t2norm),0,3)   wstd: wstd(squeeze(nanmean(t2norm))',t2normwm,countt2)
-nse = nanstd(nanmean(neutralnorm),0,3)/sqrt(numel(subjects)); % std: nanstd(nanmean(neutralnorm),0,3)  wstd: wstd(squeeze(nanmean(neutralnorm))',neutralnormwm,countn)
+t1se = wstd(squeeze(nanmean(t1norm))',t1normwm,countt1); % std: nanstd(nanmean(t1norm),0,3)   wstd: wstd(squeeze(nanmean(t1norm))',t1normwm,countt1)
+t2se = wstd(squeeze(nanmean(t2norm))',t2normwm,countt2); % std: nanstd(nanmean(t2norm),0,3)   wstd: wstd(squeeze(nanmean(t2norm))',t2normwm,countt2)
+nse = wstd(squeeze(nanmean(neutralnorm))',neutralnormwm,countn); % std: nanstd(nanmean(neutralnorm),0,3)  wstd: wstd(squeeze(nanmean(neutralnorm))',neutralnormwm,countn)
 
 for j = 1:length(subjects)
     

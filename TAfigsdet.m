@@ -2,9 +2,9 @@ t1gmean = t1det1wm; % m: nanmean(t1det1,3)  wm: t1det1wm
 t2gmean = t2det1wm; % m: nanmean(t2det1,3)  wm: t2det1wm
 ngmean = neutraldet1wm; % m: nanmean(neutraldet1,3) wm: neutraldet1wm
 
-t1se = nanstd(t1det1,0,3)/sqrt(numel(subjects)); % std: nanstd(t1det1,0,3) wstd: wstd(squeeze(t1det1)',t1det1wm,countt1)
-t2se = nanstd(t2det1,0,3)/sqrt(numel(subjects)); % std: nanstd(t2det1,0,3) wstd: wstd(squeeze(t2det1)',t2det1wm,countt2)
-nse = nanstd(neutraldet1,0,3)/sqrt(numel(subjects)); % std: nanstd(neutraldet1,0,3)  wstd: wstd(squeeze(neutraldet1)',neutraldet1wm,countn)
+t1se = wstd(squeeze(t1det1)',t1det1wm,countt1); % std: nanstd(t1det1,0,3) wstd: wstd(squeeze(t1det1)',t1det1wm,countt1)
+t2se = wstd(squeeze(t2det1)',t2det1wm,countt2); % std: nanstd(t2det1,0,3) wstd: wstd(squeeze(t2det1)',t2det1wm,countt2)
+nse = wstd(squeeze(neutraldet1)',neutraldet1wm,countn); % std: nanstd(neutraldet1,0,3)  wstd: wstd(squeeze(neutraldet1)',neutraldet1wm,countn)
 
 ymin = -0.1;
 ymax = 0.1;

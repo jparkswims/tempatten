@@ -1,5 +1,15 @@
 for i = 1:length(subjects)
     
+    if study == 2 && i == 4
+        
+        runs = 3;
+        trials = 480;
+    elseif study == 2 && i ~= 4
+        
+        runs = 6;
+        trials = 960;
+    end
+    
     for r = 1:runs
                     
     
@@ -201,16 +211,16 @@ countn = zeros(length(subjects),size(t1norm,2));
 
 for fs = 1:length(subjects)
     countt1(fs,:) = sum(~isnan(t1norm(:,:,fs)),1);
-    t1normwm = t1normwm + (nanmean(t1norm(:,:,fs),1) .* countt1(fs,:)); %nansum
+    %t1normwm = t1normwm + (nanmean(t1norm(:,:,fs),1) .* countt1(fs,:)); %nansum
     countt2(fs,:) = sum(~isnan(t2norm(:,:,fs)),1);
-    t2normwm = t2normwm + (nanmean(t2norm(:,:,fs),1) .* countt2(fs,:)); %nansum
+    %t2normwm = t2normwm + (nanmean(t2norm(:,:,fs),1) .* countt2(fs,:)); %nansum
     countn(fs,:) = sum(~isnan(neutralnorm(:,:,fs)),1);
-    neutralnormwm = neutralnormwm + (nanmean(neutralnorm(:,:,fs),1) .* countn(fs,:)); %nansum
+    %neutralnormwm = neutralnormwm + (nanmean(neutralnorm(:,:,fs),1) .* countn(fs,:)); %nansum
 end
 
-t1normwm = t1normwm ./ sum(countt1,1);
-t2normwm = t2normwm ./ sum(countt2,1);
-neutralnormwm = neutralnormwm ./ sum(countn,1);
+t1normwm = wmean(squeeze(nanmean(t1norm))',countt1); %t1normwm ./ sum(countt1,1);
+t2normwm = wmean(squeeze(nanmean(t2norm))',countt2);%t2normwm ./ sum(countt2,1);
+neutralnormwm = wmean(squeeze(nanmean(neutralnorm))',countn);%neutralnormwm ./ sum(countn,1);
 
 cd(homedir)
 
