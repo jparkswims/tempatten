@@ -107,10 +107,14 @@ for i = 1:length(subjects)
             end
         end
         
-        trialmatx = noblink(trialmatx,1,-window(1),100,-window(1)+1,-window(1)+1000,0,0,mblink);
+        for j = 1:size(trialmatx,1)
+            trialmatx(j,:) = blinkinterp(trialmatx(j,:),5,3,50,75);
+        end
         
-        trialmatx = noblink(trialmatx,postcue-window(1),duration,100,-window(1)+1,-window(1)+1000,0,0,mblink);
-        
+%        trialmatx = noblink(trialmatx,1,-window(1),100,-window(1)+1,-window(1)+1000,0,0,mblink);
+%         
+%         trialmatx = noblink(trialmatx,postcue-window(1),duration,100,-window(1)+1,-window(1)+1000,0,0,mblink);
+%         
         figure
         imagesc(trialmatx)
         title(sprintf('imagesc (run %d, subject %s)',r,subjects{i}))
@@ -138,6 +142,7 @@ for i = 1:length(subjects)
 
         %place trials from trialmatx into one of the three condition variables
         %using information from the .mat file
+        %%
         for j = 1:size(trialmatx,1)
             if trialsPresented(j,idx) == 1
                 t1x(x,:) = trialmatx(j,:);

@@ -1,3 +1,10 @@
+close all
+
+filedir = '/Users/jakeparker/Documents/tempatten/E0+E3/no_ec';
+
+%TAallfigs
+%det figs
+
 t1gmean = t1det1wm; % m: nanmean(t1det1,3)  wm: t1det1wm
 t2gmean = t2det1wm; % m: nanmean(t2det1,3)  wm: t2det1wm
 ngmean = neutraldet1wm; % m: nanmean(neutraldet1,3) wm: neutraldet1wm
@@ -138,47 +145,133 @@ figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, figdir)
 
-for j = 1:length(subjects)
-    
-    ymin = -0.02;
-    ymax = 0.02;
-    
-    figure
-    plot(window(1):window(2),t1det1(:,:,j),'b')
-    hold on
-    plot(window(1):window(2),t2det1(:,:,j),'r')
-    plot(window(1):window(2),neutraldet1(:,:,j),'g')
-    plot([0 0],[ymin ymax],'k')
-    plot([1000 1000],[ymin ymax],'k')
-    plot([t2time t2time],[ymin ymax],'k')
-    plot([postcue postcue],[ymin ymax],'k')
-    title([subjects{j} ' all conditions detrended1'])
-    xlabel('time (ms)')
-    ylabel('pupil area (detrended)')
-    legend('t1','t2','neutral')
-    
-    figure
-    plot(window(1):window(2),t1det2(:,:,j),'b')
-    hold on
-    plot(window(1):window(2),t2det2(:,:,j),'r')
-    plot(window(1):window(2),neutraldet2(:,:,j),'g')
-    plot([0 0],[ymin ymax],'k')
-    plot([1000 1000],[ymin ymax],'k')
-    plot([t2time t2time],[ymin ymax],'k')
-    plot([postcue postcue],[ymin ymax],'k')
-    title([subjects{j} ' all conditions detrended2'])
-    xlabel('time (ms)')
-    ylabel('pupil area (detrended)')
-    legend('t1','t2','neutral')
-    
-    figdir = [filedir '/' subjects{j}];
-    
-    fig = [2*j-1+4 2*j+4];
-    
-    fignames = {'all_conditions_detrended1' 'all_conditions_detrended2'};
-    
-    figprefix = 'ta';
-    
-    rd_saveAllFigs(fig,fignames,figprefix, figdir)
-    
-end
+close all
+
+%norm figs
+
+t1gmean = t1normwm; % m: nanmean(nanmean(t1norm),3) wm: t1normwm
+t2gmean = t2normwm; % m: nanmean(nanmean(t2norm),3) wm: t2normwm
+ngmean = neutralnormwm; % m :nanmean(nanmean(neutralnorm),3)    wm: neutralnormwm
+
+t1se = wste(squeeze(nanmean(t1norm))',t1normwm,countt1); % std: nanstd(nanmean(t1norm),0,3)   wstd: wstd(squeeze(nanmean(t1norm))',t1normwm,countt1)
+t2se = wste(squeeze(nanmean(t2norm))',t2normwm,countt2); % std: nanstd(nanmean(t2norm),0,3)   wstd: wstd(squeeze(nanmean(t2norm))',t2normwm,countt2)
+nse = wste(squeeze(nanmean(neutralnorm))',neutralnormwm,countn); % std: nanstd(nanmean(neutralnorm),0,3)  wstd: wstd(squeeze(nanmean(neutralnorm))',neutralnormwm,countn)
+
+ymin = -0.1;
+ymax = 0.3;
+
+%subject means
+figure
+subplot(3,1,1)
+plot(window(1):window(2), squeeze(nanmean(t1norm)))
+% plot(window(1):window(2),nanmean(t1norm(:,:,1)),'b')
+hold on
+% plot(window(1):window(2),nanmean(t1norm(:,:,2)),'c')
+% plot(window(1):window(2),nanmean(t1norm(:,:,3)),'g')
+% plot(window(1):window(2),nanmean(t1norm(:,:,4)),'m')
+% plot(window(1):window(2),nanmean(t1norm(:,:,5)),'r')
+% plot(window(1):window(2),nanmean(t1norm(:,:,6)),'y')
+plot([0 0],[ymin ymax],'k')
+plot([1000 1000],[ymin ymax],'k')
+plot([t2time t2time],[ymin ymax],'k')
+plot([postcue postcue],[ymin ymax],'k')
+title('t1 subject averages of normalized data')
+xlabel('time (ms)')
+ylabel('pupil area (normalized)')
+%legend('ad','bl','ec','ty','vp','zw')
+ylim([-0.1 0.3])
+
+subplot(3,1,2)
+plot(window(1):window(2), squeeze(nanmean(t2norm)))
+hold on
+% plot(window(1):window(2),nanmean(t2norm(:,:,1)),'b')
+% hold on
+% plot(window(1):window(2),nanmean(t2norm(:,:,2)),'c')
+% plot(window(1):window(2),nanmean(t2norm(:,:,3)),'g')
+% plot(window(1):window(2),nanmean(t2norm(:,:,4)),'m')
+% plot(window(1):window(2),nanmean(t2norm(:,:,5)),'r')
+% plot(window(1):window(2),nanmean(t2norm(:,:,6)),'y')
+plot([0 0],[ymin ymax],'k')
+plot([1000 1000],[ymin ymax],'k')
+plot([t2time t2time],[ymin ymax],'k')
+plot([postcue postcue],[ymin ymax],'k')
+title('t2 subject averages of normalized data')
+xlabel('time (ms)')
+ylabel('pupil area (normalized)')
+%legend('ad','bl','ec','ty','vp','zw')
+ylim([-0.1 0.3])
+
+subplot(3,1,3)
+plot(window(1):window(2), squeeze(nanmean(neutralnorm)))
+hold on
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,1)),'b')
+% hold on
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,2)),'c')
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,3)),'g')
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,4)),'m')
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,5)),'r')
+% plot(window(1):window(2),nanmean(neutralnorm(:,:,6)),'y')
+plot([0 0],[ymin ymax],'k')
+plot([1000 1000],[ymin ymax],'k')
+plot([t2time t2time],[ymin ymax],'k')
+plot([postcue postcue],[ymin ymax],'k')
+title('neutral subject averages of normalized data')
+xlabel('time (ms)')
+ylabel('pupil area (normalized)')
+%legend('ad','bl','ec','ty','vp','zw')
+ylim([-0.1 0.3])
+
+ymin = -0.05;
+ymax = 0.25;
+
+%group means
+figure
+shadedErrorBar(window(1):window(2),t1normwm,t1se,'b',1) %%%%%
+hold on
+shadedErrorBar(window(1):window(2),t2normwm,t2se,'r',1) %%%%
+shadedErrorBar(window(1):window(2),neutralnormwm,nse,'g',1) %%%%
+plot([0 0],[ymin ymax],'k')
+plot([1000 1000],[ymin ymax],'k')
+plot([t2time t2time],[ymin ymax],'k')
+plot([postcue postcue],[ymin ymax],'k')
+title('group averages (b=t1, r=t2, and g=neutral)')
+xlabel('time (ms)')
+ylabel('pupil area (normalized)')
+ylim([-0.05 0.25])
+
+figdir = filedir;
+fig = [1 2];
+fignames = {'subject_avgs' 'group_avgs'};
+figprefix = 'ta';
+
+rd_saveAllFigs(fig,fignames,figprefix, figdir)
+
+close all
+
+fig = 1;
+
+figure
+subplot(3,1,1)
+plot(window(1):window(2),countt1)
+title('Counts of valid data points t1')
+xlabel('time(ms)')
+ylabel('Number of valid data points')
+
+subplot(3,1,2)
+plot(window(1):window(2),countt2)
+title('Counts of valid data points t2')
+xlabel('time(ms)')
+ylabel('Number of valid data points')
+
+subplot(3,1,3)
+plot(window(1):window(2),countn)
+title('Counts of valid data points neutral')
+xlabel('time(ms)')
+ylabel('Number of valid data points')
+
+fignames = {'ValidCount'};
+
+rd_saveAllFigs(fig,fignames,figprefix, figdir)
+
+close all
+

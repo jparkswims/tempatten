@@ -43,5 +43,3 @@ for i = 1:size(clusters,1)
 end
     
     
-    
-    

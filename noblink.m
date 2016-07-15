@@ -1,5 +1,7 @@
 function output = noblink(trialmat,t1,t2,window,t3,t4,e1,e2,m)
 
+%BROKE_FIXATION
+
 tmat = trialmat(:,t1:t2);
 
 for i = 1:size(trialmat,1)
@@ -48,5 +50,6 @@ for i = 1:size(trialmat,1)
         end
     end
 end
+
 
 output = trialmat;
