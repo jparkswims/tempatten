@@ -4,13 +4,63 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 %
 %blinkinterp detects blink regions in a pupil size timeseries, removes the
 %regions, then interpolates through those regions using the surrounding
-%data
+%data.
 %
-%inputs:
-%   trial = time series of pupil sizes
-%   th = velocity threshold of pupil size change (to detect blink)
-%   bwindow = number of data points away from zero region program looks for
-%   blink initiation, offset
+%This code only works if blinks are recorded as zeros preceded by a sharp
+%drop in pupil size values and followed by a sharp rise in pupil size. Also
+%of note, code developed with a 1K sample rate in mind (1 data point for
+%each ms).
+%
+%Blinks are detected by first finding the beginning and end location of
+%each region of zeros in the trial. The code determines if the distance
+%between each zero region is sufficient and cuts out areas that are too
+%small. Determined zero regions are filled in with zeros. The code then
+%looks bwindow datapoints away from the beginning/end of each zero region
+%to find blink onset/blink offset. To determine onset/offset, the original
+%time series is smoothed by convolving with a 11 ms Hanning window, and
+%then a velocity profile is produced from the smoothed time series. The
+%code finds blink onset for each blink by looking at the velocity profile
+%of the region bound by the first zero and bwindow datapoints before the
+%zero and finding a value above a set threshold. Blink offset is done the
+%same on the region bounded by the last zero and bwindow datapoints after
+%the zero.
+%
+%The interpolation is accomplished by defining the blink onset point as t2 
+%and the blink offset point as t3. A point in the data before blink
+%onset and a point after blink offset are chosen (t1 and t4 respectively).
+%The t1-t2 distance and t3-t4 distance are equal to the t2-t3 difference,
+%unless the difference exceeds the value of betblink (an explanation of
+%this can be found below). In this case, the t1-t2 and t3-t4 difference are
+%set as equal to betblink (unless the data points at t1 or t4 equal 0 or
+%nan, in which case t1/t4 is moved closer and closer to t2/t3 until a valid
+%data point is found. Then, a cubic spline interpolation is performed using
+%the four points. If t1=t2 and/or t3=t4, then the interpolation is only
+%done with 3 or 2 points (the spline function can't handle repeat or out of
+%order points).
+%
+%inputs: (values in parantheses relfect recommended values)
+%   trial = vector time series of pupil size
+%
+%   th1 = (5)velocity threshold of pupil onset detection (set as a positive
+%   number, but is really negative) 5 works well
+%
+%   th2 = (3)velocity threshold of pupil offset detection (is positive in both
+%   input and in script) 3 works well (pupil offset is more gradual than
+%   onset, so more sensitive threshold needed)
+%
+%   bwindow = (50)number of data points away from zero region program looks for
+%   blink onset, offset. This number should be restricted in general to
+%   avoid points not associated with the blink from being chosen. It also
+%   should be less than betblink to avoid the program from getting confused
+%   by data associated with other blinks.
+%
+%   betblink = (75)the minimum number of consecutive data points required
+%   to form a valid region of data. This prevents small interblink
+%   regions of fluctuating data from being included in the trial and
+%   affecting the interpolations. betblink is also used to define the max
+%   t1-t2 and t3-t4 distance. Restricting this distance allows the
+%   interpolation to better reflect the data surrounding the blink. In
+%   general, the smaller this number, the flatter the interpolation.
 %
 %output:
 %   output = trial with blink regions removed and interpolated
@@ -18,6 +68,8 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
     
     duration = length(trial);
+    
+    intbound = 5; %the minimum distance t2/t3 must be from beginning/end of trial
     
     trial = [(trial(1)*ones(1,10)) trial];  %add cushion for convultion
     trial = [trial (trial(end)*ones(1,10))];
@@ -94,7 +146,7 @@ if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
     
     for j = 1:length(t2) %this loop does interpolations with defined t2 and t3 points
         
-        if t2(j) < 5 || t3(j) > length(trial)-5 %if blink is too close to trial boundaries, just put nans into it
+        if t2(j) < intbound || t3(j) > length(trial)-intbound %if blink is too close to trial boundaries, just put nans into it
             trial(t2(j):t3(j)) = nan;
         else
         
@@ -106,7 +158,7 @@ if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
                 t1 = 1;
             end
             x = t2(j)-t1; %counter variable
-            while trial(t1) == 0 || isnan(trial(t1)) %this loop ensures trial ~= 0 at chosen t1 point
+            while trial(t1) == 0 || isnan(trial(t1)) %this loop ensures trial ~= 0 or nan at chosen t1 point
                 x = x-1;
                 t1 = t2(j) - x; %distance between t1 and t2 shortened until nonzero point found
             end
@@ -119,7 +171,7 @@ if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
                 t4 = length(trial);
             end
             x = t4-t3(j); %counter variable
-            while trial(t4) == 0 || isnan(trial(t4))  %ensures t4 ~= 0
+            while trial(t4) == 0 || isnan(trial(t4))  %ensures trial ~= 0 or nan at t4
                 x = x-1;
                 t4 = t3(j) + x; %distance between t3 and t4 shortened until nonzero found
             end
