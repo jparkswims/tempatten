@@ -21,7 +21,6 @@ plot([postcue postcue],[ymin ymax],'k')
 title('t1 subject averages of detrended1 data')
 xlabel('time (ms)')
 ylabel('pupil area (detrended)')
-% legend('ad','bl','ec','ty','vp','zw')
 ylim([-0.01 0.01])
 
 subplot(3,1,2)

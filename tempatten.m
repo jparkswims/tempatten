@@ -1,9 +1,9 @@
 close all
 
-groups = 1;
+groups = 0;
 gaze = 0;
 
-study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nSelect Study:');
+study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nFor E5 enter 5\nSelect Study:');
 
 homedir = '/Users/jakeparker/Documents/MATLAB';
 
@@ -41,9 +41,9 @@ if study == 0
         end
     elseif groups == 1
         filedir = '/Users/jakeparker/Documents/tempatten/E0_cb';
-        pa = struct('t1vc',[],'t2vc',[],'t1vi',[],'t2vi',[],'t1ic',[],'t2ic',[],'t1ii',[],'t2ii',[],'nc',[],'ni',[],'trialmat',nan(trials,duration,length(subjects)));
+        pa = struct('t1ac',[],'t2ac',[],'t1ai',[],'t2ai',[],'t1nc',[],'t2nc',[],'t1ni',[],'t2ni',[],'t1uc',[],'t2uc',[],'t1ui',[],'t2ui',[],'trialmat',nan(trials,duration,length(subjects)),'subjects',{subjects});
         pafields = fields(pa);
-        for hi = 1:length(pafields)-1
+        for hi = 1:length(pafields)-2
             for ijk = 1:length(subjects)
                 pa.(pafields{hi}).(subjects{ijk}) = [];
             end
@@ -87,9 +87,9 @@ elseif study == 3
         end
     elseif groups == 1
         filedir = '/Users/jakeparker/Documents/tempatten/E3_adjust';
-        pa = struct('t1vc',[],'t2vc',[],'t1vi',[],'t2vi',[],'t1ic',[],'t2ic',[],'t1ii',[],'t2ii',[],'nc',[],'ni',[],'trialmat',nan(trials,duration,length(subjects)));
+        pa = struct('t1ac',[],'t2ac',[],'t1ai',[],'t2ai',[],'t1nc',[],'t2nc',[],'t1ni',[],'t2ni',[],'t1uc',[],'t2uc',[],'t1ui',[],'t2ui',[],'trialmat',nan(trials,duration,length(subjects)),'subjects',{subjects});
         pafields = fields(pa);
-        for hi = 1:length(pafields)-1
+        for hi = 1:length(pafields)-2
             for ijk = 1:length(subjects)
                 pa.(pafields{hi}).(subjects{ijk}) = [];
             end
@@ -127,42 +127,75 @@ elseif study == 2
     neutralnorm = nan(trials*.2,duration,length(subjects));
     soas = [100:50:500 800]; %100:50:500 800
     mblink = 5;
+
+elseif study == 5
     
+    pac.subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
+    pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
+    pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
+    pac.filedir = '/Users/jakeparker/Documents/tempatten/E5/t1-t2-t3-n';
+    pac.window = [-400 3500];
+    pac.duration = pac.window(2)-pac.window(1)+1;
+    pac.locs = [0 1000 1250 1500 2000];
+    trials = 960;
+    if groups == 0
+        pac.trialmat = nan(trials,pac.duration,length(pac.subjects));
+        tp = (4/5)*(1/3);
+        np = 1/5;
+        pac.t1 = struc
+%         pac.t1 = nan(trials*tp,duration,length(subjects));
+%         pac.t1norm = nan(265,pac.duration,length(pac.subjects));
+%         pac.t2 = nan(trials*tp,duration,length(subjects));
+%         pac.t2norm = nan(238,pac.duration,length(pac.subjects));
+%         pac.t3 = nan(trials*tp,duration,length(subjects));
+%         pac.t3norm = nan(265,pac.duration,length(pac.subjects));
+%         pac.neutral = nan(trials*np,duration,length(subjects));
+%         pac.neutralnorm = nan(trials*np,pac.duration,length(pac.subjects));
+    end
+        
 else
     
     fprintf('No\n')
 end
 
-for iSOA = 1:numel(soas)
-    
-    t2time = t1time + soas(iSOA);
-    postcue = t2time + 500;
-    
-    if study == 2
-           
-        filedir = ['/Users/jakeparker/Documents/tempatten/E2_soa_cbD6/' int2str(soas(iSOA))];
-            
+if study ~= 5
+    for iSOA = 1:numel(soas)
+
+        t2time = t1time + soas(iSOA);
+        postcue = t2time + 500;
+
+        if study == 2
+
+            filedir = ['/Users/jakeparker/Documents/tempatten/E2_soa_cbD6/' int2str(soas(iSOA))];
+
+        end
+
+        if groups == 0 && gaze == 0
+            pa_TempAtten
+        elseif groups == 1 && gaze == 0
+            pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials,pafields);
+
+            pafigs(pa.t1vc,pa.t2vc,pa.nc,postcue,t2time,window,subjects,[filedir '/v-c'])
+            pafigs(pa.t1vi,pa.t2vi,pa.ni,postcue,t2time,window,subjects,[filedir '/v-i'])
+            pafigs(pa.t1ic,pa.t2ic,pa.nc,postcue,t2time,window,subjects,[filedir '/i-c'])
+            pafigs(pa.t1ii,pa.t2ii,pa.ni,postcue,t2time,window,subjects,[filedir '/i-i'])
+        elseif groups == 0 && gaze ==1
+            gxy_tempatten
+        end
+    %     pa_TempAtten
+        %pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials); 
+        %pa_TempAtten or gxy_tempatten or pagroups_tempatten
+    %     gxy_tempatten
+
+    %     pafigs(pa.t1vc,pa.t2vc,pa.nc,postcue,t2time,window,subjects,[filedir '/v-c'])
+    %     pafigs(pa.t1vi,pa.t2vi,pa.ni,postcue,t2time,window,subjects,[filedir '/v-i'])
+    %     pafigs(pa.t1ic,pa.t2ic,pa.nc,postcue,t2time,window,subjects,[filedir '/i-c'])
+    %     pafigs(pa.t1ii,pa.t2ii,pa.ni,postcue,t2time,window,subjects,[filedir '/i-i'])
     end
-    
-    if groups == 0 && gaze == 0
-        pa_TempAtten
-    elseif groups == 1 && gaze == 0
-        pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials,pafields);
-        
-        pafigs(pa.t1vc,pa.t2vc,pa.nc,postcue,t2time,window,subjects,[filedir '/v-c'])
-        pafigs(pa.t1vi,pa.t2vi,pa.ni,postcue,t2time,window,subjects,[filedir '/v-i'])
-        pafigs(pa.t1ic,pa.t2ic,pa.nc,postcue,t2time,window,subjects,[filedir '/i-c'])
-        pafigs(pa.t1ii,pa.t2ii,pa.ni,postcue,t2time,window,subjects,[filedir '/i-i'])
-    elseif groups == 0 && gaze ==1
-        gxy_tempatten
-    end
-%     pa_TempAtten
-    %pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials); 
-    %pa_TempAtten or gxy_tempatten or pagroups_tempatten
-%     gxy_tempatten
-    
-%     pafigs(pa.t1vc,pa.t2vc,pa.nc,postcue,t2time,window,subjects,[filedir '/v-c'])
-%     pafigs(pa.t1vi,pa.t2vi,pa.ni,postcue,t2time,window,subjects,[filedir '/v-i'])
-%     pafigs(pa.t1ic,pa.t2ic,pa.nc,postcue,t2time,window,subjects,[filedir '/i-c'])
-%     pafigs(pa.t1ii,pa.t2ii,pa.ni,postcue,t2time,window,subjects,[filedir '/i-i'])
+else
+    pac = pa_tempattenT3(pac);
+
+    T3figs
+
 end
+    

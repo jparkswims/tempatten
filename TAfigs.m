@@ -137,7 +137,6 @@ plot([postcue postcue],[ymin ymax],'k')
 title('t1 subject averages of normalized data')
 xlabel('time (ms)')
 ylabel('pupil area (normalized)')
-%legend('ad','bl','ec','ty','vp','zw')
 ylim([-0.1 0.3])
 
 subplot(3,1,2)

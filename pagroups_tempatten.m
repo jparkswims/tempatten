@@ -1,17 +1,7 @@
 function pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials,pafields)
 
 for i = 1:length(subjects)
-    
-%     if study == 2 && i == 4
-%         
-%         runs = 3;
-%         trials = 480;
-%     elseif study == 2 && i ~= 4
-%         
-%         runs = 6;
-%         trials = 960;
-%     end
-    
+        
     for r = 1:runs
                     
     
@@ -143,168 +133,135 @@ for i = 1:length(subjects)
         %use data from .mat file to preload variables of each condition
         ival = find(strcmp(expt.trials_headers,'cueValidity'));
         icor = find(strcmp(expt.trials_headers,'correct'));
-        icue = find(strcmp(expt.trials_headers,'cuedInterval'));
-        
-        x1 = 1; x2 = 1; x3 = 1; x4 = 1;
-        y1 = 1; y2 = 1; y3 = 1; y4 = 1;
-        z1 = 1; z2 = 2;
-        
-        t1vcx = [];
-        t2vcx = [];
-        t1vix = [];
-        t2vix = [];
-        t1icx = [];
-        t2icx = [];
-        t1iix = [];
-        t2iix = [];
-        ncx = [];
-        nix = [];
-        
-        for j = 1:size(trialmatx,1) %%%%%
+        icue = find(strcmp(expt.trials_headers,'respInterval'));
+
+        x1 = 1; x2 = 1; x3 = 1; x4 = 1; x5 = 1; x6 = 1;
+        y1 = 1; y2 = 1; y3 = 1; y4 = 1; y5 = 1; y6 = 1;
+
+        t1acx = []; t1ucx = []; t1ncx = []; t1aix = []; t1uix = []; t1nix = [];
+        t2acx = []; t2ucx = []; t2ncx = []; t2aix = []; t2uix = []; t2nix = [];
+
+        for j = 1:size(trialmatx,1)
             if trialsPresented(j,icue) == 1
-                if trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 1
-                    t1vcx(x1,:) = trialmatx(j,:);
-                    x1 = x1+1;
-                elseif trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 0
-                    t1vix(x2,:) = trialmatx(j,:);
-                    x2 = x2+1;
-                elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 1
-                    t1icx(x3,:) = trialmatx(j,:);
-                    x3 = x3+1;
-                elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 0
-                    t1iix(x4,:) = trialmatx(j,:);
-                    x4 = x4+1;
+                if trialsPresented(j,icor) == 1
+                    switch trialsPresented(j,ival)
+                        case 1
+                            t1acx(x1,:) = trialmatx(j,:);
+                            x1 = x1+1;
+                        case 2
+                            t1ucx(x2,:) = trialmatx(j,:);
+                            x2 = x2+1;
+                        case 3
+                            t1ncx(x3,:) = trialmatx(j,:);
+                            x3 = x3+1;
+                    end
+                elseif trialsPresented(j,icor) == 0
+                    switch trialsPresented(j,ival)
+                        case 1
+                            t1aix(x4,:) = trialmatx(j,:);
+                            x4 = x4+1;
+                        case 2
+                            t1uix(x5,:) = trialmatx(j,:);
+                            x5 = x5+1;
+                        case 3
+                            t1nix(x3,:) = trialmatx(j,:);
+                            x6 = x6+1;
+                    end
                 end
             elseif trialsPresented(j,icue) == 2
-                if trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 1
-                    t2vcx(y1,:) = trialmatx(j,:);
-                    y1 = y1+1;
-                elseif trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 0
-                    t2vix(y2,:) = trialmatx(j,:);
-                    y2 = y2+1;
-                elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 1
-                    t2icx(y3,:) = trialmatx(j,:);
-                    y3 = y3+1;
-                elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 0
-                    t2iix(y4,:) = trialmatx(j,:);
-                    y4 = y4+1;
-                end
-            elseif trialsPresented(j,icue) == 0
-                if trialsPresented(j,icor) == 1 && trialsPresented(j,ival) == 3
-                    ncx(z1,:) = trialmatx(j,:);
-                    z1 = z1+1;
-                elseif trialsPresented(j,icor) == 0 && trialsPresented(j,ival) == 3
-                    nix(z2,:) = trialmatx(j,:);
-                    z2 = z2+1;
+                if trialsPresented(j,icor) == 1
+                    switch trialsPresented(j,ival)
+                        case 1
+                            t2acx(y1,:) = trialmatx(j,:);
+                            y1 = y1+1;
+                        case 2
+                            t2ucx(y2,:) = trialmatx(j,:);
+                            y2 = y2+1;
+                        case 3
+                            t2ncx(y3,:) = trialmatx(j,:);
+                            y3 = y3+1;
+                    end
+                elseif trialsPresented(j,icor) == 0
+                    switch trialsPresented(j,ival)
+                        case 1
+                            t2aix(y4,:) = trialmatx(j,:);
+                            y4 = y4+1;
+                        case 2
+                            t2uix(y5,:) = trialmatx(j,:);
+                            y5 = y5+1;
+                        case 3
+                            t2nix(y6,:) = trialmatx(j,:);
+                            y6 = y6+1;
+                    end
                 end
             end
         end
-                    
+
         
-%          for j = 1:size(trialmatx,1)
-%             if trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 1
-%                 if trialsPresented(j,icue) == 1
+
+% %
+%         
+%         x1 = 1; x2 = 1; x3 = 1; x4 = 1;
+%         y1 = 1; y2 = 1; y3 = 1; y4 = 1;
+%         z1 = 1; z2 = 2;
+% 
+%         
+%         
+%         t1vcx = [];
+%         t2vcx = [];
+%         t1vix = [];
+%         t2vix = [];
+%         t1icx = [];
+%         t2icx = [];
+%         t1iix = [];
+%         t2iix = [];
+%         ncx = [];
+%         nix = [];
+%         
+%         for j = 1:size(trialmatx,1) %%%%%
+%             if trialsPresented(j,icue) == 1
+%                 if trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 1
 %                     t1vcx(x1,:) = trialmatx(j,:);
 %                     x1 = x1+1;
-%                 elseif trialsPresented(j,icue) == 2
-%                     t2vcx(y1,:) = trialmatx(j,:);
-%                     y1 = y1+1;
-%                 end
-%             elseif trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 0
-%                 if trialsPresented(j,icue) == 1
+%                 elseif trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 0
 %                     t1vix(x2,:) = trialmatx(j,:);
 %                     x2 = x2+1;
-%                 elseif trialsPresented(j,icue) == 2
-%                     t2vix(y2,:) = trialmatx(j,:);
-%                     y2 = y2+1;
-%                 end
-%             elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 1
-%                 if trialsPresented(j,icue) == 1
+%                 elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 1
 %                     t1icx(x3,:) = trialmatx(j,:);
 %                     x3 = x3+1;
-%                 elseif trialsPresented(j,icue) == 2
-%                     t2icx(y3,:) = trialmatx(j,:);
-%                     y3 = y3+1;
-%                 end 
-%             elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 0
-%                 if trialsPresented(j,icue) == 1
+%                 elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 0
 %                     t1iix(x4,:) = trialmatx(j,:);
 %                     x4 = x4+1;
-%                 elseif trialsPresented(j,icue) == 2
+%                 end
+%             elseif trialsPresented(j,icue) == 2
+%                 if trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 1
+%                     t2vcx(y1,:) = trialmatx(j,:);
+%                     y1 = y1+1;
+%                 elseif trialsPresented(j,ival) == 1 && trialsPresented(j,icor) == 0
+%                     t2vix(y2,:) = trialmatx(j,:);
+%                     y2 = y2+1;
+%                 elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 1
+%                     t2icx(y3,:) = trialmatx(j,:);
+%                     y3 = y3+1;
+%                 elseif trialsPresented(j,ival) == 2 && trialsPresented(j,icor) == 0
 %                     t2iix(y4,:) = trialmatx(j,:);
 %                     y4 = y4+1;
 %                 end
-%             elseif trialsPresented(j,ival) == 3 && trialsPresented(j,icor) == 1
-%                 if trialsPresented(j,icue) == 3
+%             elseif trialsPresented(j,icue) == 0
+%                 if trialsPresented(j,icor) == 1 && trialsPresented(j,ival) == 3
 %                     ncx(z1,:) = trialmatx(j,:);
 %                     z1 = z1+1;
-%                 end
-%             elseif trialsPresented(j,ival) == 3 && trialsPresented(j,icor) == 0
-%                 if trialsPresented(j,icue) == 3
+%                 elseif trialsPresented(j,icor) == 0 && trialsPresented(j,ival) == 3
 %                     nix(z2,:) = trialmatx(j,:);
 %                     z2 = z2+1;
 %                 end
 %             end
 %         end
-        
-%         t1vcbase = nanmean(t1vcx(:,1:-window(1)),2);
-%         t2vcbase = nanmean(t2vcx(:,1:-window(1)),2);
-%         
-%         t1vibase = nanmean(t1vix(:,1:-window(1)),2);
-%         t2vibase = nanmean(t2vix(:,1:-window(1)),2);
-%         
-%         t1icbase = nanmean(t1icx(:,1:-window(1)),2);
-%         t2icbase = nanmean(t2icx(:,1:-window(1)),2);
-%         
-%         t1iibase = nanmean(t1iix(:,1:-window(1)),2);
-%         t2iibase = nanmean(t2iix(:,1:-window(1)),2);
-%         
-%         t1vcnormx = zeros(size(t1vcx,1),duration);
-%         t2vcnormx = zeros(size(t2vcx,1),duration);
-%         
-%         t1vinormx = zeros(size(t1vix,1),duration);
-%         t2vinormx = zeros(size(t2vix,1),duration);
-%         
-%         t1icnormx = zeros(size(t1vcx,1),duration);
-%         t2icnormx = zeros(size(t2vcx,1),duration);
-%         
-%         t1iinormx = zeros(size(t1iix,1),duration);
-%         t2iinormx = zeros(size(t2iix,1),duration);
-        
-%         for j = 1:size(t1vcx,1)
-%             t1vcnormx(j,1:duration) = (t1vcx(j,1:duration)-t1vcbase(j))/(t1vcbase(j));
-%         end
-%         
-%         for j = 1:size(t2vcx,1)
-%             t2vcnormx(j,1:duration) = (t2vcx(j,1:duration)-t2vcbase(j))/(t2vcbase(j));
-%         end
-%         
-%         for j = 1:size(t1vix,1)
-%             t1vinormx(j,1:duration) = (t1vix(j,1:duration)-t1vibase(j))/(t1vibase(j));
-%         end
-%         
-%         for j = 1:size(t2vix,1)
-%             t2vinormx(j,1:duration) = (t2vix(j,1:duration)-t2vibase(j))/(t2vibase(j));
-%         end
-%         
-%         for j = 1:size(t1icx,1)
-%             t1icnormx(j,1:duration) = (t1icx(j,1:duration)-t1icbase(j))/(t1icbase(j));
-%         end
-%         
-%         for j = 1:size(t2icx,1)
-%             t2icnormx(j,1:duration) = (t2icx(j,1:duration)-t2icbase(j))/(t2icbase(j));
-%         end
-%         
-%         for j = 1:size(t1iix,1)
-%             t1iinormx(j,1:duration) = (t1iix(j,1:duration)-t1iibase(j))/(t1iibase(j));
-%         end
-%         
-%         ir = abs((trials/runs) - (trials/runs)*r);
-%         
-%         trialmat(ir+1:ir+(trials/runs),1:duration,i) = trialmatx;
+
+%
 
 
-        for hi = 1:length(pafields)-1
+        for hi = 1:length(pafields)-2
             pa.(pafields{hi}).(subjects{i}) = [pa.(pafields{hi}).(subjects{i}) ; eval([pafields{hi} 'x'])];
 %         pa.t1vc.(subjects{i}) = [pa.t1vc.(subjects{i}) ; t1vcx];
 %         pa.t2vc.(subjects{i}) = [pa.t2vc.(subjects{i}) ; t2vcx];
@@ -322,7 +279,7 @@ for i = 1:length(subjects)
         
 end 
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     for j = 1:length(subjects)
         pa.(pafields{hi}).smeans(j,:) = nanmean(pa.(pafields{hi}).(subjects{j}),1);
         pa.(pafields{hi}).count(j,:) = sum(~isnan(pa.(pafields{hi}).(subjects{j})),1);
@@ -347,7 +304,7 @@ for hi = 1:length(pafields)-1
     end
 end
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     pa.(pafields{hi}).gmean = wmean(pa.(pafields{hi}).smeans,pa.(pafields{hi}).count);
 %     pa.t2vc.gmean = wmean(pa.t2vc.smeans,pa.t2vc.count);
 %     pa.t1vi.gmean = wmean(pa.t1vi.smeans,pa.t1vi.count);
@@ -360,7 +317,7 @@ for hi = 1:length(pafields)-1
 %     pa.ni.gmean = wmean(pa.ni.smeans,pa.ni.count);
 end
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     pa.(pafields{hi}).se = wste(pa.(pafields{hi}).smeans,pa.(pafields{hi}).gmean,pa.(pafields{hi}).count);
 %     pa.t2vc.se = wste(pa.t2vc.smeans,pa.t2vc.gmean,pa.t2vc.count);
 %     pa.t1vi.se = wste(pa.t1vi.smeans,pa.t1vi.gmean,pa.t1vi.count);
@@ -376,14 +333,14 @@ end
 pa.det = zeros(length(pafields)-1,duration,length(subjects));
 
 for j = 1:length(subjects)
-    for hi = 1:length(pafields)-1
+    for hi = 1:length(pafields)-2
         pa.det(hi,:,j) = pa.(pafields{hi}).smeans(j,:);
     end
 end
 
 pa.det = squeeze(nanmean(pa.det,1))';
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     for k = 1:length(subjects)
         pa.(pafields{hi}).sdetmeans(k,:) = padetrend(pa.(pafields{hi}).(subjects{k}),pa.det(k,:));
 %         pa.t2vc.sdetmeans(k,:) = padetrend(pa.t2vc.(subjects{k}),nanmean(pa.trialmat(:,:,k)));
@@ -398,7 +355,7 @@ for hi = 1:length(pafields)-1
     end
 end
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     pa.(pafields{hi}).gdetmean = wmean(pa.(pafields{hi}).sdetmeans,pa.(pafields{hi}).count);
 %     pa.t2vc.gdetmean = wmean(pa.t2vc.sdetmeans,pa.t2vc.count);
 %     pa.t1vi.gdetmean = wmean(pa.t1vi.sdetmeans,pa.t1vi.count);
@@ -411,7 +368,7 @@ for hi = 1:length(pafields)-1
 %     pa.ni.gdetmean = wmean(pa.ni.sdetmeans,pa.ni.count);
 end
 
-for hi = 1:length(pafields)-1
+for hi = 1:length(pafields)-2
     pa.(pafields{hi}).detse = wste(pa.(pafields{hi}).sdetmeans,pa.(pafields{hi}).gdetmean,pa.(pafields{hi}).count);
 %     pa.t2vc.detse = wste(pa.t2vc.sdetmeans,pa.t2vc.gdetmean,pa.t2vc.count);
 %     pa.t1vi.detse = wste(pa.t1vi.sdetmeans,pa.t1vi.gdetmean,pa.t1vi.count);

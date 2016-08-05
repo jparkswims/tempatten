@@ -1,4 +1,4 @@
-function [X,B] = pupildeconv(Y,duration,Bret)
+function [B,X] = pupildeconv(Y,duration,Bret)
 
 %B(2) and B(3) are app of T1 and T2 respectively
 

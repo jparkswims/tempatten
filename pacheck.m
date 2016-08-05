@@ -1,7 +1,7 @@
 TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
 TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
 
-subject = 'yz';
+subject = 'ds';
 r = 1;
 window = [-400 3500];
 duration = window(2)-window(1)+1;
@@ -12,12 +12,22 @@ t2time = 1250;
 t3time = 1500;
 postcue = t3time + 500;
 
-a = dir(sprintf('%s/%s/*\d_run0%d*.edf',TAeyepath, subject,r)); 
+for i = 1:3
+    switch i
+        case 1
+            a(1) = dir(sprintf('%s/%s/*_run0%d_P*.edf',TAeyepath, subject,r)); 
+        case 2
+            a(2) = dir(sprintf('%s/%s/*_run0%dW_P*.edf',TAeyepath, subject,r)); 
+        case 3
+            a(3) = dir(sprintf('%s/%s/*%s1W*.edf',TAeyepath, subject, subject));
+    end
+end
+    
            
 
         %string of exact name of edffile to be extracted
         if isempty(a)
-            fprintf('Broke on subject %s run %d',i,r)
+            fprintf('Broke on subject %s run %d',1,r)
             break
         end
         
@@ -65,13 +75,14 @@ a = dir(sprintf('%s/%s/*\d_run0%d*.edf',TAeyepath, subject,r));
             [trialmatx, rawpa] = eventtimeseries(eye,'pa','EVENT_CUE',window,1000,0);
         else
             for k = 1:length(a)
-                eval(sprintf('[trialmatx%d rawpa%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',window,0);',k,k,k))
+                eval(sprintf('[trialmatx%d rawpa%d etimepoints%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',window,0);',k,k,k,k))
             end
-            trialmatx2(end,:) = [];
-            trialmatx = [trialmatx2 ; trialmatx1];
-            rawpa = [rawpa2 rawpa1];
+%             trialmatx2(end,:) = [];
+%             trialmatx = [trialmatx2 ; trialmatx1];
+            rawpa = [rawpa1 rawpa2 rawpa3];
+            trialmatx = [trialmatx1 ; trialmatx2 ; trialmatx3];
         end
-
+        
         figure
         plot(1:length(rawpa),rawpa)
         title(sprintf('pa vs time (run %d, subject %s)',r,subject))
@@ -93,8 +104,8 @@ a = dir(sprintf('%s/%s/*\d_run0%d*.edf',TAeyepath, subject,r));
         %these trials eliminated
         %second series of nested if loops check if pupil area was ever
         %recorded as being zero in the time series and NaN's the trials
-        for j = length(expt.eye.fixT2):-1:1
-            if expt.eye.fixT2(j) == 0
+        for j = length(expt.eye.fixRespCue):-1:1
+            if expt.eye.fixRespCue(j) == 0
                 trialmatx(j,:) = [];
                 trialsPresented(j,:) = [];
                 trialOrder(j,:) = [];
@@ -103,9 +114,9 @@ a = dir(sprintf('%s/%s/*\d_run0%d*.edf',TAeyepath, subject,r));
             end
         end
         
-        trialmatx = noblink(trialmatx,1,-window(1),100,-window(1)+1,-window(1)+1000,0,0,mblink);
-        
-        trialmatx = noblink(trialmatx,postcue-window(1),duration,100,-window(1)+1,-window(1)+1000,0,0,mblink);
+        for j = 1:size(trialmatx,1)
+            trialmatx(j,:) = blinkinterp(trialmatx(j,:),5,3,50,75);
+        end
         
         figure
         imagesc(trialmatx)
