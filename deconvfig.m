@@ -1,4 +1,4 @@
-load eyedataE3.mat
+
 
 close all
 
@@ -10,9 +10,9 @@ Bmat = zeros(5,3,length(subjects));
 
 for i = 1:length(subjects)
     
-    [Xmat(:,1,i),Bmat(:,1,i)] = pupildeconv(nanmean(t1norm(:,:,i)),duration);
-    [Xmat(:,2,i),Bmat(:,2,i)] = pupildeconv(nanmean(t2norm(:,:,i)),duration);
-    [Xmat(:,3,i),Bmat(:,3,i)] = pupildeconv(nanmean(neutralnorm(:,:,i)),duration);
+    [Bmat(:,1,i),Xmat(:,1,i)] = pupildeconv(nanmean(t1norm(:,:,i)),duration);
+    [Bmat(:,2,i),Xmat(:,2,i)] = pupildeconv(nanmean(t2norm(:,:,i)),duration);
+    [Bmat(:,3,i),Xmat(:,3,i)] = pupildeconv(nanmean(neutralnorm(:,:,i)),duration);
     
     figure
     subplot(1,3,1)
@@ -87,9 +87,9 @@ end
 X = zeros(duration-400,3);
 B = zeros(5,3);
 
-[X(:,1),B(:,1)] = pupildeconv(t1normwm,duration);
-[X(:,2),B(:,2)] = pupildeconv(t2normwm,duration);
-[X(:,3),B(:,3)] = pupildeconv(neutralnormwm,duration);
+[B(:,1),X(:,1)] = pupildeconv(t1normwm,duration);
+[B(:,2),X(:,2)] = pupildeconv(t2normwm,duration);
+[B(:,3),X(:,3)] = pupildeconv(neutralnormwm,duration);
 
 figure
 subplot(1,3,1)

@@ -65,7 +65,7 @@ for i = 1:length(pac.subjects)
                 [trialmatx, rawpa] = eventtimeseries(eye,'pa','EVENT_CUE',pac.window,1000,0);
             else
                 for k = 1:length(a)
-                    eval(sprintf('[trialmatx%d rawpa%d etimepoints%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',pac.window,0);',k,k,k,k))
+                    eval(sprintf('[trialmatx%d rawpa%d etimepoints%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',pac.window,1000,0);',k,k,k,k))
                 end
     %             trialmatx2(end,:) = [];
     %             trialmatx = [trialmatx2 ; trialmatx1];
@@ -100,7 +100,7 @@ for i = 1:length(pac.subjects)
                     trialsPresented(j,:) = [];
                     trialOrder(j,:) = [];
                 elseif all(trialmatx(j,-pac.window(1):pac.locs(end)-pac.window(1))) == 0  
-                    trialmatx(j,:) = nan(1,duration);
+                    trialmatx(j,:) = nan(1,pac.duration);
                 end
             end
 
@@ -155,10 +155,10 @@ for i = 1:length(pac.subjects)
                 end
             end
 
-            pac.t1norm(:,:,i) = t1x;
-            pac.t2norm(:,:,i) = t2x;
-            pac.t3norm(:,:,i) = t3x;
-            pac.neutralnorm(:,:,i) = neutralx;
+            pac.t1.(pac.subjects{i}) = t1x;
+            pac.t2.(pac.subjects{i}) = t2x;
+            pac.t3.(pac.subjects{i}) = t3x;
+            pac.neutral.(pac.subjects{i}) = neutralx;
 
             close all
             
@@ -166,27 +166,31 @@ for i = 1:length(pac.subjects)
 
 end
 
-countt1 = zeros(length(pac.subjects),size(pac.t1norm,2));
-countt2 = zeros(length(pac.subjects),size(pac.t1norm,2));
-countt3 = zeros(length(pac.subjects),size(pac.t1norm,2));
-countn = zeros(length(pac.subjects),size(pac.t1norm,2));
+countt1 = zeros(length(pac.subjects),pac.duration);
+countt2 = zeros(length(pac.subjects),pac.duration);
+countt3 = zeros(length(pac.subjects),pac.duration);
+countn = zeros(length(pac.subjects),pac.duration);
 
-for fs = 1:length(subjects)
-    countt1(fs,:) = sum(~isnan(pac.t1norm(:,:,fs)),1);
-    countt2(fs,:) = sum(~isnan(pac.t2norm(:,:,fs)),1);
-    countt3(fs,:) = sum(~isnan(pac.t3norm(:,:,fs)),1);
-    countn(fs,:) = sum(~isnan(pac.neutralnorm(:,:,fs)),1);
+for fs = 1:length(pac.subjects)
+    countt1(fs,:) = sum(~isnan(pac.t1.(pac.subjects{fs})),1);
+    pac.t1.smeans(fs,:) = nanmean(pac.t1.(pac.subjects{fs}),1);
+    countt2(fs,:) = sum(~isnan(pac.t2.(pac.subjects{fs})),1);
+    pac.t2.smeans(fs,:) = nanmean(pac.t2.(pac.subjects{fs}),1);
+    countt3(fs,:) = sum(~isnan(pac.t3.(pac.subjects{fs})),1);
+    pac.t3.smeans(fs,:) = nanmean(pac.t3.(pac.subjects{fs}),1);
+    countn(fs,:) = sum(~isnan(pac.neutral.(pac.subjects{fs})),1);
+    pac.neutral.smeans(fs,:) = nanmean(pac.neutral.(pac.subjects{fs}),1);
 end
 
-pac.t1normwm = wmean(squeeze(nanmean(pac.t1norm))',countt1);
-pac.t2normwm = wmean(squeeze(nanmean(pac.t2norm))',countt2);
-pac.t3normwm = wmean(squeeze(nanmean(pac.t3norm))',countt3);
-pac.neutralnormwm = wmean(squeeze(nanmean(pac.neutralnorm))',countn);
+pac.t1normwm = wmean(pac.t1.smeans,countt1);
+pac.t2normwm = wmean(pac.t2.smeans,countt2);
+pac.t3normwm = wmean(pac.t3.smeans,countt3);
+pac.neutralnormwm = wmean(pac.neutral.smeans,countn);
 
-pac.t1se = wste(squeeze(nanmean(pac.t1norm))',pac.t1normwm,countt1);
-pac.t2se = wste(squeeze(nanmean(pac.t2norm))',pac.t2normwm,countt2);
-pac.t3se = wste(squeeze(nanmean(pac.t3norm))',pac.t3normwm,countt3);
-pac.nse = wste(squeeze(nanmean(pac.neutralnorm))',pac.neutralnormwm,countn);
+pac.t1se = wste(pac.t1.smeans,pac.t1normwm,countt1);
+pac.t2se = wste(pac.t2.smeans,pac.t2normwm,countt2);
+pac.t3se = wste(pac.t3.smeans,pac.t3normwm,countt3);
+pac.nse = wste(pac.neutral.smeans,pac.neutralnormwm,countn);
 
 cd('/Users/jakeparker/Documents/MATLAB')
 
@@ -198,10 +202,10 @@ pac.t3det = zeros(length(pac.subjects),pac.duration);
 pac.neutraldet = zeros(length(pac.subjects),pac.duration);
 
 for i = 1:length(pac.subjects)
-    pac.t1det(i,:) = padetrend(pac.t1norm(:,:,i),nanmean([nanmean(pac.t1norm(:,:,i)) ; nanmean(pac.t2norm(:,:,i)) ; nanmean(pac.t3norm(:,:,i)) ; nanmean(pac.neutralnorm(:,:,i))]));
-    pac.t2det(i,:) = padetrend(pac.t2norm(:,:,i),nanmean([nanmean(pac.t1norm(:,:,i)) ; nanmean(pac.t2norm(:,:,i)) ; nanmean(pac.t3norm(:,:,i)) ; nanmean(pac.neutralnorm(:,:,i))]));
-    pac.t3det(i,:) = padetrend(pac.t3norm(:,:,i),nanmean([nanmean(pac.t1norm(:,:,i)) ; nanmean(pac.t2norm(:,:,i)) ; nanmean(pac.t3norm(:,:,i)) ; nanmean(pac.neutralnorm(:,:,i))]));
-    pac.neutraldet(i,:) = padetrend(pac.neutralnorm(:,:,i),nanmean([nanmean(pac.t1norm(:,:,i)) ; nanmean(pac.t2norm(:,:,i)) ; nanmean(pac.t3norm(:,:,i)) ; nanmean(pac.neutralnorm(:,:,i))]));
+    pac.t1det(i,:) = padetrend(pac.t1.(pac.subjects{i}),nanmean([pac.t1.smeans(i,:) ; pac.t2.smeans(i,:) ; pac.t3.smeans(i,:) ; pac.neutral.smeans(i,:)]));
+    pac.t2det(i,:) = padetrend(pac.t2.(pac.subjects{i}),nanmean([pac.t1.smeans(i,:) ; pac.t2.smeans(i,:) ; pac.t3.smeans(i,:) ; pac.neutral.smeans(i,:)]));
+    pac.t3det(i,:) = padetrend(pac.t3.(pac.subjects{i}),nanmean([pac.t1.smeans(i,:) ; pac.t2.smeans(i,:) ; pac.t3.smeans(i,:) ; pac.neutral.smeans(i,:)]));
+    pac.neutraldet(i,:) = padetrend(pac.neutral.(pac.subjects{i}),nanmean([pac.t1.smeans(i,:) ; pac.t2.smeans(i,:) ; pac.t3.smeans(i,:) ; pac.neutral.smeans(i,:)]));
 end
 
 pac.t1detwm = wmean(pac.t1det,countt1);

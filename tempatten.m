@@ -140,9 +140,14 @@ elseif study == 5
     trials = 960;
     if groups == 0
         pac.trialmat = nan(trials,pac.duration,length(pac.subjects));
-        tp = (4/5)*(1/3);
-        np = 1/5;
-        pac.t1 = struc
+%         tp = (4/5)*(1/3);
+%         np = 1/5;
+        for lol = 1:length(pac.subjects)
+            pac.t1.(pac.subjects{lol}) = [];
+            pac.t2.(pac.subjects{lol}) = [];
+            pac.t3.(pac.subjects{lol}) = [];
+            pac.neutral.(pac.subjects{lol}) = [];
+        end
 %         pac.t1 = nan(trials*tp,duration,length(subjects));
 %         pac.t1norm = nan(265,pac.duration,length(pac.subjects));
 %         pac.t2 = nan(trials*tp,duration,length(subjects));
@@ -195,7 +200,7 @@ if study ~= 5
 else
     pac = pa_tempattenT3(pac);
 
-    T3figs
+    T3figs(oac)
 
 end
     
