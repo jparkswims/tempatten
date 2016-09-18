@@ -6,8 +6,8 @@ t1se = wste(squeeze(t1det1)',t1det1wm,countt1); % std: nanstd(t1det1,0,3) wstd: 
 t2se = wste(squeeze(t2det1)',t2det1wm,countt2); % std: nanstd(t2det1,0,3) wstd: wstd(squeeze(t2det1)',t2det1wm,countt2)
 nse = wste(squeeze(neutraldet1)',neutraldet1wm,countn); % std: nanstd(neutraldet1,0,3)  wstd: wstd(squeeze(neutraldet1)',neutraldet1wm,countn)
 
-ymin = -0.1;
-ymax = 0.1;
+ymin = -0.01;
+ymax = 0.01;
 
 %subject means
 figure
@@ -50,8 +50,8 @@ ylabel('pupil area (detrended)')
 xlim([window(1) window(2)])
 ylim([-0.01 0.01])
 
-ymin = -0.1;
-ymax = 0.1;
+ymin = -0.006;
+ymax = 0.006;
 
 
 
@@ -68,7 +68,7 @@ plot([postcue postcue],[ymin ymax],'k')
 title('group averages det1 (b=t1, r=t2, and g=neutral)')
 xlabel('time (ms)')
 ylabel('pupil area (detrended)')
-ylim([-0.01 0.01])
+ylim([-0.006 0.006])
 
 %subject means
 figure
@@ -137,6 +137,8 @@ figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, figdir)
 
+close all
+
 for j = 1:length(subjects)
     
     ymin = -0.02;
@@ -172,12 +174,14 @@ for j = 1:length(subjects)
     
     figdir = [filedir '/' subjects{j}];
     
-    fig = [2*j-1+4 2*j+4];
+    fig = [1 2];
     
     fignames = {'all_conditions_detrended1' 'all_conditions_detrended2'};
     
     figprefix = 'ta';
     
     rd_saveAllFigs(fig,fignames,figprefix, figdir)
+    
+    close all
     
 end

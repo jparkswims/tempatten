@@ -173,3 +173,5 @@ fignames = {'subject_avgs' 'group_avgs' 'subject_avgs_det' 'group_avgs_det'};
 figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, figdir)
+
+close all

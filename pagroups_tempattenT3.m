@@ -9,7 +9,7 @@ for i = 1:length(pa.subjects)
             case 2
                 a(2) = dir(sprintf('%s/%s/*_run01W_P*.edf',pa.TAeyepath, pa.subjects{i})); 
             case 3
-                a(3) = dir(sprintf('%s/%s/*%s1W*.edf',pa.TAeyepath,pac.subjects{i}, pa.subjects{i}));
+                a(3) = dir(sprintf('%s/%s/*%s1W*.edf',pa.TAeyepath,pa.subjects{i}, pa.subjects{i}));
         end
     end
 

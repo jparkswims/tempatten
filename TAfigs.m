@@ -112,13 +112,15 @@ for j = 1:length(subjects)
     
     figdir = [filedir '/' subjects{j}];
     
-    fig = [3*j-2 3*j-1 3*j];
+    fig = [1 2 3];
     
     fignames = {'conditions' 'conditions_norm' 'all conditions'};
     
     figprefix = 'ta';
     
     rd_saveAllFigs(fig,fignames,figprefix, figdir)
+    
+    close all
     
 end
 
@@ -166,7 +168,7 @@ ylabel('pupil area (normalized)')
 ylim([-0.1 0.3])
 
 ymin = -0.05;
-ymax = 0.25;
+ymax = 0.10;
 
 %group means
 figure
@@ -181,11 +183,13 @@ plot([postcue postcue],[ymin ymax],'k')
 title('group averages (b=t1, r=t2, and g=neutral)')
 xlabel('time (ms)')
 ylabel('pupil area (normalized)')
-ylim([-0.05 0.25])
+ylim([-0.05 0.10])
 
 figdir = filedir;
-fig = [3*j+1 3*j+2];
+fig = [1 2];
 fignames = {'subject_avgs' 'group_avgs'};
 figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, figdir)
+
+close all

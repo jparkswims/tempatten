@@ -1,6 +1,9 @@
 function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 
 %Jake Parker 2016
+% 
+%Based on method described in Mathôt 2013
+%https://www.researchgate.net/publication/236268543_A_simple_way_to_reconstruct_pupil_size_during_eye_blinks
 %
 %blinkinterp detects blink regions in a pupil size timeseries, removes the
 %regions, then interpolates through those regions using the surrounding
@@ -42,10 +45,10 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 %   trial = vector time series of pupil size
 %
 %   th1 = (5)velocity threshold of pupil onset detection (set as a positive
-%   number, but is really negative) 5 works well
+%   number, but is really negative)
 %
 %   th2 = (3)velocity threshold of pupil offset detection (is positive in both
-%   input and in script) 3 works well (pupil offset is more gradual than
+%   input and in script) (pupil offset is more gradual than
 %   onset, so more sensitive threshold needed)
 %
 %   bwindow = (50)number of data points away from zero region program looks for
