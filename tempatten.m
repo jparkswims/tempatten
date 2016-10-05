@@ -106,19 +106,19 @@ elseif study == 3
     
 elseif study == 2
     
-    pac.subjects = {'hl' 'ho' 'rd'}; %E2 'hl' 'ho' 'kc' 'rd' 'vp'
+    pac.subjects = {'jp'}; %E2 'hl' 'ho' 'kc' 'rd' 'vp' %E0 'hl' 'ho' 'rd'
     % subject kc has no .mat files
     % subject vp run 1 soa 400 trialmatx incorrectly loaded for some
     % reason, 325 in length instead of 160
     % subject ho run 1 soa 450 trialmatx length 333
-    pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E2_SOA_cbD6/';
-    pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E2_SOA_cbD6/';
+    pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/pilot/';
+    pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/pilot/';
     pac.filedir = '/Users/jakeparker/Documents/tempatten/E0_cb/test_data';
     pac.window = [-400 3000];
     pac.duration = pac.window(2)-pac.window(1)+1;
     pac.locs = [0 1000 1250 1750];
     trials = 640;
-    pac.runs = 4;
+    pac.runs = 1:4;
     pac.trialmat = nan(trials,pac.duration,length(pac.subjects));
     for lol = 1:length(pac.subjects)
         pac.t1.(pac.subjects{lol}) = [];

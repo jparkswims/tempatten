@@ -2,7 +2,7 @@ function pac = pa_tempattenT2(pac)
 
 for i = 1:length(pac.subjects)
     
-    for r = 1:pac.runs
+    for r = pac.runs
     
         a = dir(sprintf('%s/%s/*%d_run0%d*.edf',pac.TAeyepath, pac.subjects{i},pac.locs(3),r));
         
