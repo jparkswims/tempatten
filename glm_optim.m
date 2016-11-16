@@ -33,7 +33,7 @@ end
 
 X = glm_comps(window,locs,dec_type,tmax,B);
 
-figure
-hold on
-plot(X,'r')
-plot(Y)
+% figure
+% hold on
+% plot(X,'r')
+% plot(Y)

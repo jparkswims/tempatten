@@ -1,6 +1,7 @@
 close all
 
-groups = 1;
+
+groups = 2; %0 = t1,t2,n    %1 tvc  %2 ta
 gaze = 0;
 
 study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nFor E5 enter 5\nSelect Study:');
@@ -51,6 +52,18 @@ if study == 0
         pa.window = window;
         pa.locs = [0 1000 1250 1750];
         pa.filedir = [filedir '/t-a-c'];
+    elseif groups == 2
+        filedir = '/Users/jakeparker/Documents/tempatten/E0_cb';
+        pa = struct('t1a',[],'t2a',[],'t1n',[],'t2n',[],'t1u',[],'t2u',[],'trialmat',nan(trials,duration,length(subjects)),'subjects',{subjects});
+        pafields = fields(pa);
+        for hi = 1:length(pafields)-2
+            for ijk = 1:length(subjects)
+                pa.(pafields{hi}).(subjects{ijk}) = [];
+            end
+        end
+        pa.window = window;
+        pa.locs = [0 1000 1250 1750];
+        pa.filedir = [filedir '/t-a'];
     end
     soas = 250;
     mblink = 5;
@@ -212,6 +225,11 @@ if study ~= 5 && study ~= 2
             pafigs(pa.t2ai,pa.t2ni,pa.t2ui,pa,[pa.filedir '/t2i'])
         elseif groups == 0 && gaze ==1
             gxy_tempatten
+        elseif groups == 2
+            pa = pa_tempatten_t2a(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, pa, trials,pafields);
+            
+            pafigs(pa.t1a,pa.t1n,pa.t1u,pa,[pa.filedir '/t1'])
+            pafigs(pa.t2a,pa.t2n,pa.t2u,pa,[pa.filedir '/t2'])
         end
     %     pa_TempAtten
         %pa = pagroups_tempatten(subjects, runs, TAeyepath, t2time, TAdatapath, window, postcue, duration, mblink, pa, trials); 
