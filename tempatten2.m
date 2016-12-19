@@ -1,15 +1,18 @@
-study = 'E3';
-type = 'ta';
+study = 'E0';
+type = 'cue';
 
 if strcmp(type,'cue')
     pa_cue = ta_params(study,type);
     pa_cue = ta_preprocess(pa_cue,study,type);
     save([study type '.mat'],'pa_cue')
-    if strcmp(study,'E0') || strcmp(study,'E3')
+    if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         pafigs(pa_cue.t1,pa_cue.t2,pa_cue.n,pa_cue,pa_cue.filedir,{'t1' 't2' 'n'})
     elseif strcmp(study,'E5')
         pafigs4(pa_cue.t1,pa_cue.t2,pa_cue.t3,pa_cue.n,pa_cue,pa_cue.filedir,{'t1' 't2' 't3' 'n'})
     end
+    %model comp, cost analysis, optimization, etc
+    %glm analysis
+    %stats, figures, etc
 elseif strcmp(type,'ta')
     pa_ta = ta_params(study,type);
     pa_ta = ta_preprocess(pa_ta,study,type);

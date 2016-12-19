@@ -1,10 +1,12 @@
-t1det1m = squeeze(t1det1)';
-t2det1m = squeeze(t2det1)';
-neutraldet1m = squeeze(neutraldet1)';
+% load E0E3ta.mat
 
-ptable = zeros(duration,2);
+t1det1m = pa_ta.t1a.sdetmeans;
+t2det1m = pa_ta.t1u.sdetmeans;
+neutraldet1m = pa_ta.t1n.sdetmeans;
 
-for i = 1:duration
+ptable = zeros(pa_ta.duration,2);
+
+for i = 1:pa_ta.duration
     
     ptable(i,:) = anova_rm([t1det1m(:,i) t2det1m(:,i) neutraldet1m(:,i)],'off');
     

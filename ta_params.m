@@ -1,8 +1,8 @@
 function pa = ta_params(study,type)
-%study = E0, E3, or E5
+%study = E0, E3, E5, or E0E5
 %type = cue, ta, or tvc
 
-    function thestruct = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study)
+    function thestruct = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline)
         
         f = fullfact(fact);
         
@@ -36,17 +36,19 @@ function pa = ta_params(study,type)
         thestruct.trials = trials;
         thestruct.trialmat = nan(trials,thestruct.duration,length(subjects));
         thestruct.study = study;
+        thestruct.baseline = baseline;
             
     end
 
 if strcmp(study,'E0')
     subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp'};
-    window = [-400 3000];
+    window = [-500 3500];
     locs = [0 1000 1250 1750];
     filedir = ['/Users/jakeparker/Documents/tempatten/E0_cb/' type];
     trials = 640;
     t = 2;
     runs = [2 2 2 2 2 2 4 4 4];
+    baseline = 200;
 elseif strcmp(study,'E3')
     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
     window = [-400 3000];
@@ -55,6 +57,7 @@ elseif strcmp(study,'E3')
     trials = 640;
     t = 2;
     runs = [4 4 4 4 4 4 4 4 4 4 4 4];
+    baseline = 400;
 elseif strcmp(study,'E5')
     subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
     window = [-400 3500];
@@ -63,6 +66,16 @@ elseif strcmp(study,'E5')
     trials = 960;
     t = 3;
     runs = [3 3 3 3 3 3 3 3 3 3];
+    baseline = 400;
+elseif strcmp(study,'E0E3')
+    subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp' 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
+    window = [-400 3000];
+    locs = [0 1000 1250 1750];
+    filedir = ['/Users/jakeparker/Documents/tempatten/E0E3/' type];
+    trials = 640;
+    t = 2;
+    runs = [2 2 2 2 2 2 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4];
+    baseline = 400;
 else
     error('Not a valid study')
 end
@@ -95,7 +108,7 @@ elseif t == 3
     end
 end
 
-pa = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study);
+pa = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline);
 
 end
                 

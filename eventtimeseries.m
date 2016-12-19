@@ -72,8 +72,13 @@ if edf.RECORDINGS(1).sample_rate < samplerate
 end
 
 for i = 1:length(etimepoints)
-    output(i,1:diff(window)+1) = ...
+    if ind(i)+window(1) < 1
+       temp = [datapoints(1:ind(i)+window(2))];
+       output(i,1:diff(window)+1) = [zeros(1,diff(window)+1-length(temp)) temp];
+    else
+        output(i,1:diff(window)+1) = ...
         [datapoints(ind(i)+window(1):ind(i)+window(2))];
+    end
 end
 
 if plotfig == 1

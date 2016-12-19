@@ -147,6 +147,13 @@ if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
         %cleans data so blink affected points arent chosen as t1 and t4
     end
     
+    for k = length(t3)-1:-1:1 %loop backwards through chosen time points
+        if t3(k) > t2(k+1) %check if any regions overlap
+            t3(k) = []; %if overlap, remove relevant start and end point
+            t2(k+1) = []; %basically 1 large blink region
+        end
+    end
+    
     for j = 1:length(t2) %this loop does interpolations with defined t2 and t3 points
         
         if t2(j) < intbound || t3(j) > length(trial)-intbound %if blink is too close to trial boundaries, just put nans into it
