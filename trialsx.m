@@ -1,5 +1,7 @@
 function pa = trialsx(pa,TAeyepath,TAdatapath,edffind,matfind,subject,study,type,s)
 
+close all
+
 for r = 1:pa.runs(s)
     
     % E0s1-6 and E3
@@ -121,6 +123,10 @@ for r = 1:pa.runs(s)
             trialmatx(j,:) = nan(1,pa.duration);
         end
     end
+    
+    irt = find(strcmp(expt.trials_headers,'rt'));
+
+    pa.dectime(s) = median(trialsPresented(:,irt)) + expt.p.respCueSOA + expt.p.respGoSOA;
     
     for j = 1:size(trialmatx,1)
         trialmatx(j,:) = blinkinterp(trialmatx(j,:),5,3,50,75);

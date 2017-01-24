@@ -37,6 +37,7 @@ function pa = ta_params(study,type)
         thestruct.trialmat = nan(trials,thestruct.duration,length(subjects));
         thestruct.study = study;
         thestruct.baseline = baseline;
+        thestruct.dectime = zeros(length(subjects),1);
             
     end
 
@@ -51,31 +52,31 @@ if strcmp(study,'E0')
     baseline = 200;
 elseif strcmp(study,'E3')
     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
-    window = [-400 3000];
+    window = [-500 3500];
     locs = [0 1000 1250 1750];
     filedir = ['/Users/jakeparker/Documents/tempatten/E3_adjust/' type];
     trials = 640;
     t = 2;
     runs = [4 4 4 4 4 4 4 4 4 4 4 4];
-    baseline = 400;
+    baseline = 200;
 elseif strcmp(study,'E5')
     subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
-    window = [-400 3500];
+    window = [-500 4000];
     locs = [0 1000 1250 1500 2000];
     filedir = ['/Users/jakeparker/Documents/tempatten/E5/' type];
     trials = 960;
     t = 3;
-    runs = [3 3 3 3 3 3 3 3 3 3];
-    baseline = 400;
+    runs = [1 1 1 1 1 1 1 1 1 1];
+    baseline = 200;
 elseif strcmp(study,'E0E3')
     subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp' 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
-    window = [-400 3000];
+    window = [-500 3500];
     locs = [0 1000 1250 1750];
     filedir = ['/Users/jakeparker/Documents/tempatten/E0E3/' type];
     trials = 640;
     t = 2;
     runs = [2 2 2 2 2 2 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4];
-    baseline = 400;
+    baseline = 200;
 else
     error('Not a valid study')
 end

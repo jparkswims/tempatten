@@ -15,6 +15,7 @@ if strcmp(B_type,'positive')
     f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type);
 
     [x, cost] = fmincon(f,x0,[],[],[],[],lb);
+    %try patternsearch, fmincon
     
 elseif strcmp(B_type,'unbounded')
     lb = ones(1,length(x0)) .* -inf;
@@ -22,6 +23,8 @@ elseif strcmp(B_type,'unbounded')
     f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type);
     
     [x, cost] = fmincon(f,x0,[],[],[],[],lb);
+    %try patternsearch, fmincon
+    
 end
 
 if strcmp(tmax_type,'tmax_param')
