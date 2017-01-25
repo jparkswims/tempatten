@@ -10,11 +10,15 @@ tm0 = 930;
 b0 = ones(1,length(pa.locs)+1);
 
 %%%%%%%%%
-if strcmp(pa.study,'E3')
-    subs = [1:3 5:12];
-else
-    subs = [1:length(pa.subjects)];
-end
+% if strcmp(pa.study,'E3')
+%     subs = [1:3 5:12];
+% else
+%     subs = [1:length(pa.subjects)];
+% end
+%%%%%%%%%
+
+subs = [1:length(pa.subjects)];
+
 %%%%%%%%%
 
 pa.models = models;
@@ -31,7 +35,7 @@ for f = 1:length(pa.fields)
         for m = 1:length(pa.models)
             
             [pa.(pa.fields{f}).tmax(s,1,m), pa.(pa.fields{f}).betas(s,1:end,m), cost, X] ...
-                = glm_optim(pa.(pa.fields{f}).smeans(s,:),pa.window,pa.locs,pa.models(m).dec,pa.models(m).tmax,pa.models(m).beta,tm0,b0);
+                = glm_optim(pa.(pa.fields{f}).smeans(s,:),pa.window,pa.locs,round(pa.dectime(s)*1000),pa.models(m).dec,pa.models(m).tmax,pa.models(m).beta,tm0,b0);
             
             if strcmp(pa.models(m).tmax,'tmax_param')
                 k = length(pa.locs)+2;

@@ -1,4 +1,4 @@
-function cost = glm_cost(x,Y,window,locs,dec_type,tmax_type)
+function cost = glm_cost(x,Y,window,locs,dec_type,tmax_type,dectime)
 
 if strcmp(tmax_type,'tmax_param')
     tmax = x(1);
@@ -8,6 +8,6 @@ elseif strcmp(tmax_type,'tmax_fixed')
     B = x;
 end
 
-X = glm_comps(window,locs,dec_type,tmax,B);
+X = glm_comps(window,locs,dec_type,tmax,B,dectime);
 
 cost = sum((Y-X).^2);

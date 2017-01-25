@@ -1,4 +1,4 @@
-function [tmax, B, cost, X] = glm_optim(Y,window,locs,dec_type,tmax_type,B_type,tm0,b0)
+function [tmax, B, cost, X] = glm_optim(Y,window,locs,dectime,dec_type,tmax_type,B_type,tm0,b0)
 
 Y(1:-window(1)+1) = [];
 
@@ -10,19 +10,31 @@ elseif strcmp(tmax_type,'tmax_fixed')
 end
 % x0 = [930 ones(1,length(locs)+1)]; %intial params
 if strcmp(B_type,'positive')
-    lb = zeros(1,length(x0)); %lower bounds
+    if strcmp(tmax_type,'tmax_param')
+        lb = zeros(1,length(x0)); %lower bounds
+        ub = [2000 (ones(1,length(x0)-1) .* 100)]; %upper bounds
+    elseif strcmp(tmax_type,'tmax_fixed')
+        lb = zeros(1,length(x0));
+        ub = ones(1,length(x0)) .* 100;
+    end
 
-    f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type);
+    f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type,dectime);
 
-    [x, cost] = fmincon(f,x0,[],[],[],[],lb);
+    [x, cost] = fmincon(f,x0,[],[],[],[],lb,ub);
     %try patternsearch, fmincon
     
 elseif strcmp(B_type,'unbounded')
-    lb = ones(1,length(x0)) .* -inf;
+    if strcmp(tmax_type,'tmax_param')
+        lb = ones(1,length(x0)) .* -100; %lower bounds
+        ub = [2000 (ones(1,length(x0)-1) .* 100)]; %upper bounds
+    elseif strcmp(tmax_type,'tmax_fixed')
+        lb = ones(1,length(x0)) .* -100;
+        ub = ones(1,length(x0)) .* 100;
+    end 
     
-    f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type);
+    f = @(x)glm_cost(x,Y,window,locs,dec_type,tmax_type,dectime);
     
-    [x, cost] = fmincon(f,x0,[],[],[],[],lb);
+    [x, cost] = fmincon(f,x0,[],[],[],[],lb,ub);
     %try patternsearch, fmincon
     
 end
@@ -34,7 +46,7 @@ elseif strcmp(tmax_type,'tmax_fixed')
     B = x;
 end
 
-X = glm_comps(window,locs,dec_type,tmax,B);
+X = glm_comps(window,locs,dec_type,tmax,B,dectime);
 
 % figure
 % hold on

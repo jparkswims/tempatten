@@ -1,4 +1,4 @@
-function [X, comps] = glm_comps(window,locs,dec_type,tmax,B)
+function [X, comps] = glm_comps(window,locs,dec_type,tmax,B,dectime)
 
 %time series
 t = 1:window(2);
@@ -27,11 +27,11 @@ for i = 1:length(locs)
 end
 
 if strcmp(dec_type,'box')
-    eval(sprintf('x%d = (1) * B(end) * ones(1,locs(end));',i+1))
+    eval(sprintf('x%d = (1/500) * B(end) * ones(1,dectime);',i+1))
 elseif strcmp(dec_type,'ramp')
-    eval(sprintf('x%d = [0:1/locs(end):1] .* B(end) .* (1/500);',i+1))
+    eval(sprintf('x%d = [0:1/dectime:1] .* B(end) .* (1/500);',i+1))
 elseif strcmp(dec_type,'line')
-    eval(sprintf('x%d = [(1:locs(end)).*(1/locs(end)).*(1/20).* B(end) zeros(1,window(2))];',i+1))
+    eval(sprintf('x%d = [(1:dectime).*(1/dectime).*(1/20).* B(end) zeros(1,window(2))];',i+1))
 elseif strcmp(dec_type,'none')
     eval(sprintf('x%d = zeros(1,window(2));',i+1))
 else
