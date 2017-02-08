@@ -1,14 +1,15 @@
 %models struct
 
-dec = {'ramp' 'box' 'line' 'ramp' 'box' 'line' 'ramp' 'box' 'line' 'ramp' 'box' 'line'};
-tmax = {'tmax_param' 'tmax_param' 'tmax_param' 'tmax_fixed' 'tmax_fixed' 'tmax_fixed'...
-    'tmax_param' 'tmax_param' 'tmax_param' 'tmax_fixed' 'tmax_fixed' 'tmax_fixed'};
-beta = {'positive' 'positive' 'positive' 'positive' 'positive' 'positive'...
-    'unbounded' 'unbounded' 'unbounded' 'unbounded' 'unbounded' 'unbounded'};
+dec = {'ramp' 'box'};
+tmax = {'tmax_param' 'tmax_fixed'};
+beta = {'positive' 'unbounded'};
+loc = {'all' 'targets'};
 
-for i = length(dec):-1:1
+ff = fullfact([length(dec) length(tmax) length(beta) length(loc)]);
+
+for i = length(ff):-1:1 %go backwards to preallocate entire structure
     
-    models(i) = struct('dec',dec{i},'tmax',tmax{i},'beta',beta{i});
+    models(i) = struct('dec',dec{ff(i,1)},'tmax',tmax{ff(i,2)},'beta',beta{ff(i,3)},'loc',loc{ff(i,4)});
     
 end
 

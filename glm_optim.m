@@ -1,6 +1,12 @@
-function [tmax, B, cost, X] = glm_optim(Y,window,locs,dectime,dec_type,tmax_type,B_type,tm0,b0)
+function [tmax, B, cost, X] = glm_optim(Y,window,locs,dectime,dec_type,tmax_type,B_type,tm0,b0,loc_type)
 
 Y(1:-window(1)+1) = [];
+
+if strcmp(loc_type,'targets')
+    locs = locs(2:end-1);
+    b0(end-1) = [];
+    b0(1) = [];
+end
 
 if strcmp(tmax_type,'tmax_param')
     x0 = [tm0 b0];
