@@ -2,6 +2,10 @@ function [tmax, B, cost, X] = glm_optim(Y,window,locs,dectime,dec_type,tmax_type
 
 Y(1:-window(1)+1) = [];
 
+B = nan(1,length(b0));
+
+startlocs = locs;
+
 if strcmp(loc_type,'targets')
     locs = locs(2:end-1);
     b0(end-1) = [];
@@ -47,12 +51,22 @@ end
 
 if strcmp(tmax_type,'tmax_param')
     tmax = x(1);
-    B = x(2:end);
+    if strcmp(loc_type,'all')
+        B = x(2:end);
+    else
+        B(2:end-2) = x(2:end-1);
+        B(end) = x(end);
+    end
 elseif strcmp(tmax_type,'tmax_fixed')
-    B = x;
+    if strcmp(loc_type,'all')
+        B = x;
+    else
+        B(2:end-2) = x(1:end-1);
+        B(end) = x(end);
+    end
 end
 
-X = glm_comps(window,locs,dec_type,tmax,B,dectime);
+X = glm_comps(window,startlocs,dec_type,tmax,B,dectime);
 
 % figure
 % hold on

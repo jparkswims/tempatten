@@ -7,6 +7,8 @@ im = [];
 s = length(pa.subjects);
 f = length(pa.fields);
 
+mtag = [dec_type(1) tmax_type(6) B_type(1) loc_type(1)];
+
 for j = 1:length(pa.models)
     
     if strcmp(pa.models(j).dec,dec_type) && ...
@@ -20,10 +22,10 @@ for j = 1:length(pa.models)
     
 end
 
-type = inputname(1);
-type = type(4:end);
-
-pa.type = type;
+% type = inputname(1);
+% type = type(4:end);
+% 
+% pa.type = type;
 
 t = str2double(pa.fields{end}(2));
 
@@ -90,6 +92,8 @@ else
     c = 1;
 end
 
+figure(length(pa.subjects)+1)
+
 for j = 1:size(conditions,2)
     
     target = str2double(conditions{1,j}(2));
@@ -122,11 +126,30 @@ for j = 1:size(conditions,2)
         title(gtitle)
         set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
         
+        figure(length(pa.subjects)+1)
+        hold on
+        
+        subplot(sbpl,sbpl,k)
+        title([pa.subjects{k} gtitle])
+        bar([1 2],[pa.(conditions{1,j}).betas(k,target+1,im)...
+            pa.(conditions{2,j}).betas(k,target+1,im)...
+            pa.(conditions{3,j}).betas(k,target+1,im); 0 0 0])
+        xlim([0.5 1.5])
+        title(gtitle)
+        set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
+        
         %construct figure with all subjects on one
         
     end
     
-    figure(k+1)
+    fig = k+1;
+    fignames = {[gtitle '_all_subjects_' mtag]};
+    figprefix = 'ta';
+    filedir = [pa.filedir '/' gtitle];
+    
+    rd_saveAllFigs(fig,fignames,figprefix, filedir)
+    
+    figure(k+2)
     hold on
     
     subplot(c,size(conditions,2)/c,j)
@@ -145,7 +168,7 @@ end
 for j = 1:length(pa.subjects)
     
     fig = j;
-    fignames = {[pa.subjects{j} '_beta_weights']};
+    fignames = {[pa.subjects{j} '_beta_weights_' mtag]};
     figprefix = 'ta';
     filedir = [pa.filedir '/' pa.subjects{j}];
     
@@ -153,8 +176,8 @@ for j = 1:length(pa.subjects)
     
 end
 
-fig = j+1;
-fignames = {'group_mean_beta_weights'};
+fig = [j+2];
+fignames = {['group_mean_beta_weights' mtag]};
 figprefix = 'ta';
 
 rd_saveAllFigs(fig,fignames,figprefix, pa.filedir)

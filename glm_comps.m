@@ -1,5 +1,10 @@
 function [X, comps] = glm_comps(window,locs,dec_type,tmax,B,dectime)
 
+%remove inputted nans (if not all locations have a beta weight)
+idx = ~isnan(B);
+locs = locs(idx(1:end-1));
+B = B(idx);
+
 %time series
 t = 1:window(2);
 
