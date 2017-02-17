@@ -1,5 +1,5 @@
-studies = {'E0' 'E3' 'E0E3' 'E5'};
-types = {'cue' 'ta' 'tvc'};
+studies = {'E0' 'E3' 'E0E3'};
+types = {'ta' 'tvc'};
 dec_type = 'box';
 tmax_type = 'tmax_param';
 B_type = 'unbounded';
@@ -39,3 +39,5 @@ for s = 1:length(studies)
     end
     
 end
+
+close all

@@ -37,21 +37,21 @@ for f = 1:length(pa.fields)
     pa.(pa.fields{f}).tmax = nan(length(pa.subjects),1,length(pa.models));
     pa.(pa.fields{f}).bic = nan(length(pa.subjects),1,length(pa.models));
     
-%     for ii = length(models):-1:1
-%         
-%         pa.(pa.fields{f}).models(ii).precue = nan(1,length(pa.subjects));
-%         pa.(pa.fields{f}).models(ii).t1 = nan(1,length(pa.subjects));
-%         pa.(pa.fields{f}).models(ii).t2 = nan(1,length(pa.subjects));
-%         if strcmp(pa.study,'E5')
-%             pa.(pa.fields{f}).models(ii).t3 = nan(1,length(pa.subjects));
-%         end
-%         pa.(pa.fields{f}).models(ii).postcue = nan(1,length(pa.subjects));
-%         pa.(pa.fields{f}).models(ii).decision = nan(1,length(pa.subjects));
-%         pa.(pa.fields{f}).models(ii).tmax = nan(1,length(pa.subjects));
-%         
-%     end
-%     
-%     modelfields = pa.(pa.fields{f}).models;
+    for ii = length(models):-1:1
+        
+        pa.(pa.fields{f}).models(ii).precue = nan(1,length(pa.subjects));
+        pa.(pa.fields{f}).models(ii).t1 = nan(1,length(pa.subjects));
+        pa.(pa.fields{f}).models(ii).t2 = nan(1,length(pa.subjects));
+        if strcmp(pa.study,'E5')
+            pa.(pa.fields{f}).models(ii).t3 = nan(1,length(pa.subjects));
+        end
+        pa.(pa.fields{f}).models(ii).postcue = nan(1,length(pa.subjects));
+        pa.(pa.fields{f}).models(ii).decision = nan(1,length(pa.subjects));
+        pa.(pa.fields{f}).models(ii).tmax = nan(1,length(pa.subjects));
+        
+    end
+    
+    modelfields = pa.(pa.fields{f}).models;
     
     for s = subs
         
@@ -61,6 +61,14 @@ for f = 1:length(pa.fields)
             
             [pa.(pa.fields{f}).tmax(s,1,m), pa.(pa.fields{f}).betas(s,1:end,m), costs(s,m,f), X] ...
                 = glm_optim(Y,pa.window,pa.locs,round(pa.dectime(s)*1000),pa.models(m).dec,pa.models(m).tmax,pa.models(m).beta,tm0,b0,pa.models(m).loc);
+            
+            for jj = 1:length(modelfields)-1
+                
+                pa.(pa.fields{f}).models(m).(modelfields{jj})(1,s) = pa.(pa.fields{f}).betas(s,jj,m);
+                
+            end
+            
+            pa.(pa.fields{f}).models(m).tmax(1,s) = pa.(pa.fields{f}).tmax(s,1,m);
             
             if strcmp(pa.models(m).tmax,'tmax_param')
                 ks(s,m,f) = length(pa.locs)+2;
