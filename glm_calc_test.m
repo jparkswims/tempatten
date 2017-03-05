@@ -1,6 +1,6 @@
 B = [0.1 1.2 0.3 0.6 1];
 window = [-500 3500];
-Blocs = {-67 931 1334 1758 [0 2250]};
+Blocs = {1250 0 1750 1000 [0 2250]};
 Btypes = {'stick' 'stick' 'stick' 'stick' 'box'};
 tmax = 859;
 yint = 0.002;
@@ -9,7 +9,7 @@ Ymeas = glm_calc(window,B,Blocs,Btypes,tmax,yint);
 
 
 window = [0 3500];
-Blocbounds = [-100 100; 900 1100; 1150 1350; 1650 1850; -Inf Inf];
+Blocbounds = [-250 250; 750 1250; 1000 1500; 1500 2000; -Inf Inf];
 Bbounds = repmat([-100 100],5,1);
 Blabels = {'precue' 't1' 't2' 'postcue' 'decision'};
 tmaxbounds = [0 2000];

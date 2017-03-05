@@ -17,9 +17,6 @@ if b
     x0 = B;
     lb = Bbounds(:,1);
     ub = Bbounds(:,2);
-    numB = length(B);
-else
-    numB = 0;
 end
 
 if l
@@ -59,11 +56,19 @@ end
     
 if l
     ind = find(cellfun('length',regexp(Blabels,'decision')) ~= 1);
-    for i = 1:length(ind)
-        Blocs{ind(i)} = x0(numB+i);
-        plotlocs(i) = x0(numB+i);
-    end
     numL = length(ind);
+    for i = 1:numL
+%         Blocs{ind(i)} = x0(numB+i);
+        temp(i) = x0(numB+i);
+    end
+    [temp,I] = sort(temp);
+    Btemp = B;
+    for i = 1:numL
+        Blocs{ind(i)} = temp(i);
+        if b
+            B(i) = Btemp(I(i));
+        end
+    end        
 else
     numL = 0;
 end
@@ -81,5 +86,5 @@ Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint);
 figure
 hold on
 plot(0:window(2),Ymeas)
-plot(0:window(2),Ycalc,'--r')
-plotlines(plotlocs,[0 max(Ymeas)])
+plot(0:window(2),Ycalc,'r')
+% plotlines(plotlocs,[0 max(Ymeas)])
