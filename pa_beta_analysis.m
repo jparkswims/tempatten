@@ -1,35 +1,35 @@
-function pa = pa_beta_analysis(pa,dec_type,tmax_type,B_type,loc_type)
+function pa = pa_beta_analysis(pa,modelnum,Btype)
 
 set(0,'DefaultFigureColormap',jet)
 
 close all
 
-im = [];
+im = modelnum;
 
 s = length(pa.subjects);
 f = length(pa.fields);
 
-mtag = [dec_type(1) tmax_type(6) B_type(1) loc_type(1)];
-
-for j = 1:length(pa.models)
-    
-    if strcmp(pa.models(j).dec,dec_type) && ...
-            strcmp(pa.models(j).tmax,tmax_type) && ...
-            strcmp(pa.models(j).beta,B_type) && ...
-            strcmp(pa.models(j).loc,loc_type)
-        
-        im = j;
-        
-    end
-    
-end
+% mtag = [dec_type(1) tmax_type(6) B_type(1) loc_type(1)];
+% 
+% for j = 1:length(pa.models)
+%     
+%     if any(strcmp(modelparams,'beta')) && ...
+%             strcmp(pa.models(j).tmax,tmax_type) && ...
+%             strcmp(pa.models(j).beta,B_type) && ...
+%             strcmp(pa.models(j).loc,loc_type)
+%         
+%         im = j;
+%         
+%     end
+%     
+% end
 
 % type = inputname(1);
 % type = type(4:end);
 % 
 % pa.type = type;
 
-t = str2double(pa.fields{end}(2));
+t = pa.targets;
 
 if t == 2
     
@@ -77,7 +77,13 @@ conditions = reshape(conditions,3,length(pa.fields)/3);
 for j = 1:length(pa.bdf)
     
     subject = pa.bdf(j,1);
-    target = pa.bdf(j,2);
+    
+    if strcmp(Btype,'target')
+        type = ['t' num2str(pa.bdf(j,2))];
+    else
+        type = Btype;
+    end
+    
     field = [];
     
     for k = 1:x
@@ -86,7 +92,8 @@ for j = 1:length(pa.bdf)
         
     end
     
-    pa.bdf(j,end) = pa.(field).betas(subject,target+1,im);
+%     pa.bdf(j,end) = pa.(field).betas(subject,target+1,im);
+    pa.bdf(j,end) = pa.(field).models(im).(type)(subject);
     
 end
 
@@ -102,15 +109,17 @@ sbpl = ceil(sqrt(length(pa.subjects)));
 
 for j = 1:size(conditions,2)
     
-    target = str2double(conditions{1,j}(2));
+    if strcmp(Btype,'target')
+        type = conditions{1,j}(1:2);
+    end
     
-    pa.(conditions{1,j}).gbetameans = mean(pa.(conditions{1,j}).betas,1);
-    pa.(conditions{2,j}).gbetameans = mean(pa.(conditions{2,j}).betas,1);
-    pa.(conditions{3,j}).gbetameans = mean(pa.(conditions{3,j}).betas,1);
-    
-    pa.(conditions{1,j}).betase = ste(pa.(conditions{1,j}).betas,0,1);
-    pa.(conditions{2,j}).betase = ste(pa.(conditions{2,j}).betas,0,1);
-    pa.(conditions{3,j}).betase = ste(pa.(conditions{3,j}).betas,0,1);
+%     pa.(conditions{1,j}).gbetameans = mean(pa.(conditions{1,j}).betas,1);
+%     pa.(conditions{2,j}).gbetameans = mean(pa.(conditions{2,j}).betas,1);
+%     pa.(conditions{3,j}).gbetameans = mean(pa.(conditions{3,j}).betas,1);
+%     
+%     pa.(conditions{1,j}).betase = ste(pa.(conditions{1,j}).betas,0,1);
+%     pa.(conditions{2,j}).betase = ste(pa.(conditions{2,j}).betas,0,1);
+%     pa.(conditions{3,j}).betase = ste(pa.(conditions{3,j}).betas,0,1);
     
     if strcmp(pa.type,'ta')
         gtitle = conditions{1,j}(1:end-1);
@@ -125,9 +134,9 @@ for j = 1:size(conditions,2)
         hold on
         
         subplot(c,size(conditions,2)/c,j)
-        bar([1 2],[pa.(conditions{1,j}).betas(k,target+1,im)...
-            pa.(conditions{2,j}).betas(k,target+1,im)...
-            pa.(conditions{3,j}).betas(k,target+1,im); 0 0 0])
+        bar([1 2],[pa.(conditions{1,j}).models(im).(type)(k)...
+            pa.(conditions{2,j}).models(im).(type)(k)...
+            pa.(conditions{3,j}).models(im).(type)(k); 0 0 0])
         xlim([0.5 1.5])
         title(gtitle)
         set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
@@ -135,9 +144,9 @@ for j = 1:size(conditions,2)
         figure(length(pa.subjects)+1)
         subplot(sbpl,sbpl,k)
         title([pa.subjects{k} gtitle])
-        bar([1 2],[pa.(conditions{1,j}).betas(k,target+1,im)...
-            pa.(conditions{2,j}).betas(k,target+1,im)...
-            pa.(conditions{3,j}).betas(k,target+1,im); 0 0 0])
+        bar([1 2],[pa.(conditions{1,j}).models(im).(type)(k)...
+            pa.(conditions{2,j}).models(im).(type)(k)...
+            pa.(conditions{3,j}).models(im).(type)(k); 0 0 0])
         xlim([0.5 1.5])
         title(pa.subjects{k})
         set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
@@ -147,8 +156,8 @@ for j = 1:size(conditions,2)
     end
     
     fig = k+1;
-    fignames = {[gtitle '_all_subjects_' mtag]};
-    figprefix = 'ta';
+    fignames = {[gtitle '_all_subjects_m' num2str(im)]};
+    figprefix = ['m' num2str(im) '_' Btype];
     filedir = [pa.filedir '/' gtitle];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
@@ -157,12 +166,12 @@ for j = 1:size(conditions,2)
     hold on
     
     subplot(c,size(conditions,2)/c,j)
-    barwitherr([pa.(conditions{1,j}).betase(1,target+1,im) ...
-        pa.(conditions{2,j}).betase(1,target+1,im) ...
-        pa.(conditions{3,j}).betase(1,target+1,im); 0 0 0], ...
-        [1 2],[pa.(conditions{1,j}).gbetameans(1,target+1,im) ...
-        pa.(conditions{2,j}).gbetameans(1,target+1,im) ...
-        pa.(conditions{3,j}).gbetameans(1,target+1,im); 0 0 0])
+    barwitherr([ste(pa.(conditions{1,j}).models(im).(type),0,1) ...
+        ste(pa.(conditions{2,j}).models(im).(type),0,1) ...
+        ste(pa.(conditions{3,j}).models(im).(type),0,1); 0 0 0], ...
+        [1 2],[mean(pa.(conditions{1,j}).models(im).(type)) ...
+        mean(pa.(conditions{2,j}).models(im).(type)) ...
+        mean(pa.(conditions{3,j}).models(im).(type)); 0 0 0])
     xlim([0.5 1.5])
     title(gtitle)
     set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
@@ -172,8 +181,8 @@ end
 for j = 1:length(pa.subjects)
     
     fig = j;
-    fignames = {[pa.subjects{j} '_beta_weights_' mtag]};
-    figprefix = 'ta';
+    fignames = {[pa.subjects{j} '_beta_weights_m' num2str(im)]};
+    figprefix = ['m' num2str(im) '_' Btype];
     filedir = [pa.filedir '/' pa.subjects{j}];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
@@ -181,15 +190,68 @@ for j = 1:length(pa.subjects)
 end
 
 fig = [j+2];
-fignames = {['group_mean_beta_weights_' mtag]};
-figprefix = 'ta';
+fignames = {['group_mean_beta_weights']};
+figprefix = ['m' num2str(im) '_' Btype];
 
 rd_saveAllFigs(fig,fignames,figprefix, pa.filedir)
 
+close all
 
-
-        
-        
-    
-
+% tmax = nan(s,f);
+% yint = nan(s,f);
+% 
+% for j = 1:f
+%     
+%     tmax(:,j) = pa.(pa.fields{j}).models(im).tmax;
+%     yint(:,j) = pa.(pa.fields{j}).models(im).yint;
+%     
+% end
+% 
+% for j = 1:s
+%     
+%     figure(1)
+%     title('tmax vs subject scatter')
+%     scatter(ones(f,1)*j,tmax(j,:))
+%     hold on
+%     scatter(j,mean(tmax(j,:)),'fill')
+%     xlim([0 s+1])
+%     
+%     figure(2)
+%     title('yint vs subject scatter')
+%     scatter(ones(f,1)*j,yint(j,:))
+%     hold on
+%     scatter(j,mean(yint(j,:)),'fill')
+%     xlim([0 s+1])
+% 
+% end
+% 
+% sbpl(1) = size(conditions,1);
+% sbpl(2) = size(conditions,2);
+% sbpl = sort(sbpl);
+% 
+% for j = 1:f
+%     
+%     figure(3)
+%     
+%     subplot(sbpl(1),sbpl(2),j)
+%     bar(mean(pa.(pa.fields{j}).models(im).betas,1))
+% %     set(gca,'XTickLabel',pa.models(im).Blabels)
+%     title(pa.fields{j})
+%     ylabel('B value')
+%     
+%     figure(4)
+%     
+%     subplot(sbpl(1),sbpl(2),j)
+%     bar(mean(pa.(pa.fields{j}).models(im).locations,1))
+% %     set(gca,'XTickLabel',pa.loclabels)
+%     title(pa.fields{j})
+%     ylabel('Time from Precue (ms)')
+%     
+% end
+% 
+% fig = [1 2 3 4];
+% fignames = {'subject_tmax' 'subject_yint' 'all_betas' 'all_locs'};
+% figprefix = ['m' num2str(im)];
+% 
+% rd_saveAllFigs(fig,fignames,figprefix, pa.filedir)
 

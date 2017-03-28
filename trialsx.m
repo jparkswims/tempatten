@@ -126,7 +126,7 @@ for r = 1:pa.runs(s)
     
     irt = find(strcmp(expt.trials_headers,'rt'));
 
-    pa.dectime(s) = median(trialsPresented(:,irt)) + expt.p.respCueSOA + expt.p.respGoSOA;
+    pa.dectime(s) = (median(trialsPresented(:,irt)) + expt.p.respCueSOA + expt.p.respGoSOA) * 1000;
     
     for j = 1:size(trialmatx,1)
         trialmatx(j,:) = blinkinterp(trialmatx(j,:),5,3,50,75);
@@ -163,7 +163,15 @@ for r = 1:pa.runs(s)
     trialsort
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     for j = 1:length(pa.fields)
-        pa.(pa.fields{j}).(subject) = [pa.(pa.fields{j}).(subject) ; eval([pa.fields{j} 'x'])];
+        if strcmp(study,'E0E3')
+            if s <= 9
+                pa.(pa.fields{j}).([subject 'E0']) = [pa.(pa.fields{j}).([subject 'E0']) ; eval([pa.fields{j} 'x'])];
+            else
+                pa.(pa.fields{j}).([subject 'E3']) = [pa.(pa.fields{j}).([subject 'E3']) ; eval([pa.fields{j} 'x'])];
+            end
+        else
+            pa.(pa.fields{j}).(subject) = [pa.(pa.fields{j}).(subject) ; eval([pa.fields{j} 'x'])];
+        end
     end
     
     close all

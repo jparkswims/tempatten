@@ -2,7 +2,7 @@ function pa = ta_params(study,type)
 %study = E0, E3, E5, or E0E5
 %type = cue, ta, or tvc
 
-    function thestruct = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline)
+    function thestruct = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline,t,type,loclabels)
         
         f = fullfact(fact);
         
@@ -21,7 +21,15 @@ function pa = ta_params(study,type)
         for i = 1:length(fields);
             
             for j = 1:length(subjects)
-                thestruct.(fields{i}).(subjects{j}) = [];
+                if strcmp(study,'E0E3')
+                    if j <= 9
+                        thestruct.(fields{i}).([subjects{j} 'E0']) = [];
+                    else
+                        thestruct.(fields{i}).([subjects{j} 'E3']) = [];
+                    end
+                else
+                    thestruct.(fields{i}).(subjects{j}) = [];
+                end
             end
             
         end
@@ -31,13 +39,16 @@ function pa = ta_params(study,type)
         thestruct.window = window;
         thestruct.duration = window(2) - window(1) + 1;
         thestruct.locs = locs;
+        thestruct.loclabels = loclabels;
         thestruct.filedir = filedir;
         thestruct.runs = runs;
         thestruct.trials = trials;
         thestruct.trialmat = nan(trials,thestruct.duration,length(subjects));
         thestruct.study = study;
+        thestruct.type = type;
         thestruct.baseline = baseline;
         thestruct.dectime = zeros(length(subjects),1);
+        thestruct.targets = t;
             
     end
 
@@ -82,6 +93,7 @@ else
 end
 
 if t == 2
+    loclabels = {'precue' 't1' 't2' 'postcue'};
     if strcmp(type,'cue')
         conditions = {'t1' 't2' 'n'};
         fact = 3;
@@ -95,6 +107,7 @@ if t == 2
         error('Not a valid type')
     end
 elseif t == 3
+    loclabels = {'precue' 't1' 't2' 't3' 'postcue'};
     if strcmp(type,'cue')
         conditions = {'t1' 't2' 't3' 'n'};
         fact = 4;
@@ -109,7 +122,7 @@ elseif t == 3
     end
 end
 
-pa = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline);
+pa = structinit(conditions,fact,subjects,window,locs,filedir,trials,runs,study,baseline,t,type,loclabels);
 
 end
                 

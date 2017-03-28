@@ -1,15 +1,27 @@
 function pafigs(b,r,g,pa,filedir,str)
 
+set(0,'DefaultFigureColormap',jet)
+
 close all
 
 for j = 1:length(pa.subjects)
+    
+    if strcmp(pa.study,'E0E3')
+        if j <= 9
+            patch = 'E0';
+        else
+            patch = 'E3';
+        end
+    else
+        patch = '';
+    end
     
     ymin = -0.3;
     ymax = 0.3;
     
    figure
     subplot(3,1,1)
-    plot(pa.window(1):pa.window(2),b.(pa.subjects{j}),'color',[.7 .7 .75])
+    plot(pa.window(1):pa.window(2),b.([pa.subjects{j} patch]),'color',[.7 .7 .75])
     hold on
     plotlines(pa.locs,[ymin ymax])
     plot(pa.window(1):pa.window(2),b.smeans(j,:),'b','LineWidth',3)
@@ -19,7 +31,7 @@ for j = 1:length(pa.subjects)
     ylim([ymin ymax])
     
     subplot(3,1,2)
-    plot(pa.window(1):pa.window(2),r.(pa.subjects{j}),'color',[.75 .7 .7])
+    plot(pa.window(1):pa.window(2),r.([pa.subjects{j} patch]),'color',[.75 .7 .7])
     hold on
     plotlines(pa.locs,[ymin ymax])
     plot(pa.window(1):pa.window(2),r.smeans(j,:),'r','LineWidth',3)
@@ -29,7 +41,7 @@ for j = 1:length(pa.subjects)
     ylim([ymin ymax])
     
     subplot(3,1,3)
-    plot(pa.window(1):pa.window(2),g.(pa.subjects{j}),'color',[.7 .75 .7])
+    plot(pa.window(1):pa.window(2),g.([pa.subjects{j} patch]),'color',[.7 .75 .7])
     hold on
     plotlines(pa.locs,[ymin ymax])
     plot(pa.window(1):pa.window(2),g.smeans(j,:),'g','LineWidth',3)

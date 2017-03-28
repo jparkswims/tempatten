@@ -49,8 +49,18 @@ cd('/Users/jakeparker/Documents/MATLAB')
 
 for hi = 1:length(pa.fields)
     for e = 1:length(pa.subjects)
-        pa.(pa.fields{hi}).smeans(e,:) = nanmean(pa.(pa.fields{hi}).(pa.subjects{e}),1);
-        pa.(pa.fields{hi}).count(e,:) = sum(~isnan(pa.(pa.fields{hi}).(pa.subjects{e})),1);
+        if strcmp(study,'E0E3')
+            if e <= 9
+                pa.(pa.fields{hi}).smeans(e,:) = nanmean(pa.(pa.fields{hi}).([pa.subjects{e} 'E0']),1);
+                pa.(pa.fields{hi}).count(e,:) = sum(~isnan(pa.(pa.fields{hi}).([pa.subjects{e} 'E0'])),1);
+            else
+                pa.(pa.fields{hi}).smeans(e,:) = nanmean(pa.(pa.fields{hi}).([pa.subjects{e} 'E3']),1);
+                pa.(pa.fields{hi}).count(e,:) = sum(~isnan(pa.(pa.fields{hi}).([pa.subjects{e} 'E3'])),1);
+            end
+        else
+            pa.(pa.fields{hi}).smeans(e,:) = nanmean(pa.(pa.fields{hi}).(pa.subjects{e}),1);
+            pa.(pa.fields{hi}).count(e,:) = sum(~isnan(pa.(pa.fields{hi}).(pa.subjects{e})),1);
+        end
     end
 end
     
@@ -74,7 +84,15 @@ pa.det = squeeze(nanmean(pa.det,1))';
 
 for hi = 1:length(pa.fields)
     for e = 1:length(pa.subjects)
-        pa.(pa.fields{hi}).sdetmeans(e,:) = padetrend(pa.(pa.fields{hi}).(pa.subjects{e}),pa.det(e,:));
+        if strcmp(study,'E0E3')
+            if e <= 9
+                pa.(pa.fields{hi}).sdetmeans(e,:) = padetrend(pa.(pa.fields{hi}).([pa.subjects{e} 'E0']),pa.det(e,:));
+            else
+                pa.(pa.fields{hi}).sdetmeans(e,:) = padetrend(pa.(pa.fields{hi}).([pa.subjects{e} 'E3']),pa.det(e,:));
+            end
+        else
+            pa.(pa.fields{hi}).sdetmeans(e,:) = padetrend(pa.(pa.fields{hi}).(pa.subjects{e}),pa.det(e,:));
+        end
     end
 end
 

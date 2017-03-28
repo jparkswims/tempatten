@@ -1,4 +1,4 @@
-function [B, Blocs, tmax, yint, cost, Ycalc, Blabels] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams)
+function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams)
 
 % x ordered as [betas, locations, tmax, yint]
 
@@ -82,9 +82,10 @@ if t
 end
 
 Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint);
+numparams = length(x0);
     
-figure
-hold on
-plot(0:window(2),Ymeas)
-plot(0:window(2),Ycalc,'r')
+% figure
+% hold on
+% plot(0:window(2),Ymeas)
+% plot(0:window(2),Ycalc,'r')
 % plotlines(plotlocs,[0 max(Ymeas)])
