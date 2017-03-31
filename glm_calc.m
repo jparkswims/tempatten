@@ -8,7 +8,7 @@ f = 1/10^27;
 
 for i = 1:size(X,1)
     
-    h = hpupil(t,n,tmax,f,Blocs{i}(1));
+    h = hpupil(t,n,tmax,Blocs{i}(1));
     h(1:-window(1)) = [];
     
     fh = str2func(['B' Btypes{i}]);

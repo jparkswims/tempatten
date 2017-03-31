@@ -59,7 +59,16 @@ for j = 1:f
     xlabel('field')
     ylabel('tmax')
     
+    B(1,j) = mean(betas);
+    
 end
+
+figure(5)
+title(['Avg Beta vs Avg tmax (r=' num2str(corr2(mean(tmax),B)) ')'])
+hold on
+scatter(mean(tmax),B)
+xlabel('avg tmax (field) (ms)')
+ylabel('avg beta (field)')
 
 % sbpl(1) = size(conditions,1);
 % sbpl(2) = size(conditions,2);
