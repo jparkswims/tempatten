@@ -1,4 +1,4 @@
-function cost = glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams)
+function cost = glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams,norm)
 
 t = any(strcmp(modelparams,'tmax'));
 l = any(strcmp(modelparams,'locations'));
@@ -30,6 +30,6 @@ if t
     tmax = x(end);
 end
 
-Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint);
+Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint,norm);
 
 cost = sum((Ymeas-Ycalc).^2);

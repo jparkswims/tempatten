@@ -3,6 +3,7 @@ function r_anova(pa,varargin)
 cd('/Users/jakeparker/Documents/R/code/tempatten')
 
 bdf = pa.bdf;
+ldf = pa.ldf;
 
 if strcmp(varargin,'positive')
     study_type = pa.type;
@@ -13,12 +14,14 @@ if strcmp(varargin,'positive')
         if bdf(i,end-1) == 2
             
             bdf(i,:) = [];
+            ldf(i,:) = [];
             
         end
         
     end
     
     bdf(:,end-1) = [];
+    ldf(:,end-1) = [];
     
 else
     
@@ -26,6 +29,6 @@ else
     
 end
 
-save('paANOVA.mat','bdf','study_type')
+save('paANOVA.mat','bdf','ldf','study_type')
 
 cd('/Users/jakeparker/Documents/MATLAB')

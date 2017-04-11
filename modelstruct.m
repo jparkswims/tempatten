@@ -5,19 +5,20 @@ beta = {'beta'};
 loc = {'locations'};
 yint = {'yint'};
 tmax = {'tmax'};
-betabound = {'positive' 'unbounded'};
+betabound = {'positive'};
 bbounds = {repmat([0 100],5,1) repmat([-100 100],5,1)};
 dec = {'box'};
 locbound = {'250' '500'};
 blocboundval = [250 500];
+normalization = {'max' 'area'};
 % bloclb = (pa.locs-blocboundval)';
 % blocub = (pa.locs+blocboundval)';
 
-ff = fullfact([length(beta) length(loc) length(yint) length(tmax) length(betabound) length(dec) length(locbound)]);
+ff = fullfact([length(beta) length(loc) length(yint) length(tmax) length(betabound) length(dec) length(locbound) length(normalization)]);
 
 for i = size(ff,1):-1:1 %go backwards to preallocate entire structure
     
-    pa.models(i).params = {beta{ff(i,1)} loc{ff(i,2)} yint{ff(i,3)} tmax{ff(i,4)} betabound{ff(i,5)} dec{ff(i,6)} locbound{ff(i,7)}};
+    pa.models(i).params = {beta{ff(i,1)} loc{ff(i,2)} yint{ff(i,3)} tmax{ff(i,4)} betabound{ff(i,5)} dec{ff(i,6)} locbound{ff(i,7)} normalization{ff(i,8)}};
     pa.models(i).B = ones(1,length(pa.locs)+1);
     pa.models(i).Blocs = num2cell(pa.locs);
     pa.models(i).Bbounds = bbounds{ff(i,5)};
@@ -27,6 +28,7 @@ for i = size(ff,1):-1:1 %go backwards to preallocate entire structure
     pa.models(i).yint = 0;
     pa.models(i).tmax = 930;
     pa.models(i).tmaxbounds = [0 2000];
+    pa.models(i).normalization = normalization{ff(i,8)};
     
 end
 

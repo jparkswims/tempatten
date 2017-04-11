@@ -1,6 +1,7 @@
 studies = {'E0' 'E3' 'E0E3'};
 types = {'ta' 'tvc'};
-modelnum = 5;
+modelnum = [1 2 3 4];
+Btype = {'target' 'precue' 't1' 't2' 'postcue' 'decision'};
 
 close all
 
@@ -13,23 +14,31 @@ for s = 1:length(studies)
         type = types{t};
         load([study type '.mat'])
         
-        if strcmp(type,'cue')
+        for b = 1:length(Btype)
             
-            pa_cue = pa_beta_analysis(pa_cue,modelnum);
-            save([study type '.mat'],'pa_cue')
-            clear pa_cue
-            
-        elseif strcmp(type,'ta')
-            
-            pa_ta = pa_beta_analysis(pa_ta,modelnum);
-            save([study type '.mat'],'pa_ta')
-            clear pa_ta
-            
-        elseif strcmp(type,'tvc')
-            
-            pa_tvc = pa_beta_analysis(pa_tvc,modelnum);
-            save([study type '.mat'],'pa_tvc')
-            clear pa_tvc
+            for m = modelnum
+                
+                if strcmp(type,'cue')
+                    
+                    pa_cue = pa_beta_analysis(pa_cue,m,Btype{b});
+                    %             save([study type '.mat'],'pa_cue')
+                    %             clear pa_cue
+                    
+                elseif strcmp(type,'ta')
+                    
+                    pa_ta = pa_beta_analysis(pa_ta,m,Btype{b});
+                    %             save([study type '.mat'],'pa_ta')
+                    %             clear pa_ta
+                    
+                elseif strcmp(type,'tvc')
+                    
+                    pa_tvc = pa_beta_analysis(pa_tvc,m,Btype{b});
+                    %             save([study type '.mat'],'pa_tvc')
+                    %             clear pa_tvc
+                    
+                end
+                
+            end
             
         end
         

@@ -97,5 +97,6 @@ ylabel('avg beta (field)')
 fig = [1 2 3 4];
 fignames = {'subject_tmax' 'subject_yint' 'condition_beta' 'condition_tmax'};
 figprefix = ['m' num2str(im)];
+filedir = [pa.filedir '/models'];
 
 rd_saveAllFigs(fig,fignames,figprefix, pa.filedir)

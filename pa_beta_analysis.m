@@ -66,10 +66,12 @@ x = size(factors,1);
 pa.current_model = im;
 
 pa.bdf = nan(s*f,x+2);
+pa.ldf = nan(s*f,x+2);
 
 ff = fullfact([s numf]);
 
 pa.bdf(:,1:end-1) = ff;
+pa.ldf(:,1:end-1) = ff;
 
 conditions = reshape(pa.fields,t,length(pa.fields)/t)';
 conditions = reshape(conditions,3,length(pa.fields)/3);
@@ -84,6 +86,8 @@ for j = 1:length(pa.bdf)
         type = Btype;
     end
     
+    locind = find(strcmp(pa.models(im).Blabels,type));
+    
     field = [];
     
     for k = 1:x
@@ -94,6 +98,11 @@ for j = 1:length(pa.bdf)
     
 %     pa.bdf(j,end) = pa.(field).betas(subject,target+1,im);
     pa.bdf(j,end) = pa.(field).models(im).(type)(subject);
+    try
+        pa.ldf(j,end) = pa.(field).models(im).locations(subject,locind);
+    catch
+        pa.ldf(j,end) = 0;
+    end
     
 end
 
@@ -111,6 +120,7 @@ for j = 1:size(conditions,2)
     
     if strcmp(Btype,'target')
         type = conditions{1,j}(1:2);
+        locind = find(strcmp(pa.models(im).Blabels,type));
     end
     
 %     pa.(conditions{1,j}).gbetameans = mean(pa.(conditions{1,j}).betas,1);
@@ -123,9 +133,11 @@ for j = 1:size(conditions,2)
     
     if strcmp(pa.type,'ta')
         gtitle = conditions{1,j}(1:end-1);
+        gtitle = [gtitle 'anu'];
     elseif strcmp(pa.type,'tvc')
         gtitle = conditions{1,j};
         gtitle(3) = [];
+        gtitle = [gtitle 'vni'];
     end
     
     for k = 1:length(pa.subjects)
@@ -158,7 +170,7 @@ for j = 1:size(conditions,2)
     fig = k+1;
     fignames = {[gtitle '_all_subjects_m' num2str(im)]};
     figprefix = ['m' num2str(im) '_' Btype];
-    filedir = [pa.filedir '/' gtitle];
+    filedir = [pa.filedir '/models/' Btype];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
@@ -176,6 +188,23 @@ for j = 1:size(conditions,2)
     title(gtitle)
     set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
     
+    figure(k+3)
+    hold on
+    try
+        subplot(c,size(conditions,2)/c,j)
+        barwitherr([ste(pa.(conditions{1,j}).models(im).locations(:,locind),0,1) ...
+            ste(pa.(conditions{2,j}).models(im).locations(:,locind),0,1) ...
+            ste(pa.(conditions{3,j}).models(im).locations(:,locind),0,1); 0 0 0], ...
+            [1 2],[mean(pa.(conditions{1,j}).models(im).locations(:,locind)) ...
+            mean(pa.(conditions{2,j}).models(im).locations(:,locind)) ...
+            mean(pa.(conditions{3,j}).models(im).locations(:,locind)); 0 0 0])
+        xlim([0.5 1.5])
+        title(gtitle)
+        set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
+    catch
+    
+    end
+    
 end
 
 for j = 1:length(pa.subjects)
@@ -189,11 +218,12 @@ for j = 1:length(pa.subjects)
     
 end
 
-fig = [j+2];
-fignames = {['group_mean_beta_weights']};
+fig = [j+2 j+3];
+fignames = {'group_mean_beta_weights' 'group_mean_locations'};
 figprefix = ['m' num2str(im) '_' Btype];
+filedir = [pa.filedir '/models/' Btype];
 
-rd_saveAllFigs(fig,fignames,figprefix, pa.filedir)
+rd_saveAllFigs(fig,fignames,figprefix, filedir)
 
 close all
 
