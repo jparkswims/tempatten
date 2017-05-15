@@ -1,11 +1,31 @@
-function r_anova(pa,varargin)
+function r_anova(pa,regressor,varargin)
 
 cd('/Users/jakeparker/Documents/R/code/tempatten')
 
 bdf = pa.bdf;
 ldf = pa.ldf;
+study = pa.study;
 
-if strcmp(varargin,'positive')
+if strcmp(regressor,'target')
+    
+    s = size(ldf);
+    
+    for i = 1:s(1)
+        if ldf(i,2) == 2
+            ldf = [ldf ; ldf(i,:)];
+        end
+    end
+    
+    for i = s(1):-1:1
+        if ldf(i,2) == 2
+            ldf(i,:) = [];
+        end
+    end
+    
+end
+    
+
+if any(strcmp(varargin,'positive'))
     study_type = pa.type;
     study_type(end) = [];
     
@@ -29,6 +49,15 @@ else
     
 end
 
-save('paANOVA.mat','bdf','ldf','study_type')
+if strcmp(regressor,'target')
+    ldf1 = ldf(1:size(ldf,1)/2,:);
+    ldf1(:,2) = [];
+    ldf2 = ldf(size(ldf,1)/2+1:end,:);
+    ldf2(:,2) = [];
+    
+    save([pa.study study_type 'ANOVA' regressor],'bdf','ldf1','ldf2','study_type','regressor','study')
+else
+    save([pa.study study_type 'ANOVA' regressor],'bdf','ldf','study_type','regressor','study')
+end
 
 cd('/Users/jakeparker/Documents/MATLAB')

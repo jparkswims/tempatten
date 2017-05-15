@@ -163,6 +163,31 @@ for j = 1:size(conditions,2)
         title(pa.subjects{k})
         set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
         
+        figure(length(pa.subjects)+2)
+        hold on
+        subplot(c,size(conditions,2)/c,j)
+        scatter([1 2 3],[pa.(conditions{1,j}).models(im).(type)(k) ...
+            pa.(conditions{2,j}).models(im).(type)(k) ...
+            pa.(conditions{3,j}).models(im).(type)(k)])
+        xlim([0 4])
+        title(gtitle)
+        set(gca,'XTick',[1 2 3])
+        set(gca,'XTickLabel',{conditions{1,j} conditions{2,j} conditions{3,j}})
+        
+        figure(length(pa.subjects)+3)
+        hold on
+        try
+            subplot(c,size(conditions,2)/c,j)
+            scatter([1 2 3],[pa.(conditions{1,j}).models(im).locations(k,locind) ...
+            pa.(conditions{2,j}).models(im).locations(k,locind) ...
+            pa.(conditions{3,j}).models(im).locations(k,locind)])
+            xlim([0 4])
+            title(gtitle)
+            set(gca,'XTick',[1 2 3])
+            set(gca,'XTickLabel',{conditions{1,j} conditions{2,j} conditions{3,j}})
+        catch
+            
+        end
         %construct figure with all subjects on one
         
     end
@@ -175,6 +200,30 @@ for j = 1:size(conditions,2)
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
     figure(k+2)
+    subplot(c,size(conditions,2)/c,j)
+    scatter([1 2 3],[mean(pa.(conditions{1,j}).models(im).(type))...
+        mean(pa.(conditions{2,j}).models(im).(type))...
+        mean(pa.(conditions{3,j}).models(im).(type))],100,'+k')
+    xlim([0 4])
+    title(gtitle)
+    set(gca,'XTick',[1 2 3])
+    set(gca,'XTickLabel',{conditions{1,j} conditions{2,j} conditions{3,j}})
+    
+    figure(k+3)
+    hold on
+    try
+        scatter([1 2 3],[mean(pa.(conditions{1,j}).models(im).locations(:,locind))...
+            mean(pa.(conditions{2,j}).models(im).locations(:,locind))...
+            mean(pa.(conditions{3,j}).models(im).locations(:,locind))],100,'+k')
+        xlim([0 4])
+        title(gtitle)
+        set(gca,'XTick',[1 2 3])
+        set(gca,'XTickLabel',{conditions{1,j} conditions{2,j} conditions{3,j}})
+    catch
+        
+    end
+    
+    figure(k+4)
     hold on
     
     subplot(c,size(conditions,2)/c,j)
@@ -188,7 +237,7 @@ for j = 1:size(conditions,2)
     title(gtitle)
     set(gca,'XTickLabel',{[conditions{1,j} '     ' conditions{2,j} '     ' conditions{3,j}] '0'})
     
-    figure(k+3)
+    figure(k+5)
     hold on
     try
         subplot(c,size(conditions,2)/c,j)
@@ -204,7 +253,7 @@ for j = 1:size(conditions,2)
     catch
     
     end
-    
+  
 end
 
 for j = 1:length(pa.subjects)
@@ -218,8 +267,8 @@ for j = 1:length(pa.subjects)
     
 end
 
-fig = [j+2 j+3];
-fignames = {'group_mean_beta_weights' 'group_mean_locations'};
+fig = [j+2 j+3 j+4 j+5];
+fignames = {'group_beta_scatter' 'group_location_scatter' 'group_mean_beta_weights' 'group_mean_locations'};
 figprefix = ['m' num2str(im) '_' Btype];
 filedir = [pa.filedir '/models/' Btype];
 
