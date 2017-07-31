@@ -4,6 +4,8 @@ close all
 
 filedir = pa.filedir;
 
+file = fopen(['GLMreport_' pa.study pa.type '.txt'],'w');
+
 % modelstruct
 
 % tm0 = 930;
@@ -27,13 +29,14 @@ subs = 1:length(pa.subjects);
 %%%%%%%%%
 
 pa = modelstruct(pa);
+fileformat = repmat('%s ',1,length(pa.models(1).params));
 pa.globalbic = zeros(length(pa.models),1);
 costs = zeros(subs(end),length(pa.models),length(pa.fields));
 ks = zeros(subs(end),length(pa.models),length(pa.fields));
 
 for f = 1:length(pa.fields)
     
-     pa.(pa.fields{f}).betas = nan(length(pa.subjects),length(pa.models(1).B),length(pa.models));
+%     pa.(pa.fields{f}).betas = nan(length(pa.subjects),length(pa.models(1).B),length(pa.models));
 %     pa.(pa.fields{f}).tmax = nan(length(pa.subjects),1,length(pa.models));
      pa.(pa.fields{f}).bic = nan(length(pa.subjects),1,length(pa.models));
     
@@ -55,7 +58,14 @@ for f = 1:length(pa.fields)
     
     for s = subs
         
+        fprintf('%s\n',pa.subjects{s})
+        
         for m = 1:length(pa.models)
+            
+            fprintf('model %d\n',m)
+            for fi = 1:length(pa.models(m).params)
+                fprintf('%s ',pa.models(m).params{fi})
+            end
             
             Y = pa.(pa.fields{f}).smeans(s,:);
             
@@ -100,28 +110,28 @@ for f = 1:length(pa.fields)
 %                 ks(s,m,f) = length(pa.locs)+1;
 %             end
 
-            pa.(pa.fields{f}).betas(s,1:end,m) = B;
+%             pa.(pa.fields{f}).betas(s,1:end,m) = B;
             pa.(pa.fields{f}).bic(s,1,m) = bic(length(Ycalc),costs(s,m,f),ks(s,m,f));
             
             if strcmp(pa.type,'cue')
                 
                 Y(1:-pa.window(1)+1) = [];
                 
-                figure(1)
-                plot(Y,'b')
-                hold on
-                plot(Ycalc,'r')
-                title('Measured vs Predicted')
-                xlabel('time (ms)')
-                ylabel('pupil area (normalized)')
-                hold off
-                
-                figdir = [filedir '/models/' pa.fields{f}];
-                fig = 1;
-                fignames = {['meas_vs_pred_' pa.subjects{s} '_m' num2str(m)]};
-                figprefix = 'ta';
-                
-                rd_saveAllFigs(fig,fignames,figprefix, figdir)
+%                 figure(1)
+%                 plot(Y,'b')
+%                 hold on
+%                 plot(Ycalc,'r')
+%                 title('Measured vs Predicted')
+%                 xlabel('time (ms)')
+%                 ylabel('pupil area (normalized)')
+%                 hold off
+%                 
+%                 figdir = [filedir '/models/' pa.fields{f}];
+%                 fig = 1;
+%                 fignames = {['meas_vs_pred_' pa.subjects{s} '_m' num2str(m)]};
+%                 figprefix = 'ta';
+%                 
+%                 rd_saveAllFigs(fig,fignames,figprefix, figdir)
                 
 %                 close all
                 
@@ -136,42 +146,44 @@ for f = 1:length(pa.fields)
     
     %pa.globalbic = pa.globalbic + pa.(pa.fields{f}).totalbic;
     
-    figure(1)
-    hold off
-    bar([1:length(pa.subjects)],squeeze(pa.(pa.fields{f}).bic))
-    xlabel('subject')
-    ylabel('BIC')
-    set(gca,'XTickLabel',pa.subjects)
-    title('BIC vs model and subject')
-    xlim([0 length(pa.subjects)+1])
+%     figure(1)
+%     hold off
+%     bar([1:length(pa.subjects)],squeeze(pa.(pa.fields{f}).bic))
+%     xlabel('subject')
+%     ylabel('BIC')
+%     set(gca,'XTickLabel',pa.subjects)
+%     title('BIC vs model and subject')
+%     xlim([0 length(pa.subjects)+1])
     
-    figure(2)
-    hold off
-    bar([1:length(pa.models)],squeeze(nanmean(pa.(pa.fields{f}).betas,1))')
-    xlabel('model')
-    ylabel('average beta value')
-    set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12' 'm13' 'm14' 'm15' 'm16'})
-    title('Average Beta Values vs Model')
-    xlim([0 length(pa.models)+1])
+%     figure(2)
+%     hold off
+%     bar([1:length(pa.models)],squeeze(nanmean(pa.(pa.fields{f}).betas,1))')
+%     xlabel('model')
+%     ylabel('average beta value')
+%     set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12' 'm13' 'm14' 'm15' 'm16'})
+%     title('Average Beta Values vs Model')
+%     xlim([0 length(pa.models)+1])
     
-    figure(3)
-    hold off
-    bar(pa.(pa.fields{f}).totalbic)
-    xlabel('model')
-    ylabel('total BIC')
-    set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12' 'm13' 'm14' 'm15' 'm16'})
-    title('total BIC vs model')
+%     figure(3)
+%     hold off
+%     bar(pa.(pa.fields{f}).totalbic)
+%     xlabel('model')
+%     ylabel('total BIC')
+%     set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12' 'm13' 'm14' 'm15' 'm16'})
+%     title('total BIC vs model')
     
-    figdir = [filedir '/models/' pa.fields{f}];
-    fig = [1 2 3];
-    fignames = {'model_BICs' 'avg_betas' 'total_BICs'};
-    figprefix = 'ta';
-    
-    rd_saveAllFigs(fig,fignames,figprefix, figdir)
+%     figdir = [filedir '/models/' pa.fields{f}];
+%     fig = [1 2 3];
+%     fignames = {'model_BICs' 'avg_betas' 'total_BICs'};
+%     figprefix = 'ta';
+%     
+%     rd_saveAllFigs(fig,fignames,figprefix, figdir)
     
 %     close all
     
 end
+
+fclose(file);
 
 pa.combbic = zeros(length(pa.models),length(pa.subjects));
 
@@ -189,28 +201,28 @@ pa.globalbic = sum(pa.combbic,2);
 
 pa.bestmodel = find(pa.globalbic == min(pa.globalbic));
 
-figure(1)
-hold off
-bar(pa.globalbic)
-xlabel('model')
-ylabel('global BIC')         
-set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12'})
-title('global BIC vs model')
-
-figure(2)
-hold off
-bar([1:length(pa.subjects)],pa.combbic')
-xlabel('subject')
-ylabel('BIC')
-set(gca,'XTickLabel',pa.subjects)
-title('BIC vs model and subject')
-xlim([0 length(pa.subjects)+1])
-
-figdir = [filedir '/models'];
-fig = [1 2];
-fignames = {'global_BICs' 'Combined_BICs'};
-
-rd_saveAllFigs(fig,fignames,figprefix, figdir)
+% figure(1)
+% hold off
+% bar(pa.globalbic)
+% xlabel('model')
+% ylabel('global BIC')         
+% set(gca,'XTickLabel',{'m1' 'm2' 'm3' 'm4' 'm5' 'm6' 'm7' 'm8' 'm9' 'm10' 'm11' 'm12'})
+% title('global BIC vs model')
+% 
+% figure(2)
+% hold off
+% bar([1:length(pa.subjects)],pa.combbic')
+% xlabel('subject')
+% ylabel('BIC')
+% set(gca,'XTickLabel',pa.subjects)
+% title('BIC vs model and subject')
+% xlim([0 length(pa.subjects)+1])
+% 
+% figdir = [filedir '/models'];
+% fig = [1 2];
+% fignames = {'global_BICs' 'Combined_BICs'};
+% 
+% rd_saveAllFigs(fig,fignames,figprefix, figdir)
 
 close all
 

@@ -1,6 +1,6 @@
 studies = {'E0' 'E3' 'E0E3'};
 types = {'ta' 'tvc'};
-modelnum = [2];
+modelnum = [4];
 Btype = {'target' 'precue' 't1' 't2' 'postcue' 'decision'};
 
 close all
@@ -21,15 +21,15 @@ for s = 1:length(studies)
                 if strcmp(type,'cue')
                     
                     pa_cue = pa_beta_analysis(pa_cue,m,Btype{b});
-                    %             save([study type '.mat'],'pa_cue')
-                    %             clear pa_cue
+                    save([study type '.mat'],'pa_cue')
+                    %clear pa_cue
                     
                 elseif strcmp(type,'ta')
                     
                     pa_ta = pa_beta_analysis(pa_ta,m,Btype{b});
                     r_anova(pa_ta,Btype{b});
                     save([study type '.mat'],'pa_ta')
-                    clear pa_tvc
+                    %clear pa_ta
                     
                 elseif strcmp(type,'tvc')
                     
@@ -37,7 +37,7 @@ for s = 1:length(studies)
                     r_anova(pa_tvc,Btype{b},'positive')
                     r_anova(pa_tvc,Btype{b});
                     save([study type '.mat'],'pa_tvc')
-                    clear pa_ta
+                    %clear pa_tvc
                     
                 end
                 

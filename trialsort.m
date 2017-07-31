@@ -5,18 +5,22 @@ if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         
         x = 1; y = 1; z = 1;
         t1x = []; t2x = []; nx = [];
+        t1dec = []; t2dec = []; ndec = [];
         
         for j = 1:size(trialmatx,1)
             
             switch trialsPresented(j,icue)
                 case 1
                     t1x(x,:) = trialmatx(j,:);
+                    t1dec(x) = trialsPresented(j,irt);
                     x = x+1;
                 case 2
                     t2x(y,:) = trialmatx(j,:);
+                    t2dec(y) = trialsPresented(j,irt);
                     y = y+1;
                 case 0
                     nx(z,:) = trialmatx(j,:);
+                    ndec(z) = trialsPresented(j,irt);
                     z = z+1;
             end
             
@@ -30,21 +34,29 @@ if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         
         t1ax = []; t1ux = []; t1nx = [];
         t2ax = []; t2ux = []; t2nx = [];
+        t1adec = []; t1udec = []; t1ndec = [];
+        t2adec = []; t2udec = []; t2ndec = [];
         
         for j = 1:size(trialmatx,1)
             
             switch trialsPresented(j,icue)
                 case 1
                     t1ax(x1,:) = trialmatx(j,:);
+                    t1adec(x1) = trialsPresented(j,irt);
                     t2ux(x1,:) = trialmatx(j,:);
+                    t2udec(x1) = trialsPresented(j,irt);
                     x1 = x1+1;
                 case 2
                     t1ux(x2,:) = trialmatx(j,:);
+                    t1udec(x2) = trialsPresented(j,irt);
                     t2ax(x2,:) = trialmatx(j,:);
+                    t2adec(x2) = trialsPresented(j,irt);
                     x2 = x2+1;
                 case 0
                     t1nx(x3,:) = trialmatx(j,:);
+                    t1ndec(x3) = trialsPresented(j,irt);
                     t2nx(x3,:) = trialmatx(j,:);
+                    t2ndec(x3) = trialsPresented(j,irt);
                     x3 = x3+1;
             end
             
@@ -61,6 +73,8 @@ if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         
         t1vcx = []; t1icx = []; t1ncx = []; t1vfx = []; t1ifx = []; t1nfx = [];
         t2vcx = []; t2icx = []; t2ncx = []; t2vfx = []; t2ifx = []; t2nfx = [];
+        t1vcdec = []; t1icdec = []; t1ncdec = []; t1vfdec = []; t1ifdec = []; t1nfdec = [];
+        t2vcdec = []; t2icdec = []; t2ncdec = []; t2vfdec = []; t2ifdec = []; t2nfdec = [];
         
         for j = 1:size(trialmatx,1)
             if trialsPresented(j,icue) == 1
@@ -68,24 +82,30 @@ if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
                     switch trialsPresented(j,ival)
                         case 1
                             t1vcx(x1,:) = trialmatx(j,:);
+                            t1vcdec(x1) = trialsPresented(j,irt);
                             x1 = x1+1;
                         case 2
                             t1icx(x2,:) = trialmatx(j,:);
+                            t1icdec(x2) = trialsPresented(j,irt);
                             x2 = x2+1;
                         case 3
                             t1ncx(x3,:) = trialmatx(j,:);
+                            t1ncdec(x3) = trialsPresented(j,irt);
                             x3 = x3+1;
                     end
                 elseif trialsPresented(j,icor) == 0
                     switch trialsPresented(j,ival)
                         case 1
                             t1vfx(x4,:) = trialmatx(j,:);
+                            t1vfdec(x4) = trialsPresented(j,irt);
                             x4 = x4+1;
                         case 2
                             t1ifx(x5,:) = trialmatx(j,:);
+                            t1ifdec(x5) = trialsPresented(j,irt);
                             x5 = x5+1;
                         case 3
-                            t1nfx(x3,:) = trialmatx(j,:);
+                            t1nfx(x6,:) = trialmatx(j,:);
+                            t1nfdec(x6) = trialsPresented(j,irt);
                             x6 = x6+1;
                     end
                 end
@@ -94,24 +114,30 @@ if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
                     switch trialsPresented(j,ival)
                         case 1
                             t2vcx(y1,:) = trialmatx(j,:);
+                            t2vcdec(y1) = trialsPresented(j,irt);
                             y1 = y1+1;
                         case 2
                             t2icx(y2,:) = trialmatx(j,:);
+                            t2icdec(y2) = trialsPresented(j,irt);
                             y2 = y2+1;
                         case 3
                             t2ncx(y3,:) = trialmatx(j,:);
+                            t2ncdec(y3) = trialsPresented(j,irt);
                             y3 = y3+1;
                     end
                 elseif trialsPresented(j,icor) == 0
                     switch trialsPresented(j,ival)
                         case 1
                             t2vfx(y4,:) = trialmatx(j,:);
+                            t2vfdec(y4) = trialsPresented(j,irt);
                             y4 = y4+1;
                         case 2
                             t2ifx(y5,:) = trialmatx(j,:);
+                            t2ifdec(y5) = trialsPresented(j,irt);
                             y5 = y5+1;
                         case 3
                             t2nfx(y6,:) = trialmatx(j,:);
+                            t2nfdec(y6) = trialsPresented(j,irt);
                             y6 = y6+1;
                     end
                 end

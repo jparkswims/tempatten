@@ -11,7 +11,11 @@ for i = 1:size(X,1)
     h(1:-window(1)) = [];
     
     fh = str2func(['B' Btypes{i}]);
-    x = conv(h,fh(B(i),Blocs{i}));
+    if strcmp(Btypes{i},'linear')
+        x = [Bramp(B(i),Blocs{i}) zeros(1,5000)];
+    else
+        x = conv(h,fh(B(i),Blocs{i}));
+    end
 
     X(i,:) = x(1:window(2)+1);
     

@@ -166,11 +166,14 @@ for r = 1:pa.runs(s)
         if strcmp(study,'E0E3')
             if s <= 9
                 pa.(pa.fields{j}).([subject 'E0']) = [pa.(pa.fields{j}).([subject 'E0']) ; eval([pa.fields{j} 'x'])];
+                pa.(pa.fields{j}).dectime.([subject 'E0']) = [pa.(pa.fields{j}).dectime.([subject 'E0']) ((eval([pa.fields{j} 'dec']) + expt.p.respCueSOA + expt.p.respGoSOA) .* 1000)];
             else
                 pa.(pa.fields{j}).([subject 'E3']) = [pa.(pa.fields{j}).([subject 'E3']) ; eval([pa.fields{j} 'x'])];
+                pa.(pa.fields{j}).dectime.([subject 'E3']) = [pa.(pa.fields{j}).dectime.([subject 'E3']) ((eval([pa.fields{j} 'dec']) + expt.p.respCueSOA + expt.p.respGoSOA) .* 1000)];
             end
         else
             pa.(pa.fields{j}).(subject) = [pa.(pa.fields{j}).(subject) ; eval([pa.fields{j} 'x'])];
+            pa.(pa.fields{j}).dectime.(subject) = [pa.(pa.fields{j}).dectime.(subject) ((eval([pa.fields{j} 'dec']) + expt.p.respCueSOA + expt.p.respGoSOA) .* 1000)];
         end
     end
     

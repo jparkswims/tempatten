@@ -1,10 +1,5 @@
-function output = Bramp(B,loc,t)
+function output = Bramp(B,loc)
 
 sf = 1/300;
 
-output = zeros(1,length(t));
-
-istart = find(t==loc(1));
-iend = find(t==loc(2));
-
-output(istart:iend) = (0:1/(iend-istart):1) * B * sf;
+output = (0:1/(loc(2)-loc(1)):1) * B * sf;

@@ -24,11 +24,14 @@ function pa = ta_params(study,type)
                 if strcmp(study,'E0E3')
                     if j <= 9
                         thestruct.(fields{i}).([subjects{j} 'E0']) = [];
+                        thestruct.(fields{i}).dectime.([subjects{j} 'E0']) = [];
                     else
                         thestruct.(fields{i}).([subjects{j} 'E3']) = [];
+                        thestruct.(fields{i}).dectime.([subjects{j} 'E3']) = [];
                     end
                 else
                     thestruct.(fields{i}).(subjects{j}) = [];
+                    thestruct.(fields{i}).dectime.(subjects{j}) = [];
                 end
             end
             
@@ -56,7 +59,7 @@ if strcmp(study,'E0')
     subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp'};
     window = [-500 3500];
     locs = [0 1000 1250 1750];
-    filedir = ['/Users/jakeparker/Documents/tempatten/E0_cb/' type];
+    filedir = ['/Users/jakeparker/Documents/tempatten/E0/' type];
     trials = 640;
     t = 2;
     runs = [2 2 2 2 2 2 4 4 4];
@@ -65,7 +68,7 @@ elseif strcmp(study,'E3')
     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
     window = [-500 3500];
     locs = [0 1000 1250 1750];
-    filedir = ['/Users/jakeparker/Documents/tempatten/E3_adjust/' type];
+    filedir = ['/Users/jakeparker/Documents/tempatten/E3/' type];
     trials = 640;
     t = 2;
     runs = [4 4 4 4 4 4 4 4 4 4 4 4];

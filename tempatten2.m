@@ -1,5 +1,5 @@
-studies = {'E0E3'};
-types = {'ta' 'tvc'};
+studies = {'E0E3' 'E0' 'E3'};
+types = {'cue' 'ta' 'tvc'};
 
 close all
 
