@@ -270,7 +270,7 @@ end
 fig = [j+2 j+3 j+4 j+5];
 fignames = {'group_beta_scatter' 'group_location_scatter' 'group_mean_beta_weights' 'group_mean_locations'};
 figprefix = ['m' num2str(im) '_' Btype];
-filedir = [pa.filedir '/models/' Btype];
+filedir = [pa.filedir '/models/' Btype '/start40'];
 
 rd_saveAllFigs(fig,fignames,figprefix, filedir)
 

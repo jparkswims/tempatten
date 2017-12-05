@@ -1,4 +1,4 @@
-function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
+function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, sflag] = glm_bads(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
 
 % x ordered as [betas, locations, yint, tmax]
 
@@ -15,13 +15,17 @@ tf = 1000;
 yf = 0.1;
 
 lb = [];
+plb = [];
 ub = [];
+pub = [];
 x0 = [];
 
 if b
     x0 = B./bf;
     lb = Bbounds(:,1)./bf;
+    plb = Bbounds(:,1)./bf/10;
     ub = Bbounds(:,2)./bf;
+    pub = Bbounds(:,2)./bf/10;
 end
 
 if l
@@ -29,29 +33,37 @@ if l
     for i = 1:length(ind)
         x0 = [x0 (Blocs{ind(i)}./lf)];
         lb = [lb; (Blocbounds(ind(i),1)./lf)];
+        plb = [plb; (Blocbounds(ind(i),1)./lf)];
         ub = [ub; (Blocbounds(ind(i),2)./lf)];
+        pub = [pub; (Blocbounds(ind(i),2)./lf)];
     end
 end
 
 if y
     x0 = [x0 (yint./yf)];
-    lb = [lb; -Inf];
-    ub = [ub; Inf];
+    lb = [lb; -0.1./yf];
+    plb = [plb; -0.05./yf];
+    ub = [ub; 0.1./yf];
+    pub = [pub; 0.05./yf];
 end
 
 if t
     x0 = [x0 tmax./tf];
     lb = [lb; (tmaxbounds(1,1)./tf)];
+    plb = [plb; 500./tf];
     ub = [ub; (tmaxbounds(1,2)./tf)];
+    pub = [pub; (tmaxbounds(1,2)./tf)];
 end
 
 ub = ub';
 lb = lb';
+pub = pub';
+plb = plb';
 
 f = @(x)glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams,norm);
-nonlcon = @ta_nlc;
+NONBCON = @(X) X(:,6) >= X(:,7) | X(:,7) >= X(:,8) | X(:,8) >= X(:,9);
 
-[x0, cost,~,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,nonlcon);
+[x0, cost] = bads(f,x0,lb,ub,plb,pub,NONBCON);
 
 if b
     numB = length(B);
@@ -94,9 +106,3 @@ end
 
 Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint,norm);
 numparams = length(x0);
-    
-% figure
-% hold on
-% plot(0:window(2),Ymeas)
-% plot(0:window(2),Ycalc,'r')
-% plotlines(plotlocs,[0 max(Ymeas)])

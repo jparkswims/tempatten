@@ -4,7 +4,7 @@ close all
 
 filedir = pa.filedir;
 
-file = fopen(['GLMreport_' pa.study pa.type '.txt'],'w');
+%file = fopen(['GLMreport_' pa.study pa.type '.txt'],'w');
 
 % modelstruct
 
@@ -29,19 +29,19 @@ subs = 1:length(pa.subjects);
 %%%%%%%%%
 
 pa = modelstruct(pa);
-fileformat = repmat('%s ',1,length(pa.models(1).params));
+%fileformat = repmat('%s ',1,length(pa.models(1).params));
 pa.globalbic = zeros(length(pa.models),1);
 costs = zeros(subs(end),length(pa.models),length(pa.fields));
 ks = zeros(subs(end),length(pa.models),length(pa.fields));
 
 for f = 1:length(pa.fields)
     
-%     pa.(pa.fields{f}).betas = nan(length(pa.subjects),length(pa.models(1).B),length(pa.models));
-%     pa.(pa.fields{f}).tmax = nan(length(pa.subjects),1,length(pa.models));
-     pa.(pa.fields{f}).bic = nan(length(pa.subjects),1,length(pa.models));
-    
-%     for ii = length(models):-1:1
-%         
+    %     pa.(pa.fields{f}).betas = nan(length(pa.subjects),length(pa.models(1).B),length(pa.models));
+    %     pa.(pa.fields{f}).tmax = nan(length(pa.subjects),1,length(pa.models));
+    pa.(pa.fields{f}).bic = nan(length(pa.subjects),1,length(pa.models));
+    pa.(pa.fields{f}).R2 = nan(length(pa.subjects),1);
+    %     for ii = length(models):-1:1
+    %
 %         pa.(pa.fields{f}).models(ii).precue = nan(1,length(pa.subjects));
 %         pa.(pa.fields{f}).models(ii).t1 = nan(1,length(pa.subjects));
 %         pa.(pa.fields{f}).models(ii).t2 = nan(1,length(pa.subjects));
@@ -62,6 +62,13 @@ for f = 1:length(pa.fields)
         
         for m = 1:length(pa.models)
             
+            outB = nan(pa.ssnum,size(pa.models(m).B,2));
+            outBlocs = cell(pa.ssnum,size(pa.models(m).Blocs,2)+1);
+            outtmax = nan(pa.ssnum,1);
+            outyint = nan(pa.ssnum,1);
+            outcosts = nan(pa.ssnum,1);
+            outR2 = nan(pa.ssnum,1);
+            
             fprintf('model %d\n',m)
             for fi = 1:length(pa.models(m).params)
                 fprintf('%s ',pa.models(m).params{fi})
@@ -69,74 +76,87 @@ for f = 1:length(pa.fields)
             
             Y = pa.(pa.fields{f}).smeans(s,:);
             
-            [B, Blocs, tmax, yint, costs(s,m,f) , Ycalc, Blabels, ks(s,m,f)] = ...
-                glm_optim2(Y,...
-                pa.window,...
-                pa.models(m).B,...
-                [pa.models(m).Blocs [0 round(pa.dectime(s))]],...
-                pa.models(m).Blocbounds,...
-                pa.models(m).Btypes,...
-                pa.models(m).Blabels,...
-                pa.models(m).Bbounds,...
-                pa.models(m).tmax,...
-                pa.models(m).tmaxbounds,...
-                pa.models(m).yint,...
-                pa.models(m).params,...
-                pa.models(m).normalization);
+            for ss = 1:pa.ssnum
+                
+                [outB(ss,:), outBlocs(ss,:), outtmax(ss), outyint(ss), costs(s,m,f) , Ycalc, Blabels, ks(s,m,f)] = ...
+                    glm_optim2(Y,...
+                    pa.window,...
+                    pa.models(m).B(ss,:),...
+                    [pa.models(m).Blocs(ss,:) [0 round(pa.dectime(s))]],...
+                    pa.models(m).Blocbounds,...
+                    pa.models(m).Btypes,...
+                    pa.models(m).Blabels,...
+                    pa.models(m).Bbounds,...
+                    pa.models(m).tmax(ss),...
+                    pa.models(m).tmaxbounds,...
+                    pa.models(m).yint(ss),...
+                    pa.models(m).params,...
+                    pa.models(m).normalization);
+                
+                outcosts(ss) = costs(s,m,f);
+                SSt = sum((Y-nanmean(Y)).^2);
+                outR2(ss) = 1 - (outcosts(ss)/SSt);
+                
+            end
             
-            pa.(pa.fields{f}).models(m).betas(s,:) = B;
-            pa.(pa.fields{f}).models(m).locations(s,:) = cell2mat(Blocs(~strcmp(Blabels,'decision')));
-            pa.(pa.fields{f}).models(m).yint(s,:) = yint;
-            pa.(pa.fields{f}).models(m).tmax(s,:) = tmax;
+            [maxR2,iR2] = max(outR2);
+            pa.(pa.fields{f}).R2(s) = maxR2;
+            
+            pa.(pa.fields{f}).models(m).betas(s,:) = outB(iR2,:);
+            pa.(pa.fields{f}).models(m).locations(s,:) = cell2mat(outBlocs(iR2,~strcmp(Blabels,'decision')));
+            pa.(pa.fields{f}).models(m).yint(s,:) = outyint(iR2);
+            pa.(pa.fields{f}).models(m).tmax(s,:) = outtmax(iR2);
             
             for bl = 1:length(Blabels)
-                pa.(pa.fields{f}).models(m).(Blabels{bl})(s) = B(bl);
+                pa.(pa.fields{f}).models(m).(Blabels{bl})(s) = outB(iR2,bl);
             end
             
-%             [pa.(pa.fields{f}).tmax(s,1,m), pa.(pa.fields{f}).betas(s,1:end,m), costs(s,m,f), Ycalc] ...
-%                 = glm_optim(Y,pa.window,pa.locs,round(pa.dectime(s)*1000),pa.models(m).dec,pa.models(m).tmax,pa.models(m).beta,tm0,b0,pa.models(m).loc);
+            %             [pa.(pa.fields{f}).tmax(s,1,m), pa.(pa.fields{f}).betas(s,1:end,m), costs(s,m,f), Ycalc] ...
+            %                 = glm_optim(Y,pa.window,pa.locs,round(pa.dectime(s)*1000),pa.models(m).dec,pa.models(m).tmax,pa.models(m).beta,tm0,b0,pa.models(m).loc);
             
-%             for jj = 1:length(modelfields)-1
-%                 
-%                 pa.(pa.fields{f}).models(m).(modelfields{jj})(1,s) = pa.(pa.fields{f}).betas(s,jj,m);
-%                 
-%             end
+            %             for jj = 1:length(modelfields)-1
+            %
+            %                 pa.(pa.fields{f}).models(m).(modelfields{jj})(1,s) = pa.(pa.fields{f}).betas(s,jj,m);
+            %
+            %             end
             
-%             pa.(pa.fields{f}).models(m).tmax(1,s) = pa.(pa.fields{f}).tmax(s,1,m);
+            %             pa.(pa.fields{f}).models(m).tmax(1,s) = pa.(pa.fields{f}).tmax(s,1,m);
             
-%             if strcmp(pa.models(m).tmax,'tmax_param')
-%                 ks(s,m,f) = length(pa.locs)+2;
-%             else
-%                 ks(s,m,f) = length(pa.locs)+1;
-%             end
-
-%             pa.(pa.fields{f}).betas(s,1:end,m) = B;
-            pa.(pa.fields{f}).bic(s,1,m) = bic(length(Ycalc),costs(s,m,f),ks(s,m,f));
+            %             if strcmp(pa.models(m).tmax,'tmax_param')
+            %                 ks(s,m,f) = length(pa.locs)+2;
+            %             else
+            %                 ks(s,m,f) = length(pa.locs)+1;
+            %             end
             
-            if strcmp(pa.type,'cue')
-                
-                Y(1:-pa.window(1)+1) = [];
-                
-%                 figure(1)
-%                 plot(Y,'b')
-%                 hold on
-%                 plot(Ycalc,'r')
-%                 title('Measured vs Predicted')
-%                 xlabel('time (ms)')
-%                 ylabel('pupil area (normalized)')
-%                 hold off
-%                 
-%                 figdir = [filedir '/models/' pa.fields{f}];
-%                 fig = 1;
-%                 fignames = {['meas_vs_pred_' pa.subjects{s} '_m' num2str(m)]};
-%                 figprefix = 'ta';
-%                 
-%                 rd_saveAllFigs(fig,fignames,figprefix, figdir)
-                
-%                 close all
-                
-            end
-                
+            %             pa.(pa.fields{f}).betas(s,1:end,m) = B;
+            pa.(pa.fields{f}).bic(s,1,m) = bic(length(Ycalc),outcosts(iR2),ks(s,m,f));
+            
+            %                 if strcmp(pa.type,'cue')
+            %
+            %                     Y(1:-pa.window(1)+1) = [];
+            %
+            %                     %                 figure(1)
+            %                     %                 plot(Y,'b')
+            %                     %                 hold on
+            %                     %                 plot(Ycalc,'r')
+            %                     %                 title('Measured vs Predicted')
+            %                     %                 xlabel('time (ms)')
+            %                     %                 ylabel('pupil area (normalized)')
+            %                     %                 hold off
+            %                     %
+            %                     %                 figdir = [filedir '/models/' pa.fields{f}];
+            %                     %                 fig = 1;
+            %                     %                 fignames = {['meas_vs_pred_' pa.subjects{s} '_m' num2str(m)]};
+            %                     %                 figprefix = 'ta';
+            %                     %
+            %                     %                 rd_saveAllFigs(fig,fignames,figprefix, figdir)
+            %
+            %                     %                 close all
+            %
+            %                 end
+            
+            
+            
         end
         
     end
@@ -183,7 +203,7 @@ for f = 1:length(pa.fields)
     
 end
 
-fclose(file);
+%fclose(file);
 
 pa.combbic = zeros(length(pa.models),length(pa.subjects));
 
