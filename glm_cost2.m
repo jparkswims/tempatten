@@ -37,4 +37,4 @@ end
 
 Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint,norm);
 
-cost = sum((Ymeas-Ycalc).^2);
+cost = nansum((Ymeas-Ycalc).^2);

@@ -22,3 +22,13 @@ for i = 1:size(X,1)
 end
 
 Ycalc = sum(X,1) + yint;
+
+% if all(isnan(Ycalc))
+%     Ycalc = zeros(1,length(Ycalc));
+%     figure
+%     title('glm_calc produced a timeseries with all NaN in it')
+% elseif any(isnan(Ycalc))
+%     Ycalc = zeros(1,length(Ycalc));
+%     figure
+%     title('glm_calc produced a timeseries with at least one NaN in it')
+% end

@@ -14,12 +14,14 @@ locbound = {'500'};
 blocboundval = [500];
 normalization = {'max'};
 snum = 40;
+gnum = 2000;
 pa.ssnum = snum;
+pa.gnum = gnum;
 
-uB0 = unidist(10.*rand(snum*10,1),snum,1);
-uBlocs0 = unidist(1000.*rand(snum*10,1)-500,snum,1);
-utmax0 = unidist(1000.*rand(snum*10,1)+500,snum,1);
-uyint0 = unidist(.08.*rand(snum*10,1)-.04,snum,1);
+uB0 = unidist(10.*rand(gnum*10,1),gnum/snum,snum);
+uBlocs0 = unidist(1000.*rand(gnum*10,1)-500,gnum/snum,snum);
+utmax0 = unidist(1000.*rand(gnum*10,1)+500,gnum/snum,snum);
+uyint0 = unidist(.08.*rand(gnum*10,1)-.04,gnum/snum,snum);
 
 % uB0 = [randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum)];
 % uBlocs0 = num2cell([(0+randsample(uBlocs0,snum)) (1000+randsample(uBlocs0,snum)) (1250+randsample(uBlocs0,snum)) (1750+randsample(uBlocs0,snum))]);
@@ -36,9 +38,9 @@ for i = size(ff,1):-1:1 %go backwards to preallocate entire structure
     
     pa.models(i).params = {beta{ff(i,1)} loc{ff(i,2)} yint{ff(i,3)} tmax{ff(i,4)} betabound{ff(i,5)} dec{ff(i,6)} locbound{ff(i,7)} normalization{ff(i,8)}};
     %pa.models(i).B = ones(1,length(pa.locs)+(~(isempty(dec{ff(i,6)}))));
-    pa.models(i).B = [randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum) randsample(uB0,snum)];
+    pa.models(i).B = [randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum)];
     %pa.models(i).Blocs = num2cell(pa.locs);
-    pa.models(i).Blocs = num2cell([(0+randsample(uBlocs0,snum)) (1000+randsample(uBlocs0,snum)) (1250+randsample(uBlocs0,snum)) (1750+randsample(uBlocs0,snum))]);
+    pa.models(i).Blocs = num2cell([(0+randsample(uBlocs0,gnum)) (1000+randsample(uBlocs0,gnum)) (1250+randsample(uBlocs0,gnum)) (1750+randsample(uBlocs0,gnum))]);
     pa.models(i).Bbounds = repmat(bbounds{ff(i,5)},size(pa.models(i).B,2),1);
     if ~isempty(dec{ff(i,6)})
         pa.models(i).Btypes = [repmat({'stick'},1,length(pa.locs)) dec{ff(i,6)}];
@@ -49,9 +51,9 @@ for i = size(ff,1):-1:1 %go backwards to preallocate entire structure
     end
     pa.models(i).Blocbounds = [(pa.locs-blocboundval(ff(i,7)))' (pa.locs+blocboundval(ff(i,7)))'];
     %pa.models(i).yint = 0;
-    pa.models(i).yint = randsample(uyint0,snum);
+    pa.models(i).yint = randsample(uyint0,gnum);
     %pa.models(i).tmax = 930;
-    pa.models(i).tmax = randsample(utmax0,snum);
+    pa.models(i).tmax = randsample(utmax0,gnum);
     pa.models(i).tmaxbounds = [0 2000];
     pa.models(i).normalization = normalization{ff(i,8)};
     
