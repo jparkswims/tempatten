@@ -1,4 +1,4 @@
-function [outX,cost] = quick_glm_optim(Ymeas,X0)
+function [outX,cost,optimflag] = quick_glm_optim(Ymeas,X0)
 
 % x ordered as [betas, locations, tmax, yint]
 % glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
@@ -15,6 +15,6 @@ tmaxbounds = [0 2000];
 modelparams = {'locations' 'beta' 'tmax' 'yint'};
 Bbounds = repmat([0 100],5,1);
 
-[B, Blocs, tmax, yint, cost] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm);
+[B, Blocs, tmax, yint, cost,~,~,~,~,~,optimflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm);
 
 outX = [B cell2mat(Blocs) tmax yint];

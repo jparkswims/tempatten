@@ -1,4 +1,4 @@
-function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
+function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag, exitflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
 
 % x ordered as [betas, locations, yint, tmax]
 
@@ -51,7 +51,9 @@ lb = lb';
 f = @(x)glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams,norm);
 nonlcon = @ta_nlc;
 
-[x0, cost,~,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,nonlcon);
+options = optimoptions('fmincon','Display','off');
+
+[x0, cost, exitflag,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,nonlcon,options);
 
 if b
     numB = length(B);
