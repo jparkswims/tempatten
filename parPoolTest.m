@@ -1,5 +1,7 @@
 function parPoolTest(wnum)
 
+parpool(wnum);
+
 parfor i = 1:wnum
     fprintf('%d\n',i)
 end
