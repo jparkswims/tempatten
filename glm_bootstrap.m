@@ -6,7 +6,7 @@ for f = 1:length(pa.fields)
 end
 rng(1)
 
-parpool(wnum)
+parpool(wnum,'SpmdEnabled',false)
 
 for f = 1:length(pa.fields)
     
