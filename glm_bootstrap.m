@@ -25,7 +25,7 @@ for f = 1:length(pa.fields)
         end
     end
     fprintf('\n********** All %s bootstrapping completed **********\n',pa.fields{f});
-    gbs.(pa.fields{f}).glm_params = gboot;
+    gbs.(pa.fields{f}).glmparams = gboot;
     gbs.(pa.fields{f}).bsind = bsind;
     gbs.(pa.fields{f}).optimflag = optimflag;
     gbs.(pa.fields{f}).R2 = R2;
