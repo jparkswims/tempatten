@@ -28,17 +28,17 @@ subs = 1:length(pa.subjects);
 
 %%%%%%%%%
 
-pa = modelstruct(pa);
+%pa = modelstruct(pa);
 %fileformat = repmat('%s ',1,length(pa.models(1).params));
 pa.globalbic = zeros(length(pa.models),1);
 costs = zeros(subs(end),length(pa.models),length(pa.fields));
 ks = zeros(subs(end),length(pa.models),length(pa.fields));
 
 tempcost = nan(pa.gnum,1);
-B0 = nan(pa.ssnum,size(pa.models.B,2));
-Blocs0 = cell(pa.ssnum,size(pa.models.Blocs,2));
-tmax0 = nan(pa.ssnum,1);
-yint0 = nan(pa.ssnum,1);
+% B0 = nan(pa.ssnum,size(pa.models.B,2));
+% Blocs0 = cell(pa.ssnum,size(pa.models.Blocs,2));
+% tmax0 = nan(pa.ssnum,1);
+% yint0 = nan(pa.ssnum,1);
 
 
 for f = 1:length(pa.fields)
@@ -65,8 +65,6 @@ for f = 1:length(pa.fields)
     
     for s = subs
         
-        fprintf('%s\n',pa.subjects{s})
-        
         for m = 1:length(pa.models)
             
             outB = nan(pa.ssnum,size(pa.models(m).B,2));
@@ -76,25 +74,26 @@ for f = 1:length(pa.fields)
             outcosts = nan(pa.ssnum,1);
             outR2 = nan(pa.ssnum,1);
             
-            fprintf('model %d\n',m)
-            for fi = 1:length(pa.models(m).params)
-                fprintf('%s ',pa.models(m).params{fi})
-            end
+            fprintf('Condition %s, Subject %s, Model %d\n',pa.fields{f},pa.subjects{s},m)
             
             Y = pa.(pa.fields{f}).smeans(s,:);
             
             for gs = 1:pa.gnum
-                tempcost(gs) = quick_glm_cost([pa.models.B(gs,:) cell2mat(pa.models.Blocs(gs,:)) 0 round(pa.dectime(s)) pa.models.tmax(gs) pa.models.yint(gs)],Y);
+                if m == 1
+                    tempcost(gs) = quick_glm_cost([pa.models(m).B(gs,:) cell2mat(pa.models(m).Blocs(gs,:)) 0 round(pa.dectime(s)) pa.models(m).tmax(gs) pa.models(m).yint(gs)],Y);
+                elseif m == 2
+                    tempcost(gs) = quick_glm_cost_1T([pa.models(m).B(gs,:) cell2mat(pa.models(m).Blocs(gs,:)) 0 round(pa.dectime(s)) pa.models(m).tmax(gs) pa.models(m).yint(gs)],Y);
+                end
             end
             
             [~,sortind] = sort(tempcost);
             [~,rank] = sort(sortind);
             spind = find(rank <= pa.ssnum);
             
-            B0 = pa.models.B(spind,:);
-            Blocs0 = pa.models.Blocs(spind,:);
-            tmax0 = pa.models.tmax(spind,:);
-            yint0 = pa.models.yint(spind,:);
+            B0 = pa.models(m).B(spind,:);
+            Blocs0 = pa.models(m).Blocs(spind,:);
+            tmax0 = pa.models(m).tmax(spind,:);
+            yint0 = pa.models(m).yint(spind,:);
             
             for ss = 1:pa.ssnum
                 

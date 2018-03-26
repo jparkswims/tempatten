@@ -1,6 +1,9 @@
 function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag, exitflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
 
 % x ordered as [betas, locations, yint, tmax]
+plotflag = true;
+
+decind = find(cellfun('length',regexp(Blabels,'decision')) == 1);
 
 Ymeas(1:-window(1)) = [];
 
@@ -51,7 +54,11 @@ lb = lb';
 f = @(x)glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams,norm);
 nonlcon = @ta_nlc;
 
-options = optimoptions('fmincon','Display','off');
+if plotflag
+    options = optimoptions('fmincon','Display','off','OutputFcn',@pa_outfun);
+else
+    options = optimoptions('fmincon','Display','off');
+end
 
 [x0, cost, exitflag,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,nonlcon,options);
 
@@ -96,9 +103,25 @@ end
 
 Ycalc = glm_calc(window,B,Blocs,Btypes,tmax,yint,norm);
 numparams = length(x0);
-    
-% figure
-% hold on
-% plot(0:window(2),Ymeas)
-% plot(0:window(2),Ycalc,'r')
-% plotlines(plotlocs,[0 max(Ymeas)])
+
+function stop = pa_outfun(x,optimValues,state)
+stop=false;
+
+switch state
+    case 'iter'
+        clf
+        pa_optim_plot(x,Ymeas,Blocs{decind},optimValues.funccount)
+        pause(0.04)
+    case 'interrupt'
+        % Probably no action here. Check conditions to see
+        % whether optimization should quit.
+    case 'init'
+        % Setup for plots or guis
+        figure
+    case 'done'
+        % Cleanup of plots, guis, or final plot
+    otherwise
+end
+end
+
+end

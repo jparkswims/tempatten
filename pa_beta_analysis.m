@@ -80,11 +80,15 @@ for j = 1:length(pa.bdf)
     
     subject = pa.bdf(j,1);
     
-    if strcmp(Btype,'target')
-        type = ['t' num2str(pa.bdf(j,2))];
-    else
-        type = Btype;
-    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     if strcmp(Btype,'target')
+%         type = ['t' num2str(pa.bdf(j,2))];
+%     else
+%         type = Btype;
+%     end
+
+    type = Btype;
+    %%%%%%%%%%%%%%%%%%%%%%%%%
     
     locind = find(strcmp(pa.models(im).Blabels,type));
     
@@ -118,10 +122,12 @@ sbpl = ceil(sqrt(length(pa.subjects)));
 
 for j = 1:size(conditions,2)
     
-    if strcmp(Btype,'target')
-        type = conditions{1,j}(1:2);
-        locind = find(strcmp(pa.models(im).Blabels,type));
-    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     if strcmp(Btype,'target')
+%         type = conditions{1,j}(1:2);
+%         locind = find(strcmp(pa.models(im).Blabels,type));
+%     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 %     pa.(conditions{1,j}).gbetameans = mean(pa.(conditions{1,j}).betas,1);
 %     pa.(conditions{2,j}).gbetameans = mean(pa.(conditions{2,j}).betas,1);
@@ -195,7 +201,7 @@ for j = 1:size(conditions,2)
     fig = k+1;
     fignames = {[gtitle '_all_subjects_m' num2str(im)]};
     figprefix = ['m' num2str(im) '_' Btype];
-    filedir = [pa.filedir '/models/' Btype];
+    filedir = [pa.filedir '/models/' Btype '/start40/1T'];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
@@ -263,14 +269,14 @@ for j = 1:length(pa.subjects)
     figprefix = ['m' num2str(im) '_' Btype];
     filedir = [pa.filedir '/' pa.subjects{j}];
     
-    rd_saveAllFigs(fig,fignames,figprefix, filedir)
+    %rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
 end
 
 fig = [j+2 j+3 j+4 j+5];
 fignames = {'group_beta_scatter' 'group_location_scatter' 'group_mean_beta_weights' 'group_mean_locations'};
 figprefix = ['m' num2str(im) '_' Btype];
-filedir = [pa.filedir '/models/' Btype '/start40'];
+filedir = [pa.filedir '/models/' Btype '/start40/1T'];
 
 rd_saveAllFigs(fig,fignames,figprefix, filedir)
 
