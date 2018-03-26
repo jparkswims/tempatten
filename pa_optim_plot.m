@@ -29,6 +29,7 @@ plot([0 window(2)],[yint yint],'--c')
 plot(0:window(2),reg,'--')
 plot(0:window(2),Ycalc,'color',[0.5 0.5 0.5])
 plot(0:window(2),Ymeas,'k')
+ylim([(min(Ymeas)-0.02) (max(Ymeas)+0.02)])
 yl = ylim;
 xlim([-500 3500])
 plot(repmat(Blocs,2,1),repmat([yl(1) ; yl(2)],1,length(Blocs)),'--')
