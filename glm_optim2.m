@@ -1,4 +1,4 @@
-function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag, exitflag] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
+function [B, Blocs, tmax, yint, cost, Ycalc, Blabels, numparams, hessian, sflag, exitflag, optimplot] = glm_optim2(Ymeas,window,B,Blocs,Blocbounds,Btypes,Blabels,Bbounds,tmax,tmaxbounds,yint,modelparams,norm)
 
 % x ordered as [betas, locations, yint, tmax]
 plotflag = true;
@@ -56,6 +56,7 @@ nonlcon = @ta_nlc;
 
 if plotflag
     options = optimoptions('fmincon','Display','off','OutputFcn',@pa_outfun);
+    optimplot = struct('x',[],'Ymeas',Ymeas,'decloc',Blocs{decind},'optimval',[]);
 else
     options = optimoptions('fmincon','Display','off');
 end
@@ -111,15 +112,17 @@ switch state
     case 'iter'
         clf
         pa_optim_plot(x,Ymeas,Blocs{decind},optimValues.funccount)
+        optimplot.x = [optimplot.x ; x];
+        optimplot.optimval = [optimplot.optimval ; optimValues.funccount];
         pause(0.04)
     case 'interrupt'
         % Probably no action here. Check conditions to see
         % whether optimization should quit.
     case 'init'
         % Setup for plots or guis
-        figure
+        figure(1)
     case 'done'
-        % Cleanup of plots, guis, or final plot
+        %clean up
     otherwise
 end
 end

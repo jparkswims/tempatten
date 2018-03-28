@@ -12,16 +12,18 @@ if length(X) == 11
     yint = X(10).*yf;
     tmax = X(11).*tf;
     cvec = [0 0 1; 1 0 0; 0 1 0; 1 0 1; 0 0 0];
+    Xcalc = [B Blocs decloc tmax yint];
+    [Ycalc,reg] = quick_glm_calc(Xcalc,0);
 elseif length(X) == 9
-    B = X(1:4);
-    Blocs = X(5:7);
-    yint = X(8);
-    tmax = X(9);
+    B = X(1:4).*bf;
+    Blocs = X(5:7).*lf;
+    yint = X(8).*yf;
+    tmax = X(9).*tf;
     cvec = [0 0 1; 1 0 0; 1 0 1; 0 0 0];
+    Xcalc = [B Blocs decloc tmax yint];
+    [Ycalc,reg] = quick_glm_calc_1T(Xcalc,0);
 end
 
-Xcalc = [B Blocs decloc tmax yint];
-[Ycalc,reg] = quick_glm_calc(Xcalc,0);
 reg = reg + yint;
 hold on
 set(gca,'ColorOrder',cvec)
