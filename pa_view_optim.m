@@ -16,6 +16,7 @@ for imf = 1:length(imfiles)
         
         clf
         pa_optim_plot(optimplot.x(iter,:),optimplot.Ymeas,optimplot.decloc,optimplot.optimval(iter))
+        title(imfiles{imf})
         pause(0.05)
         
     end

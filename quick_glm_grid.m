@@ -17,7 +17,7 @@ end
 spind = find(rank <= pa.ssnum);
 
 if dbug == 2
-    fprintf('Best %d grid points found, beggining optimization fits\n',pa.ssnum)
+    fprintf('Best %d grid points found, beginning optimization fits\n',pa.ssnum)
 end
 
 B0 = pa.models(mnum).B(spind,:);
@@ -46,7 +46,7 @@ for ss = 1:pa.ssnum
     R2(ss) = 1 - (cost/SSt);
     if dbug == 2
         if ss == 1
-            fprintf('Grid Numbers Completed:')
+            fprintf('Optimizations Completed:')
         end
         fprintf(' %d',ss)
     end
@@ -57,7 +57,7 @@ outX = tempout(iR2,:);
 optimflag = optimflag(iR2);
 
 if opflag
-    fprintf('\n\nMaking Realtime OptimPlot... ')
+    fprintf('\nMaking Realtime OptimPlot... ')
     [~,~,~,optimplot] = quick_glm_optim(Ymeas,X0(iR2,:));
-    fprintf('Done\n')
+    fprintf('Done\n\n')
 end
