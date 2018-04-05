@@ -6,7 +6,7 @@ elseif ~iscell(imfiles)
     error('Input must be one file name string or cell array of file names')
 end
 
-figure(1)
+figure(2)
 
 for imf = 1:length(imfiles)
     
@@ -17,7 +17,7 @@ for imf = 1:length(imfiles)
         clf
         pa_optim_plot(optimplot.x(iter,:),optimplot.Ymeas,optimplot.decloc,optimplot.optimval(iter))
         title(imfiles{imf})
-        pause(0.05)
+        pause(0.15)
         
     end
     
