@@ -4,7 +4,7 @@ rng(0);
 
 pa.models = [];
 beta = {'beta'};
-loc = {'locations'};
+loc = {'no L'};
 yint = {'yint'};
 tmax = {'tmax'};
 betabound = {'positive'};

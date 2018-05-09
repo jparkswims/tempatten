@@ -1,4 +1,4 @@
-function gbs = glm_bootstrap(pa,snum,nboot,savedir,dbug,wnum,mnum)
+function gbs = glm_bootstrap_noL(pa,snum,nboot,savedir,dbug,wnum,mnum)
 
 gbs = struct('gboot',[]);
 for f = 1:length(pa.fields)
@@ -6,7 +6,7 @@ for f = 1:length(pa.fields)
 end
 rng(1)
 
-parpool(wnum,'SpmdEnabled',false)
+%parpool(wnum,'SpmdEnabled',false)
 
 for f = 1:length(pa.fields)
     
@@ -19,7 +19,7 @@ for f = 1:length(pa.fields)
         if dbug > 0
             fprintf('Start condition %s, bootstrap %d\n',pa.fields{f},n);
         end
-        [gboot(n,:),optimflag(n),R2(n)] = quick_glm_grid(gBSmean(n,:),pa,snum,dbug,mnum);
+        [gboot(n,:),optimflag(n),R2(n)] = quick_glm_grid_noL(gBSmean(n,:),pa,snum,dbug,mnum);
         if dbug > 0
             fprintf('End condition %s, bootstrap %d, flag %d\n',pa.fields{f},n,optimflag(n));
         end
@@ -37,6 +37,3 @@ end
 fprintf('\nglm_bootstrap done for subject %s\n',pa.subjects{snum});
 
 %save([savedir '/gbs_' pa.study pa.type '_' pa.subjects{snum}],'gbs')
-    
-    
-

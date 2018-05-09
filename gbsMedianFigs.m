@@ -1,6 +1,6 @@
 %gbs subject median figs
 close all
-type = 'tvc';
+type = 'ta';
 datadir = '/Users/jakeparker/Google Drive/TA_Pupil/HPC/';
 basedir = '/Users/jakeparker/Documents/MATLAB';
 eind = [1:9 12 13];
@@ -335,6 +335,64 @@ if strcmp(type,'tvc')
     
     fig = 1:12;
     fignames = {'ValidityTargetB','ValidityTargetL','AccuracyTargetB','AccuracyTargetL','ValidityAccuracyB','ValidityAccuracyL','ValidityB','ValidityL','AccuracyB','AccuracyL','TargetB','TargetL'};
+    figprefix = '';
+    filedir = [datadir type '_all/plot'];
+    
+    rd_saveAllFigs(fig,fignames,figprefix, filedir)
+    
+    close all
+    
+elseif strcmp(type,'ta')
+    
+    t1ind = [2 7];
+    t2ind = [3 8];
+    
+    %attention
+    aB = [gbsall.medians.t1a(:,t1ind(1)) ; gbsall.medians.t2a(:,t2ind(1))];
+    aL = [gbsall.medians.t1a(:,t1ind(2)) ; gbsall.medians.t2a(:,t2ind(2))];
+    nB = [gbsall.medians.t1n(:,t1ind(1)) ; gbsall.medians.t2n(:,t2ind(1))];
+    nL = [gbsall.medians.t1n(:,t1ind(2)) ; gbsall.medians.t2n(:,t2ind(2))];
+    uB = [gbsall.medians.t1u(:,t1ind(1)) ; gbsall.medians.t2u(:,t2ind(1))];
+    uL = [gbsall.medians.t1u(:,t1ind(2)) ; gbsall.medians.t2u(:,t2ind(2))];
+    xax = {'A','N','U'};
+    
+    %amp
+    figure(1)
+    errorbar(1:3,nanmean([aB nB uB]),nanste([aB nB uB],0,1),'b')
+    set(gca,'XTick',1:3)
+    set(gca,'XTickLabel',xax)
+    title('Attention, Amplitude')
+    
+    %lat
+    figure(2)
+    errorbar(1:3,nanmean([aL nL uL]),nanste([aL nL uL],0,1),'b')
+    set(gca,'XTick',1:3)
+    set(gca,'XTickLabel',xax)
+    title('Attention, Latency')
+    
+    %target
+    t1B = [gbsall.medians.t1a(:,t1ind(1)) ; gbsall.medians.t1n(:,t1ind(1)) ; gbsall.medians.t1u(:,t1ind(1))];
+    t2B = [gbsall.medians.t2a(:,t2ind(1)) ; gbsall.medians.t2n(:,t2ind(1)) ; gbsall.medians.t2u(:,t2ind(1))];
+    t1L = [gbsall.medians.t1a(:,t1ind(2)) ; gbsall.medians.t1n(:,t1ind(2)) ; gbsall.medians.t1u(:,t1ind(2))];
+    t2L = [gbsall.medians.t2a(:,t2ind(2)) ; gbsall.medians.t2n(:,t2ind(2)) ; gbsall.medians.t2u(:,t2ind(2))];
+    xax = {'T1','T2'};
+    
+    %amp
+    figure(3)
+    errorbar(1:2,nanmean([t1B t2B]),nanste([t1B t2B],0,1),'b')
+    set(gca,'XTick',1:2)
+    set(gca,'XTickLabel',xax)
+    title('Target, Amplitude')
+    
+    %amp
+    figure(4)
+    errorbar(1:2,nanmean([t1L t2L]),nanste([t1L t2L],0,1),'b')
+    set(gca,'XTick',1:2)
+    set(gca,'XTickLabel',xax)
+    title('Target, Latency')
+    
+    fig = 1:4;
+    fignames = {'AttentionB','AttentionL','TargetB','TargetL'};
     figprefix = '';
     filedir = [datadir type '_all/plot'];
     
