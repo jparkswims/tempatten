@@ -40,7 +40,11 @@ for i = size(ff,1):-1:1 %go backwards to preallocate entire structure
     %pa.models(i).B = ones(1,length(pa.locs)+(~(isempty(dec{ff(i,6)}))));
     pa.models(i).B = [randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum) randsample(uB0,gnum)];
     %pa.models(i).Blocs = num2cell(pa.locs);
-    pa.models(i).Blocs = num2cell([(0+randsample(uBlocs0,gnum)) (1000+randsample(uBlocs0,gnum)) (1250+randsample(uBlocs0,gnum)) (1750+randsample(uBlocs0,gnum))]);
+    if strcmp(loc{ff(i,2)},'no L')
+        pa.models(i).Blocs = num2cell(repmat([0 1000 1250 1750],gnum,1));
+    else
+        pa.models(i).Blocs = num2cell([(0+randsample(uBlocs0,gnum)) (1000+randsample(uBlocs0,gnum)) (1250+randsample(uBlocs0,gnum)) (1750+randsample(uBlocs0,gnum))]);
+    end
     pa.models(i).Bbounds = repmat(bbounds{ff(i,5)},size(pa.models(i).B,2),1);
     if ~isempty(dec{ff(i,6)})
         pa.models(i).Btypes = [repmat({'stick'},1,length(pa.locs)) dec{ff(i,6)}];

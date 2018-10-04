@@ -28,7 +28,7 @@ subs = 1:length(pa.subjects);
 
 %%%%%%%%%
 
-%pa = modelstruct(pa);
+pa = modelstruct(pa);
 %fileformat = repmat('%s ',1,length(pa.models(1).params));
 pa.globalbic = zeros(length(pa.models),1);
 costs = zeros(subs(end),length(pa.models),length(pa.fields));

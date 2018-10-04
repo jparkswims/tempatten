@@ -52,7 +52,7 @@ ub = ub';
 lb = lb';
 
 f = @(x)glm_cost2(x,Ymeas,window,B,Blocs,Btypes,Blabels,tmax,yint,modelparams,norm);
-%%%%%%%%nonlcon = @ta_nlc;
+nonlcon = @ta_nlc;
 
 if plotflag
     options = optimoptions('fmincon','Display','off','OutputFcn',@pa_outfun);
@@ -63,7 +63,7 @@ else
 end
 
 %%%%%%%%% add nonlcon back in %%%%%%%%%%%%
-[x0, cost, exitflag,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
+[x0, cost, exitflag,~,~,~,hessian] = fmincon(f,x0,[],[],[],[],lb,ub,nonlcon,options);
 
 if b
     numB = length(B);

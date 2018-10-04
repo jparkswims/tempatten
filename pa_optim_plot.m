@@ -13,7 +13,7 @@ if length(X) == 11
     tmax = X(11).*tf;
     cvec = [0 0 1; 1 0 0; 0 1 0; 1 0 1; 0 0 0];
     Xcalc = [B Blocs decloc tmax yint];
-    [Ycalc,reg] = quick_glm_calc(Xcalc,0);
+    [Ycalc,x] = quick_glm_calc(Xcalc,0);
 elseif length(X) == 9
     B = X(1:4).*bf;
     Blocs = X(5:7).*lf;
@@ -21,14 +21,22 @@ elseif length(X) == 9
     tmax = X(9).*tf;
     cvec = [0 0 1; 1 0 0; 1 0 1; 0 0 0];
     Xcalc = [B Blocs decloc tmax yint];
-    [Ycalc,reg] = quick_glm_calc_1T(Xcalc,0);
+    [Ycalc,x] = quick_glm_calc_1T(Xcalc,0);
+elseif length(X) == 7
+    B = X(1:5).*bf;
+    Blocs = [0 1000 1250 1750];
+    yint = X(10).*yf;
+    tmax = X(11).*tf;
+    cvec = [0 0 1; 1 0 0; 0 1 0; 1 0 1; 0 0 0];
+    Xcalc = [B Blocs decloc tmax yint];
+    [Ycalc,x] = quick_glm_calc(Xcalc,0);
 end
 
-reg = reg + yint;
+x = x + yint;
 hold on
 set(gca,'ColorOrder',cvec)
 plot([0 window(2)],[yint yint],'--c')
-plot(0:window(2),reg,'--')
+plot(0:window(2),x,'--')
 plot(0:window(2),Ycalc,'color',[0.5 0.5 0.5])
 plot(0:window(2),Ymeas,'k')
 ylim([(min(Ymeas)-0.02) (max(Ymeas)+0.02)])

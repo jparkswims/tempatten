@@ -1,14 +1,14 @@
 %gbs fit figs
 close all
-type = 'tvc';
+type = 'ta';
 datadir = '/Users/jakeparker/Google Drive/TA_Pupil/HPC/';
 basedir = '/Users/jakeparker/Documents/MATLAB';
 eind = [1:9 12 13];
 
 cd(basedir)
-load(['E0E3' type '_12_12_17.mat'])
+load(['E0E3' type '_noL.mat'])
 eval(['pa = pa_' type ';'])
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 load(['gbs_E0E3' type '_ALL'])
 
 conditions = reshape(gbsall.fields,2,length(gbsall.fields)/2)';
@@ -42,9 +42,12 @@ for ss = 1:length(gbsall.subjects)
         %Beta plot
         figure(1)
         subplot(size(conditions,2)/2,2,cc)
-        tempmat1 = [gbsall.(gbsall.subjects{ss}).(conditions{1,cc}).glm_params(:,pind(1)) gbsall.(gbsall.subjects{ss}).(conditions{2,cc}).glm_params(:,pind(1)) gbsall.(gbsall.subjects{ss}).(conditions{3,cc}).glm_params(:,pind(1))];
+        tempmat1 = [gbsall.(gbsall.subjects{ss}).(conditions{1,cc}).glmparams(:,pind(1)) gbsall.(gbsall.subjects{ss}).(conditions{2,cc}).glmparams(:,pind(1)) gbsall.(gbsall.subjects{ss}).(conditions{3,cc}).glmparams(:,pind(1))];
         tempmat2 = [pa.(conditions{1,cc}).models.betas(ss,pind(1)) pa.(conditions{2,cc}).models.betas(ss,pind(1)) pa.(conditions{3,cc}).models.betas(ss,pind(1))];
-        bplot(tempmat1,'outliers');
+        try
+            bplot(tempmat1,'outliers');
+        catch
+        end
         hold on
         plot(1:3,tempmat2,'*g')
         set(gca,'XTick',[1 2 3])
@@ -61,9 +64,12 @@ for ss = 1:length(gbsall.subjects)
         %Latency plot
         figure(2)
         subplot(size(conditions,2)/2,2,cc)
-        tempmat1 = [gbsall.(gbsall.subjects{ss}).(conditions{1,cc}).glm_params(:,pind(2)) gbsall.(gbsall.subjects{ss}).(conditions{2,cc}).glm_params(:,pind(2)) gbsall.(gbsall.subjects{ss}).(conditions{3,cc}).glm_params(:,pind(2))];
+        tempmat1 = [gbsall.(gbsall.subjects{ss}).(conditions{1,cc}).glmparams(:,pind(2)) gbsall.(gbsall.subjects{ss}).(conditions{2,cc}).glmparams(:,pind(2)) gbsall.(gbsall.subjects{ss}).(conditions{3,cc}).glmparams(:,pind(2))];
         tempmat2 = [pa.(conditions{1,cc}).models.locations(ss,pind(2)-5) pa.(conditions{2,cc}).models.locations(ss,pind(2)-5) pa.(conditions{3,cc}).models.locations(ss,pind(2)-5)];
-        bplot(tempmat1,'outliers');
+        try
+            bplot(tempmat1,'outliers');
+        catch
+        end
         hold on
         plot(1:3,tempmat2,'*g')
         set(gca,'XTick',[1 2 3])
@@ -83,7 +89,7 @@ for ss = 1:length(gbsall.subjects)
     fig = 1:2;
     fignames = {['gbs_' gbsall.subjects{ss} '_beta_bw'],['gbs_' gbsall.subjects{ss} '_latency_bw']};
     figprefix = '';
-    filedir = [datadir type '_all/plot'];
+    filedir = [datadir type '_noL/plots'];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
@@ -99,7 +105,7 @@ for f = 1:length(gbsall.fields)
     for ex = 1:100
         tempmat = nan(length(gbsall.subjects),11);
         for ss = 1:length(gbsall.subjects)
-            tempmat(ss,:) = gbsall.(gbsall.subjects{ss}).(gbsall.fields{f}).glm_params(ex,eind);
+            tempmat(ss,:) = gbsall.(gbsall.subjects{ss}).(gbsall.fields{f}).glmparams(ex,eind);
         end
         gbsall.group.(gbsall.fields{f})(ex,:) = mean(tempmat,1);
     end
@@ -139,7 +145,10 @@ for cc = 1:size(conditions,2)
     subplot(size(conditions,2)/2,2,cc)
     tempmat1 = [gbsall.group.(conditions{1,cc})(:,pind(1)) gbsall.group.(conditions{2,cc})(:,pind(1)) gbsall.group.(conditions{3,cc})(:,pind(1))];
     tempmat2 = [mean(pa.(conditions{1,cc}).models.betas(:,pind(1)),1) mean(pa.(conditions{2,cc}).models.betas(:,pind(1)),1) mean(pa.(conditions{3,cc}).models.betas(:,pind(1)),1)];
-    bplot(tempmat1,'outliers');
+    try
+        bplot(tempmat1,'outliers');
+    catch
+    end
     hold on
     plot(1:3,tempmat2,'*g')
     set(gca,'XTick',[1 2 3])
@@ -150,7 +159,10 @@ for cc = 1:size(conditions,2)
     
     figure(3)
     subplot(size(conditions,2)/2,2,cc)
-    bplot([tempmat1(:,1)-tempmat1(:,3) tempmat1(:,1)-tempmat1(:,2) tempmat1(:,2)-tempmat1(:,3)],'outliers');
+    try
+        bplot([tempmat1(:,1)-tempmat1(:,3) tempmat1(:,1)-tempmat1(:,2) tempmat1(:,2)-tempmat1(:,3)],'outliers');
+    catch
+    end
     hold on
     plot(1:3,[tempmat2(1)-tempmat2(3) tempmat2(1)-tempmat2(3) tempmat2(2)-tempmat2(3)],'*g')
     set(gca,'XTick',1:3)
@@ -163,7 +175,10 @@ for cc = 1:size(conditions,2)
     subplot(size(conditions,2)/2,2,cc)
     tempmat1 = [gbsall.group.(conditions{1,cc})(:,pind(2)) gbsall.group.(conditions{2,cc})(:,pind(2)) gbsall.group.(conditions{3,cc})(:,pind(2))];
     tempmat2 = [mean(pa.(conditions{1,cc}).models.locations(:,pind(2)-5),1) mean(pa.(conditions{2,cc}).models.locations(:,pind(2)-5),1) mean(pa.(conditions{3,cc}).models.locations(:,pind(2)-5),1)];
-    bplot(tempmat1,'outliers');
+    try
+        bplot(tempmat1,'outliers');
+    catch
+    end
     hold on
     plot(1:3,tempmat2,'*g')
     set(gca,'XTick',[1 2 3])
@@ -174,7 +189,10 @@ for cc = 1:size(conditions,2)
     
     figure(4)
     subplot(size(conditions,2)/2,2,cc)
-    bplot([tempmat1(:,1)-tempmat1(:,3) tempmat1(:,1)-tempmat1(:,2) tempmat1(:,2)-tempmat1(:,3)],'outliers');
+    try
+        bplot([tempmat1(:,1)-tempmat1(:,3) tempmat1(:,1)-tempmat1(:,2) tempmat1(:,2)-tempmat1(:,3)],'outliers');
+    catch
+    end
     hold on
     plot(1:3,[tempmat2(1)-tempmat2(3) tempmat2(1)-tempmat2(3) tempmat2(2)-tempmat2(3)],'*g')
     set(gca,'XTick',1:3)
@@ -187,13 +205,13 @@ end
 fig = 1:4;
 fignames = {'gbs_group_beta_bw','gbs_group_latency_bw','gbs_group_contrast_beta','gbs_group_contrast_latency'};
 figprefix = '';
-filedir = [datadir type '_all/plot'];
+filedir = [datadir type '_noL/plots'];
 
 rd_saveAllFigs(fig,fignames,figprefix, filedir)
 
 close all
 
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 save(['gbs_E0E3' type '_ALL'],'gbsall')
 
     

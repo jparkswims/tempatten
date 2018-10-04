@@ -67,9 +67,9 @@ if strcmp(regressor,'target')
 %     ldf2 = ldf(size(ldf,1)/2+1:end,:);
 %     ldf2(:,2) = [];
     
-    save([pa.study study_type 'ANOVA' regressor model '_start40'],'bdf','ldf1','ldf2','study_type','regressor','study','model')
+    save([pa.study study_type 'ANOVA' regressor model '_start40_noL'],'bdf','ldf1','ldf2','study_type','regressor','study','model')
 else
-    save([pa.study study_type 'ANOVA' regressor model '_start40'],'bdf','ldf','study_type','regressor','study','model')
+    save([pa.study study_type 'ANOVA' regressor model '_start40_noL'],'bdf','ldf','study_type','regressor','study','model')
 end
 
 cd('/Users/jakeparker/Documents/MATLAB')

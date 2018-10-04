@@ -5,13 +5,13 @@ type = 'ta';
 datadir = '/Users/jakeparker/Google Drive/TA_Pupil/HPC/';
 basedir = '/Users/jakeparker/Documents/MATLAB';
 xlab = {'pcB','t1B','t2B','rcB','decB','pcL','t1L','t2L','rcL','tmax','yint'};
-cleanflag = true;
+cleanflag = false;
 nbins = 15;
 
 cd(basedir)
-load(['E0E3' type '_12_12_17.mat'])
+load(['E0E3' type '_noL.mat'])
 eval(['pa = pa_' type ';'])
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 load(['gbs_E0E3' type '_ALL'])
 
 gbs_error = nan(100,11,length(pa.subjects));
@@ -43,7 +43,7 @@ end
 for f = 1:length(pa.fields)  
     pests = [pa.(pa.fields{f}).models.betas pa.(pa.fields{f}).models.locations pa.(pa.fields{f}).models.tmax pa.(pa.fields{f}).models.yint];
     for s = 1:length(pa.subjects)
-        gbs_error(:,:,s) = bsxfun(@minus,gbsall.(pa.subjects{s}).(pa.fields{f}).glm_params(:,[1:9 12 13]),pests(s,:));
+        gbs_error(:,:,s) = bsxfun(@minus,gbsall.(pa.subjects{s}).(pa.fields{f}).glmparams(:,[1:9 12 13]),pests(s,:));
         gbs_perror(:,:,s) = bsxfun(@rdivide,gbs_error(:,:,s),pests(s,:));
         eci(1,:,s) = prctile(gbs_error(:,:,s),2.5);
         eci(2,:,s) = prctile(gbs_error(:,:,s),97.5);
@@ -61,7 +61,7 @@ figure
 w = size(gbs_error,2);
 h = length(pa.fields);
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 for j = 1:w  
     for k = 1:h
@@ -71,7 +71,10 @@ for j = 1:w
 %         ylimit = ylim;
 %         ymax = ylimit(2);
 %         ci_plot(squeeze(gbsall.gbserror.(pa.fields{k}).eci(:,j,:)),ymax)
-        xlim([min(min(squeeze(gbsall.gbserror.(pa.fields{k}).eci(:,j,:)))) max(max(squeeze(gbsall.gbserror.(pa.fields{k}).eci(:,j,:))))]);
+        try
+            xlim([min(min(squeeze(gbsall.gbserror.(pa.fields{k}).eci(:,j,:)))) max(max(squeeze(gbsall.gbserror.(pa.fields{k}).eci(:,j,:))))]);
+        catch
+        end
         if j == 1
             ylabel(pa.fields(k))
         end
@@ -81,13 +84,13 @@ for j = 1:w
     end
 end
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 figure
 w = size(gbs_perror,2);
 h = length(pa.fields);
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 for j = 1:w  
     for k = 1:h
@@ -97,7 +100,10 @@ for j = 1:w
 %         ylimit = ylim;
 %         ymax = ylimit(2);
 %         ci_plot(squeeze(gbsall.gbserror.(pa.fields{k}).peci(:,j,:)),ymax)
-        xlim([min(min(squeeze(gbsall.gbserror.(pa.fields{k}).peci(:,j,:)))) max(max(squeeze(gbsall.gbserror.(pa.fields{k}).peci(:,j,:))))]);
+        try
+            xlim([min(min(squeeze(gbsall.gbserror.(pa.fields{k}).peci(:,j,:)))) max(max(squeeze(gbsall.gbserror.(pa.fields{k}).peci(:,j,:))))]);
+        catch
+        end
         if j == 1
             ylabel(pa.fields(k))
         end
@@ -107,13 +113,13 @@ for j = 1:w
     end
 end
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 figure
 w = size(gbs_error,2);
 h = length(pa.fields);
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 for j = 1:w  
     for k = 1:h
@@ -129,14 +135,14 @@ for j = 1:w
     end
 end
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 
 figure
 w = size(gbs_error,2);
 h = length(pa.fields);
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 for j = 1:w  
     for k = 1:h
@@ -152,13 +158,13 @@ for j = 1:w
     end
 end
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 figure
 w = size(gbs_error,2);
 h = length(pa.fields);
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
 for j = 1:w  
     for k = 1:h
@@ -174,7 +180,14 @@ for j = 1:w
     end
 end
 set(gcf,'Color',[1 1 1])
-set(gcf,'Position',[100 100 (420*w) (315*h)])
+set(gcf,'Position',[100 100 (210*w) (157*h)])
 
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 save(['gbs_E0E3' type '_ALL'],'gbsall')
+
+fig = 1:5;
+fignames = {'gbs_sj_errors','gbs_sj_perc_errors','gbs_group_errors','gbs_group_perc_errors','gbs_sj_error_ci'};
+figprefix = '';
+filedir = [datadir type '_noL/plot'];
+
+rd_saveAllFigs(fig,fignames,figprefix, filedir)

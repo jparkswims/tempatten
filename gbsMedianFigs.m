@@ -6,9 +6,9 @@ basedir = '/Users/jakeparker/Documents/MATLAB';
 eind = [1:9 12 13];
 
 cd(basedir)
-load(['E0E3' type '_12_12_17.mat'])
+load(['E0E3' type '_noL.mat'])
 eval(['pa = pa_' type ';'])
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 load(['gbs_E0E3' type '_ALL'])
 
 conditions = reshape(gbsall.fields,2,length(gbsall.fields)/2)';
@@ -16,7 +16,7 @@ conditions = reshape(conditions,3,length(gbsall.fields)/3);
 
 for ss = 1:length(gbsall.subjects)
     for ff = 1:length(gbsall.fields)
-        gbsall.(gbsall.subjects{ss}).(gbsall.fields{ff}).glm_medians = nanmedian(gbsall.(gbsall.subjects{ss}).(gbsall.fields{ff}).glm_params,1);
+        gbsall.(gbsall.subjects{ss}).(gbsall.fields{ff}).glm_medians = nanmedian(gbsall.(gbsall.subjects{ss}).(gbsall.fields{ff}).glmparams,1);
     end
 end
 
@@ -165,13 +165,13 @@ end
 fig = 1:4;
 fignames = {'gbs_subject_medians_beta_scatter','gbs_subject_medians_latency_scatter','gbs_group_mean_beta','gbs_group_mean_latency'};
 figprefix = '';
-filedir = [datadir type '_all/plot'];
+filedir = [datadir type '_noL/plots'];
 
 rd_saveAllFigs(fig,fignames,figprefix, filedir)
 
 close all
 
-cd([datadir type '_all/fit'])
+cd([datadir type '_noL/fit'])
 save(['gbs_E0E3' type '_ALL'],'gbsall')
 
 if strcmp(type,'tvc')
@@ -336,7 +336,7 @@ if strcmp(type,'tvc')
     fig = 1:12;
     fignames = {'ValidityTargetB','ValidityTargetL','AccuracyTargetB','AccuracyTargetL','ValidityAccuracyB','ValidityAccuracyL','ValidityB','ValidityL','AccuracyB','AccuracyL','TargetB','TargetL'};
     figprefix = '';
-    filedir = [datadir type '_all/plot'];
+    filedir = [datadir type '_noL/plots'];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
@@ -394,7 +394,7 @@ elseif strcmp(type,'ta')
     fig = 1:4;
     fignames = {'AttentionB','AttentionL','TargetB','TargetL'};
     figprefix = '';
-    filedir = [datadir type '_all/plot'];
+    filedir = [datadir type '_noL/plots'];
     
     rd_saveAllFigs(fig,fignames,figprefix, filedir)
     
