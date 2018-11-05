@@ -143,96 +143,147 @@ end
 save('glm_grid_test_out.mat')
 
 %% figures
+close all
 plabels = {'pcB','t1B','t2B','rcB','decB','pcL','t1L','t2L','rcL','tmax','yint'};
 plabels2 = {'pcB','t1B','t2B','rcB','decB','pcL','t1L','t2L','rcL','decL_1','decL_2','tmax','yint'};
+res = [50 50];
+
 
 figure(1)
-heatdists2(inB(:,1),outB(:,1),[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inB(:,1),outB(:,1),[50 50],'1x1','roundlims','normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{1}],'FontSize',24)
-ylabel(['Output ' plabels{1}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figAA.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{1}],'FontSize',24)
+% ylabel(['Output ' plabels{1}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figAA4.svg','-dsvg')
 
 figure(2)
-heatdists2(inB(:,2),outB(:,2),[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inB(:,2),outB(:,2),[50 50],'1x1','roundlims','normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{2}],'FontSize',24)
-ylabel(['Output ' plabels{2}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figBB.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{2}],'FontSize',24)
+% ylabel(['Output ' plabels{2}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figBB4.svg','-dsvg')
 
 figure(3)
-heatdists2(inB(:,3),outB(:,3),[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inB(:,3),outB(:,3),[50 50],'1x1','roundlims','normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{3}],'FontSize',24)
-ylabel(['Output ' plabels{3}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figCC.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{3}],'FontSize',24)
+% ylabel(['Output ' plabels{3}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figCC4.svg','-dsvg')
 
 figure(4)
-heatdists2(inB(:,4),outB(:,4),[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inB(:,4),outB(:,4),[50 50],plabels(1),'1x1','roundlims','normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{4}],'FontSize',24)
-ylabel(['Output ' plabels{4}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figDD.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{4}],'FontSize',24)
+% ylabel(['Output ' plabels{4}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figDD4.svg','-dsvg')
 
 figure(5)
-heatdists2(inB(:,5),outB(:,5),[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inB(:,5),outB(:,5),res,'1x1','roundlims','normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{5}],'FontSize',24)
-ylabel(['Output ' plabels{5}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figEE.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{5}],'FontSize',24)
+% ylabel(['Output ' plabels{5}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figEE4.svg','-dsvg')
+
 
 figure(6)
-heatdists2(inBlocs(:,1)-0,outBlocs(:,1)-0,[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inBlocs(:,1)-0,outBlocs(:,1)-0,res,'range',[-500 500],[-500 500],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{6}],'FontSize',24)
-ylabel(['Output ' plabels{6}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figFF.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{6}],'FontSize',24)
+% ylabel(['Output ' plabels{6}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figFF4.svg','-dsvg')
 
 figure(7)
-heatdists2(inBlocs(:,2)-1000,outBlocs(:,2)-1000,[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inBlocs(:,2)-1000,outBlocs(:,2)-1000,res,'range',[-500 500],[-500 500],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{7}],'FontSize',24)
-ylabel(['Output ' plabels{7}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figGG.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{7}],'FontSize',24)
+% ylabel(['Output ' plabels{7}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figGG4.svg','-dsvg')
+
 
 figure(8)
-heatdists2(inBlocs(:,3)-1250,outBlocs(:,3)-1250,[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inBlocs(:,3)-1250,outBlocs(:,3)-1250,res,'range',[-500 500],[-500 500],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{8}],'FontSize',24)
-ylabel(['Output ' plabels{8}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figHH.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{8}],'FontSize',24)
+% ylabel(['Output ' plabels{8}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figHH4.svg','-dsvg')
+
 
 figure(9)
-heatdists2(inBlocs(:,4)-1750,outBlocs(:,4)-1750,[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(inBlocs(:,4)-1750,outBlocs(:,4)-1750,res,'range',[-500 500],[-500 500],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{9}],'FontSize',24)
-ylabel(['Output ' plabels{9}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figII.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{9}],'FontSize',24)
+% ylabel(['Output ' plabels{9}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figII4.svg','-dsvg')
 
 figure(10)
-heatdists2(intmax,outtmax,[50 50],plabels(1),'roundlims')
+clf
+dist = heatdist(intmax,outtmax,[50 50],'range',[500 2000],[500 2000],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{10}],'FontSize',24)
-ylabel(['Output ' plabels{10}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figJJ.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{10}],'FontSize',24)
+% ylabel(['Output ' plabels{10}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figJJ4.svg','-dsvg')
+
 
 figure(11)
-heatdists2(inyint,outyint,[50 50],plabels(1))
+clf
+dist = heatdist(inyint,outyint,res,'range',[-0.04 0.04],[-0.04 0.04],'normalize',1);
 set(gcf,'Resize','off')
 set(gcf,'Position',[100 100 400 315])
-xlabel(['Input ' plabels{11}],'FontSize',24)
-ylabel(['Output ' plabels{11}],'FontSize',24)
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figKK.pdf','-dpdf','-opengl')
+% xlabel(['Input ' plabels{11}],'FontSize',24)
+% ylabel(['Output ' plabels{11}],'FontSize',24)
+set(gca,'FontSize',18)
+pbaspect([1 1 1])
+colorbar
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figKK4.svg','-dsvg')
 %set(gcf,'PaperPosition',[0 0 2800/150 315/150])
 
 

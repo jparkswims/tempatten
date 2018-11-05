@@ -1,4 +1,4 @@
-function output = blinkinterp(trial,th1,th2,bwindow,betblink)
+function output = blinkinterp(trial,samplerate,th1,th2,bwindow,betblink)
 
 %Jake Parker 2016
 % 
@@ -11,7 +11,7 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 %
 %This code only works if blinks are recorded as zeros preceded by a sharp
 %drop in pupil size values and followed by a sharp rise in pupil size. Also
-%of note, code developed with a 1K sample rate in mind (1 data point for
+%of note, code developed with a 1K Hz sample rate in mind (1 data point for
 %each ms).
 %
 %Blinks are detected by first finding the beginning and end location of
@@ -44,20 +44,22 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 %inputs: (values in parantheses relfect recommended values)
 %   trial = vector time series of pupil size
 %
-%   th1 = (5)velocity threshold of pupil onset detection (set as a positive
+%   samplerate = sample rate in Hz
+%
+%   th1 = (5) velocity threshold of pupil onset detection (set as a positive
 %   number, but is really negative)
 %
-%   th2 = (3)velocity threshold of pupil offset detection (is positive in both
+%   th2 = (3) velocity threshold of pupil offset detection (is positive in both
 %   input and in script) (pupil offset is more gradual than
 %   onset, so more sensitive threshold needed)
 %
-%   bwindow = (50)number of data points away from zero region program looks for
+%   bwindow = (50) time in ms from zero region program looks for
 %   blink onset, offset. This number should be restricted in general to
 %   avoid points not associated with the blink from being chosen. It also
 %   should be less than betblink to avoid the program from getting confused
 %   by data associated with other blinks.
 %
-%   betblink = (75)the minimum number of consecutive data points required
+%   betblink = (75) the minimum duration in ms required
 %   to form a valid region of data. This prevents small interblink
 %   regions of fluctuating data from being included in the trial and
 %   affecting the interpolations. betblink is also used to define the max
@@ -67,6 +69,12 @@ function output = blinkinterp(trial,th1,th2,bwindow,betblink)
 %
 %output:
 %   output = trial with blink regions removed and interpolated
+
+sf = 1000/samplerate;
+th1 = th1*sf;
+th2 = th2*sf;
+bwindow = bwindow/sf;
+betblink = betblink/sf;
 
 if all(trial) == 0  %check to see if blink regions (zeros) exist in trial
     

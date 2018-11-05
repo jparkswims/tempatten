@@ -1,19 +1,19 @@
 %pa_paper_figs
 close all
 clear all
-set(0, 'DefaultTextInterpreter', 'none')
 
 %%
 scale = 100;
 window = [-500 3500];
-h = hpupil(-200:window(2),10.1,930,0,'max');
+h = hpupil(0:window(2),10.1,930,0,'max');
 %h(h==0) = [];
 %h(3701:end) = [];
 
 figure(1)
+clf
 hold on
 plot([930 930],[0 1.2],'--','color',[0.5 0.5 0.5],'LineWidth',2)
-plot(-200:3500,h*scale,'k','LineWidth',2)
+plot(0:3500,h*scale,'k','LineWidth',2)
 xlim([-500 4000])
 ylim([0 1.2])
 xlabel('Time (ms)','FontSize',20)
@@ -23,9 +23,9 @@ set(gca,'TickDir','out')
 pbaspect([2 1 1])
 set(gca,'FontSize',18)
 set(gcf,'Color',[1 1 1])
-%set(gcf,'Position',[100 100 800 600])
+set(gcf,'Position',[100 100 600 320])
 box off
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figA.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figA.svg','-dsvg')
 
 %%
 load E0E3tvc_32M.mat
@@ -86,7 +86,10 @@ cueDur = 200;
     'max');
 [~, X] = glm_calc(pwind,B,Blocs,{'stick' 'stick' 'stick' 'stick' 'box'},tmax,yint,'max');
 
+%%
+
 figure(2)
+clf
 hold on
 plotboxes([-200 0], [-.02 .12]*scale, baselineColor)
 plotboxes([pa_tvc.locs' (pa_tvc.locs+[cueDur targetDur targetDur cueDur])'],ylim, grayBoxColor)
@@ -113,8 +116,8 @@ box off
 legend(h1,'data','model')
 legend boxoff
 set(gcf,'Color',[1 1 1])
-%set(gcf,'Position',[100 100 800 600])
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figB.pdf','-dpdf')
+set(gcf,'Position',[100 100 600 320])
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figB.svg','-dsvg')
 
 %print('samplefig.pdf','-dpdf')
 
@@ -141,11 +144,12 @@ box off
 xlabel('Time (ms)','FontSize',20)
 ylabel('Amplitude (a.u.)','FontSize',20)
 xlim([-500 4000])
+set(gcf,'Position',[100 100 600 320])
 set(gcf,'Color',[1 1 1])
 legend([h1 h2 h3 h4 h5],'precue','T1','T2','response cue','decision')
 legend boxoff
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figC.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figC.svg','-dsvg')
 
 %%
 dataDir = '/Users/jakeparker/Google Drive/TA_Pupil/Data/gbs_plot_work.mat';
@@ -163,6 +167,7 @@ U2 = sems;
 
 %amplitude and yint group mean bootstrap medians by experiment
 figure(4)
+clf
 hold on
 plot([0 7],[0 0],'--','color',[0.5 0.5 0.5])
 p = uncertplot(4,[mean(mean(smeds(:,:,exp1),1),3) ; mean(mean(smeds(:,:,exp2),1),3)],[mean(mean(mlci(:,:,exp1),1),3) ; mean(mean(mlci(:,:,exp2),1),3)],[mean(mean(muci(:,:,exp1),1),3) ; mean(mean(muci(:,:,exp2),1),3)],1,[1:5 11],1,regcolors,markercolors,shapes,xlab,'jitter','1by1','E2',L2,U2);
@@ -174,8 +179,8 @@ box off
 %xlabel('Time (ms)','FontSize',20)
 ylabel('Amplitude (a.u.)','FontSize',20)
 set(gca,'TickDir','out')
-set(gca,'XTickLabels',amplabs)
-rotateXLabels(gca,45)
+set(gca,'XTickLabel',amplabs)
+%rotateXLabels(gca,45)
 pbaspect([2 1 1])
 xlim([0 7])
 set(gcf,'Position',[100 100 800 400])
@@ -201,7 +206,7 @@ set(gca,'FontSize',18)
 box off
 ylabel('Latency relative to event (ms)','FontSize',18)
 set(gca,'TickDir','out')
-set(gca,'XTickLabels',latlabs,'XTickLabelInterpreter','latex','XTickLabelRotation',45)
+set(gca,'XTickLabels',latlabs)
 pbaspect([2 1 1])
 hold on
 set(gcf,'Position',[100 100 800 400])
@@ -237,25 +242,24 @@ print('/Users/jakeparker/Documents/tempatten/paperfigs/figG.pdf','-dpdf')
 %%
 
 figure(8)
+clf
 %latency and tmax group mean bootstrap medians by experiment
 subplot(1,5,[1,2,3,4])
 p = uncertplot(8,[mean(mean(smeds(:,:,exp1),1),3) ; mean(mean(smeds(:,:,exp2),1),3)],[mean(mean(mlci(:,:,exp1),1),3) ; mean(mean(mlci(:,:,exp2),1),3)],[mean(mean(muci(:,:,exp1),1),3) ; mean(mean(muci(:,:,exp2),1),3)],1,6:9,1,regcolors,markercolors,shapes,xlab,'jitter','1by1','E2',L2,U2);
-%title('Latency and tmax group mean bootstrap medians')
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 box off
-%xlabel('Re (ms)','FontSize',20)
 ylabel('Latency relative to event (ms)','FontSize',18)
 set(gca,'TickDir','out')
 hold on
 plot([xl(1) xl(2)],[0 0],'--','color',[0.5 0.5 0.5])
 pbaspect([2 1 1])
-set(gca,'XTickLabels',latlabs)
-rotateXLabels(gca,45)
+set(gca,'XTickLabel',latlabs)
+xtickangle(45)
+%rotateXLabels(gca,45)
 
 subplot(1,5,5)
 p = uncertplot(8,[mean(mean(smeds(:,:,exp1),1),3) ; mean(mean(smeds(:,:,exp2),1),3)],[mean(mean(mlci(:,:,exp1),1),3) ; mean(mean(mlci(:,:,exp2),1),3)],[mean(mean(muci(:,:,exp1),1),3) ; mean(mean(muci(:,:,exp2),1),3)],1,10,1,{[0 0 0]},[{[0 0 0]} {[1 1 1]}],shapes,xlab,'jitter','1by1','E2',L2,U2);
-%title('Amplitude and y-intercept group mean bootstrap medians')
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'YAxisLocation','right')
 ylabel('Time (ms)','FontSize',18)
 box off
@@ -263,28 +267,31 @@ box off
 set(gca,'TickDir','out')
 ylim([500 1500])
 xlim([0.5 1.5])
-pbaspect([1 2.55 1])
-set(gca,'XTickLabels','t_max')
-rotateXLabels(gca,45)
-set(gcf,'Position',[100 100 600 300])
+pbaspect([1 2.89 1])
+set(gca,'XTickLabel','t_{max}')
+xtickangle(45)
+%rotateXLabels(gca,45)
+set(gcf,'Position',[100 100 600 320])
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figH.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figH.svg','-dsvg')
 
 %%
 figure(18)
+clf
 %latency and tmax group mean bootstrap medians by experiment
 subplot(1,6,[1,2,3,4,5])
+hold on
+plot([0 7],[0 0],'--','color',[0.5 0.5 0.5])
 p = uncertplot(18,[mean(mean(smeds(:,:,exp1),1),3) ; mean(mean(smeds(:,:,exp2),1),3)],[mean(mean(mlci(:,:,exp1),1),3) ; mean(mean(mlci(:,:,exp2),1),3)],[mean(mean(muci(:,:,exp1),1),3) ; mean(mean(muci(:,:,exp2),1),3)],1,[1:5 11],1,regcolors,markercolors,shapes,xlab,'jitter','1by1','E2',L2,U2);
 legend(p,'Discrimination','Estimation');
 xl = xlim;
 legend boxoff
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 box off
-%xlabel('Time (ms)','FontSize',20)
 ylabel('Amplitude (a.u.)','FontSize',18)
 set(gca,'TickDir','out')
 set(gca,'XTickLabels',amplabs)
-rotateXLabels(gca,45)
+xtickangle(45)
 pbaspect([2 1 1])
 xlim(xl)
 ylim([-1 8])
@@ -292,17 +299,16 @@ ylim([-1 8])
 subplot(1,6,6)
 p = uncertplot(18,[mean(mean(smeds(:,:,exp1),1),3) ; mean(mean(smeds(:,:,exp2),1),3)],[mean(mean(mlci(:,:,exp1),1),3) ; mean(mean(mlci(:,:,exp2),1),3)],[mean(mean(muci(:,:,exp1),1),3) ; mean(mean(muci(:,:,exp2),1),3)],1,11,1,{[0 0 0]},[{[0 0 0]} {[1 1 1]}],shapes,xlab,'jitter','1by1','E2',L2,U2);
 %title('Amplitude and y-intercept group mean bootstrap medians')
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'YAxisLocation','right')
 set(gca,'XTick',[])
 box off
-%xlabel('Time (ms)','FontSize',20)
 set(gca,'TickDir','out')
 xlim([0.5 1.5])
 pbaspect([1 2.4 1])
-set(gcf,'Position',[100 100 750 300])
+set(gcf,'Position',[100 100 600 320])
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figH2.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figH2.svg','-dsvg')
 
 
 
@@ -312,8 +318,10 @@ paramcolors = [regcolors{1}; regcolors{2}; regcolors{3}; regcolors{4}; regcolors
 
 %amplitude box and whisker
 figure(9)
+clf
 subplot(1,6,[1,2,3,4,5])
 hold on
+plot([0 7],[0 0],'--','color',[0.5 0.5 0.5])
 xx = 1;
 for pp = [1:5 11]
     bplot(exparams(:,pp),xx,'nomean','nooutliers','color',paramcolors(pp,:));
@@ -321,13 +329,14 @@ for pp = [1:5 11]
 end
 pbaspect([2 1 1])
 xl = xlim;
-set(gcf,'Position',[100 100 750 300])
-set(gca,'FontSize',14)
+set(gcf,'Position',[100 100 600 320])
+set(gca,'FontSize',16)
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
 set(gca,'XTick',1:6)
-set(gca,'XTickLabel',xlab([1:5 11]))
+set(gca,'XTickLabel',amplabs)
+xtickangle(45)
 ylabel('Amplitude (a.u.)','FontSize',18)
 pbaspect([2 1 1])
 ylim([-1 4])
@@ -338,7 +347,7 @@ bplot(exparams(:,11),'nomean','nooutliers','color',[0 0 0]);
 xlim([0.5 1.5])
 set(gca,'YAxisLocation','right')
 ylim([-.01 .01])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
@@ -347,7 +356,7 @@ set(gca,'XTick',[])
 pbaspect([1 2.4 1])
 %set(gcf,'PaperPosition',[100 100 750 300])
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figI.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figI.svg','-dsvg')
 %saveas(gcf,'/Users/jakeparker/Documents/tempatten/paperfigs/figI.png')
 
 %%
@@ -370,6 +379,7 @@ lminus = repmat([0 1000 1250 1750],100,1);
 
 %latency and tmax box and whisker
 figure(11)
+clf
 subplot(1,5,[1,2,3,4])
 hold on
 xx = 1;
@@ -382,46 +392,75 @@ pbaspect([2 1 1])
 %xl = xlim;
 plot([0 5],[0 0],'--','color',[0.5 0.5 0.5])
 xlim([0 5])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',1:4)
-set(gca,'XTickLabel',xlab(6:9))
+set(gca,'XTickLabel',latlabs)
+xtickangle(45)
 ylabel('Latency relative to event (ms)','FontSize',18)
 
 subplot(1,5,5)
 bplot(exparams(:,10),'nomean','nooutliers','color',[0 0 0]);
 set(gca,'YAxisLocation','right')
-set(gcf,'Position',[100 100 600 300])
+ylabel('Time (ms)','FontSize',18)
+set(gcf,'Position',[100 100 600 320])
 xlim([0.5 1.5])
 ylim([500 1500])
 pbaspect([1 2.5 1])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',1)
-set(gca,'XTickLabel',xlab(10))
+set(gca,'XTickLabel','t_{max}')
+xtickangle(45)
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
-pbaspect([1 2.5 1])
+pbaspect([1 2.89 1])
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figK.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figK.svg','-dsvg')
 
 %%
 smedmeans = squeeze(mean(smeds,1))';
 smedporder = nan(size(smedmeans,1),size(smedmeans,2));
 
+
 for pp = 1:size(smedmeans,2)
     
     [~,sortind] = sort(smedmeans(:,pp));
     
-     for ss = 1:10
-         
-         smedporder((2*ss)-1,pp) = sortind(ss);
-         smedporder(2*ss,pp) = sortind(ss+11);
-         
-     end
-     smedporder(21,pp) = sortind(11);
+%      for ss = 1:10
+%          
+%          smedporder((2*ss)-1,pp) = sortind(ss);
+%          smedporder(2*ss,pp) = sortind(ss+11);
+%          
+%      end
+%      smedporder(21,pp) = sortind(11);
+
+    for ss = 1:21
+        smedporder(ss,pp) = sortind(ss);
+    end
+        
 end 
 
-sjcolors = distinguishable_colors(21);
+sjcolors = [0.5172    0.5172    1.0000; ...
+         0         0    0.1724; ...
+         0    1.0000         0; ...
+    1.0000         0         0; ...
+    1.0000    0.1034    0.7241; ...
+    1.0000    0.8276         0; ...
+         0    0.3448         0; ...
+         0         0    1.0000; ...
+    0.6207    0.3103    0.2759; ...
+         0    1.0000         0; ...
+         0    0.5172    0.5862; ...
+    1.0000         0         0; ...
+    0.5862    0.8276    0.3103; ...
+    0.9655    0.6207    0.8621; ...
+    0.8276    0.0690    1.0000; ...
+    0.4828    0.1034    0.4138; ...
+    0.9655    0.0690    0.3793; ...
+    1.0000    0.7586    0.5172; ...
+    0.1379    0.1379    0.0345; ...
+         0         0    1.0000; ...
+    0.9655    0.5172    0.0345];
 jitw = 0.7;
 sjjit = linspace(0-(jitw/2),jitw/2,size(smeds,3));
 condcolors = [t1colors{1}; ...
@@ -433,27 +472,39 @@ condcolors = [t1colors{1}; ...
 
 %amplitude and yint fits scatter
 figure(12)
+clf
 subplot(1,6,[1,2,3,4,5])
 hold on
+plot([0 7],[0 0],'--','color',[0.5 0.5 0.5])
+h1 = plot(10,10,'ko','MarkerFaceColor',[0 0 0]);
+h2 = plot(11,11,'ko','MarkerFaceColor',[1 1 1]);
 for cc = 1:size(smeds,1)
     tempparams = squeeze(smeds(cc,:,:))';
     for ss = 1:size(smeds,3)
         xx = 1;
         for pp = [1:5 11]
-            plot(xx + sjjit(ss),tempparams(smedporder(ss,pp),pp),'o','color',sjcolors(smedporder(ss,pp),:),'MarkerFaceColor',sjcolors(smedporder(ss,pp),:),'MarkerSize',3)
+            if smedporder(ss,pp) < 10
+                markerfacecolor = sjcolors(smedporder(ss,pp),:);
+            elseif smedporder(ss,pp) >= 10
+                markerfacecolor = [1 1 1];
+            end
+            plot(xx + sjjit(ss),tempparams(smedporder(ss,pp),pp),'o','color',sjcolors(smedporder(ss,pp),:),'MarkerFaceColor',markerfacecolor,'MarkerSize',4)
             xx = xx+1;
         end
     end
 end
-pbaspect([2 1 1])
+pbaspect([4 1 1])
 ylim([-2 15])
 xlim([0 7])
 box off
+legend([h1 h2],'Discrimination','Estimation')
+legend boxoff
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',1:6)
-set(gca,'XTickLabel',xlab([1:5 11]))
+set(gca,'XTickLabel',amplabs)
+xtickangle(45)
 %set(gcf,'Position',[100 100 800 400])
 ylabel('Amplitude (a.u.)','FontSize',18)
 
@@ -462,21 +513,26 @@ hold on
 for cc = 1:size(smeds,1)
     tempparams = squeeze(smeds(cc,:,:))';
     for ss = 1:size(smeds,3)
-        plot(1 + sjjit(ss),tempparams(smedporder(ss,11),11),'o','color',sjcolors(smedporder(ss,11),:),'MarkerFaceColor',sjcolors(smedporder(ss,11),:),'MarkerSize',3)
+        if smedporder(ss,11) < 10
+            markerfacecolor = sjcolors(smedporder(ss,11),:);
+        elseif smedporder(ss,11) >= 10
+            markerfacecolor = [1 1 1];
+        end
+        plot(1 + sjjit(ss),tempparams(smedporder(ss,11),11),'o','color',sjcolors(smedporder(ss,11),:),'MarkerFaceColor',markerfacecolor,'MarkerSize',4)
     end
 end
-pbaspect([1 2.4 1])
+pbaspect([1 1.2 1])
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',[])
 %set(gca,'XTickLabel',xlab(11))
-set(gcf,'Position',[100 100 600 300])
+set(gcf,'Position',[100 100 1000 320])
 xlim([0.5 1.5])
 set(gca,'YAxisLocation','right')
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figL.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figL.svg','-dsvg')
 
 % jitw = 0.4;
 % condjit = linspace(0-(jitw/2),jitw/2,size(smeds,1));
@@ -500,25 +556,33 @@ print('/Users/jakeparker/Documents/tempatten/paperfigs/figL.pdf','-dpdf')
 %%
 %latency fits scatter
 figure(13)
+clf
 subplot(1,5,[1,2,3,4])
 hold on
+plot([0 5],[0 0],'--','color',[0.5 0.5 0.5])
 for cc = 1:size(smeds,1)
     tempparams = squeeze(smeds(cc,:,:))';
     for ss = 1:size(smeds,3)
         xx = 1;
         for pp = 6:9
-            plot(xx + sjjit(ss),tempparams(smedporder(ss,pp),pp),'o','color',sjcolors(smedporder(ss,pp),:),'MarkerFaceColor',sjcolors(smedporder(ss,pp),:),'MarkerSize',4)
+            if smedporder(ss,pp) < 10
+                markerfacecolor = sjcolors(smedporder(ss,pp),:);
+            elseif smedporder(ss,pp) >= 10
+                markerfacecolor = [1 1 1];
+            end
+            plot(xx + sjjit(ss),tempparams(smedporder(ss,pp),pp),'o','color',sjcolors(smedporder(ss,pp),:),'MarkerFaceColor',markerfacecolor,'MarkerSize',4)
             xx = xx+1;
         end
     end
 end
-pbaspect([2 1 1])
+pbaspect([4 1 1])
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',1:4)
-set(gca,'XTickLabel',xlab(6:9))
+set(gca,'XTickLabel',latlabs)
+xtickangle(45)
 %set(gcf,'Position',[100 100 800 400])
 ylabel('Latency relative to event (ms)','FontSize',18)
 ylim([-500 500])
@@ -528,22 +592,29 @@ hold on
 for cc = 1:size(smeds,1)
     tempparams = squeeze(smeds(cc,:,:))';
     for ss = 1:size(smeds,3)
-        plot(1 + sjjit(ss),tempparams(smedporder(ss,10),10),'o','color',sjcolors(smedporder(ss,10),:),'MarkerFaceColor',sjcolors(smedporder(ss,10),:),'MarkerSize',4)
+        if smedporder(ss,10) < 10
+            markerfacecolor = sjcolors(smedporder(ss,10),:);
+        elseif smedporder(ss,10) >= 10
+            markerfacecolor = [1 1 1];
+        end
+        plot(1 + sjjit(ss),tempparams(smedporder(ss,10),10),'o','color',sjcolors(smedporder(ss,10),:),'MarkerFaceColor',markerfacecolor,'MarkerSize',4)
     end
 end
-pbaspect([1 2.57 1])
+pbaspect([1 1.24 1])
 box off
 set(gca,'TickDir','out')
 set(gcf,'Color',[1 1 1])
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',1)
-set(gca,'XTickLabel',xlab(10))
-set(gcf,'Position',[100 100 600 400])
+set(gca,'XTickLabel','t_{max}')
+xtickangle(45)
+ylabel('Time (ms)')
+set(gcf,'Position',[100 100 1000 320])
 xlim([0.5 1.5])
 set(gca,'YAxisLocation','right')
 
 
-print('/Users/jakeparker/Documents/tempatten/paperfigs/figM.pdf','-dpdf')
+print('/Users/jakeparker/Documents/tempatten/paperfigs/figM.svg','-dsvg')
 
 %%
 %yint fits scatter

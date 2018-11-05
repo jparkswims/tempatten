@@ -9,6 +9,7 @@ for r = 1:pa.runs(s)
     
     %E0s7-9
     %a = dir(sprintf('%s/%s/*%d_run0%d*.edf',pac.TAeyepath, pac.subjects{i},pac.locs(3),r));
+    sprintf(edffind,TAeyepath,subject,pa.locs(end-1),r)
     if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         a = dir(sprintf(edffind,TAeyepath,subject,pa.locs(end-1),r));
     elseif strcmp(study,'E5')
@@ -74,10 +75,10 @@ for r = 1:pa.runs(s)
     
     if strcmp(study,'E0') || strcmp(study,'E3') || strcmp(study,'E0E3')
         if length(a) == 1
-            [trialmatx, rawpa] = eventtimeseries(eye,'pa','EVENT_CUE',pa.window,1000,0);
+            [trialmatx, rawpa] = eventtimeseries(eye,'gx','EVENT_CUE',pa.window,1000,0);
         else
             for k = 1:length(a)
-                eval(sprintf('[trialmatx%d rawpa%d] = eventtimeseries(eye%d,''pa'',''EVENT_CUE'',pa.window,1000,0);',k,k,k))
+                eval(sprintf('[trialmatx%d rawpa%d] = eventtimeseries(eye%d,''gx'',''EVENT_CUE'',pa.window,1000,0);',k,k,k))
             end
             trialmatx2(end,:) = [];
             trialmatx = [trialmatx2 ; trialmatx1];
@@ -128,8 +129,9 @@ for r = 1:pa.runs(s)
 
     pa.dectime(s) = (median(trialsPresented(:,irt)) + expt.p.respCueSOA + expt.p.respGoSOA) * 1000;
     
+    %blink interpolation
     for j = 1:size(trialmatx,1)
-        trialmatx(j,:) = blinkinterp(trialmatx(j,:),5,3,50,75);
+        trialmatx(j,:) = blinkinterp(trialmatx(j,:),1000,5,3,50,75);
     end
     
     figure
@@ -148,6 +150,7 @@ for r = 1:pa.runs(s)
     
     base = nanmean(trialmatx(:,(-pa.window)-pa.baseline+1:-pa.window),2);
     
+    %normalization
     for j = 1:size(trialmatx,1)
         trialmatx(j,1:pa.duration) = (trialmatx(j,1:pa.duration)-base(j))/base(j);
     end

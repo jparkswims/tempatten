@@ -1,0 +1,83 @@
+function model = pa_model()
+% pa_model
+% model = pa_model()
+% 
+% Creates a structure with all of the fields that must be filled in by the
+% user to create a specific model. This structure provides information to
+% functions about the form of the model.
+% 
+% Jacob Parker 2018
+
+%% preallocate model
+model = struct('window',[]);
+
+%% model time window and sample rate
+% a two element vector delineating the end and start times (in ms) for the
+% model (can be different than the trialwindow given for actual data)
+%   > for example, if your trials are epoched -500 to 3500 ms, you might
+%     only be interested in modeling 0 to 3500 ms
+model.window = [];
+
+% the sample rate (in Hz) you would like the model to work with (the
+% samplerate in a sj structure will be used instead if used in a function
+% that uses them)
+model.samplerate = [];
+
+%% set parameters on/off for model
+model.ampflag = true;       %amplitude (events AND boxes) to be estimated as a parameter: true/false
+model.latflag = true;       %latency to be estimated as a parameter (not for boxes): true/false
+model.tmaxflag = true;      %tmax to be estimated as a parameter: true/false
+model.yintflag = true;      %y-intercept to be estimated as a parameter: true/false
+
+%% define instantaneous events/box regressors
+% vectors containing the time of occurrence (in ms) for each
+% instantaneous event and cell array of corresponding labels (optional)
+model.eventtimes = [];
+model.eventlabels = cell(1);
+
+% cell array of two element vectors, each containing the start and end
+% times (in ms) for each box function regressor and cell array of
+% corresponding labels (optional)
+% **** Should the latency of this be allowed to be estimated? ****
+model.boxtimes = cell(1);
+model.boxlabels = cell(1);
+
+%% define parameter boundaries for constrained optimization
+% cell arrays of two element vectors, each containing the lower and upper
+% bounds (in that order) of each events's and boxes's amplitude values for the
+% constrained optimization (not important if amplitude not to be estimated)
+%   >if you want an event to be unbounded, use [-Inf Inf]
+model.ampbounds = cell(1);
+model.boxampbounds = cell(1);
+
+% cell arrary of two element vectors, each containing the lower and upper
+% bounds (in that order) of each events's latency value for the
+% constrained optimization (not important if amplitude not to be estimated)
+% REMINDER: latency refers to the time shift (in ms) relative to a
+% regressor's actual event time (entered in model.eventtimes), NOT the actual
+% time values of the event (a value of 0 means pupil response starts at the 
+% same time as the actual event)
+model.latbounds = cell(1);
+
+% two element vectors containing the lower and upper bounds (in that
+% order) of the tmax and y-intercept values for the constrained optimization 
+% (not important if tmax and/or y-intercept not to be estimated)
+model.tmaxbounds = [];
+model.yintbounds = [];
+
+
+%% define default parameter values
+% vectors of default amplitude values, one for each event and box regressor
+% (must be provided if not being estimated as a parameter in the model)
+model.ampvals = [];
+model.boxamps = [];
+
+% vector of default latency values, one for each event
+% (must be provided if not being estimated as a parameter)
+model.latvals = [];
+
+% default tmax (in ms) and y-intercept values (only one value each) (must
+% be provided if not being estimated)
+model.tmaxval = [];
+model.yintval = [];
+

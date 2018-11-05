@@ -1,8 +1,8 @@
 close all
 
 
-groups = 2; %0 = t1,t2,n    %1 tvc  %2 ta
-gaze = 0;
+groups = 0; %0 = t1,t2,n    %1 tvc  %2 ta
+gaze = 1;
 
 study = input('For E0 enter 0\nFor E2 enter 2\nFor E3 enter 3\nFor E5 enter 5\nSelect Study:');
 
@@ -11,8 +11,8 @@ homedir = '/Users/jakeparker/Documents/MATLAB';
 if study == 0
     
     subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw'}; %E0 'ma' 'ad' 'bl' 'ec' 'ty' 'vp' 'zw'
-    TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
-    TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E0_cb/';
+    TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/';
+    TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E0_cb/';
     trials = 640;
     t1time = 1000;
     t2time = 1250;
@@ -21,7 +21,7 @@ if study == 0
     t2p = 0.4;
     ntp = 0.2;
     runs = 2;
-    window = [-400 3000];
+    window = [-500 3500];
     duration = window(2)-window(1)+1;
     if groups == 0
         if gaze == 0
@@ -68,12 +68,54 @@ if study == 0
     soas = 250;
     mblink = 5;
 
+elseif study == 0.3
+    subjects = {'vp' 'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp' 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
+    window = [0 1750];
+    soas = 250;
+    duration = window(2)-window(1)+1;
+    t1time = 1000;
+    t2time = 1250;
+    postcue = t2time + 500;
+    locs = [0 1000 1250 1750];
+    trials = 640;
+    t = 2;
+    runs = [2 2 2 2 2 2 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4];
+    baseline = 200;
+    studystr = 'E0E3';
+    TAeyepaths = {'/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E0_cb/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E2_SOA_cbD6/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/pilot/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/'};
+    TAdatapaths = {'/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E0_cb/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E2_SOA_cbD6/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/pilot/'...
+        '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E3_adjust/'};
+    pathsub = {[1:6] [7 8] [9] [10:21]};
+    edffind = '%s/%s/*%d_run0%d*.edf';
+    matfind = '%s/%s/*%d_run0%d*Temp*.mat';
+    if groups == 0
+        if gaze == 0
+            trialmat = nan(trials,duration,length(subjects));
+            t1 = nan(trials*.4,duration,length(subjects));
+            t1norm = nan(trials*.4,duration,length(subjects));
+            t2 = nan(trials*.4,duration,length(subjects));
+            t2norm = nan(trials*.4,duration,length(subjects));
+            neutral = nan(trials*.2,duration,length(subjects));
+            neutralnorm = nan(trials*.2,duration,length(subjects));
+        elseif gaze == 1
+            gtrialmat = nan(trials,duration,length(subjects));
+            gt1 = nan(trials*.4,duration,length(subjects));
+            gt2 = nan(trials*.4,duration,length(subjects));
+            gneutral = nan(trials*.2,duration,length(subjects));
+        end
+    end
+    
 elseif study == 3
     
     subjects = {'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'}; %E3 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'
     % subject id sample rate = 500
-    TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
-    TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
+    TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E3_adjust/';
+    TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E3_adjust/';
     trials = 640;
     t1time = 1000;
     t2time = 1250;
@@ -124,8 +166,8 @@ elseif study == 2
     % subject vp run 1 soa 400 trialmatx incorrectly loaded for some
     % reason, 325 in length instead of 160
     % subject ho run 1 soa 450 trialmatx length 333
-    pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/pilot/';
-    pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/pilot/';
+    pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/pilot/';
+    pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/pilot/';
     pac.filedir = '/Users/jakeparker/Documents/tempatten/E0_cb/test_data';
     pac.window = [-400 3000];
     pac.duration = pac.window(2)-pac.window(1)+1;
@@ -144,23 +186,40 @@ elseif study == 2
 elseif study == 5
     
     if groups == 0
-        pac.subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
-        pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
-        pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
-        pac.filedir = '/Users/jakeparker/Documents/tempatten/E5/t1-t2-t3-n';
-        pac.window = [-400 3500];
-        pac.duration = pac.window(2)-pac.window(1)+1;
-        pac.locs = [0 1000 1250 1500 2000];
-        trials = 960;
-        pac.trialmat = nan(trials,pac.duration,length(pac.subjects));
-%         tp = (4/5)*(1/3);
-%         np = 1/5;
-        for lol = 1:length(pac.subjects)
-            pac.t1.(pac.subjects{lol}) = [];
-            pac.t2.(pac.subjects{lol}) = [];
-            pac.t3.(pac.subjects{lol}) = [];
-            pac.neutral.(pac.subjects{lol}) = [];
+        if gaze == 1
+            subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
+            window = [0 2000];
+            locs = [0 1000 1250 1500 2000];
+            filedir = ['/Users/jakeparker/Documents/tempatten/E5/' type];
+            trials = 960;
+            t = 3;
+            runs = [1 1 1 1 1 1 1 1 1 1];
+            baseline = 200;
+            TAeyepaths = {'/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/'};
+            TAdatapaths = {'/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/'};
+            pathsub = {[1:10]};
+            edffind = 'lol';
+            matfind = '%s/%s/*run01WW*Temp*.mat';
+            studystr = 'E5';
+            gxy_tempatten
         end
+%         pac.subjects = {'ds' 'gb' 'gb2' 'ht' 'ik' 'jg' 'jp' 'rd' 'xw' 'yz'};
+%         pac.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
+%         pac.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
+%         pac.filedir = '/Users/jakeparker/Documents/tempatten/E5/t1-t2-t3-n';
+%         pac.window = [-400 3500];
+%         pac.duration = pac.window(2)-pac.window(1)+1;
+%         pac.locs = [0 1000 1250 1500 2000];
+%         trials = 960;
+%         pac.trialmat = nan(trials,pac.duration,length(pac.subjects));
+% %         tp = (4/5)*(1/3);
+% %         np = 1/5;
+%         for lol = 1:length(pac.subjects)
+%             pac.t1.(pac.subjects{lol}) = [];
+%             pac.t2.(pac.subjects{lol}) = [];
+%             pac.t3.(pac.subjects{lol}) = [];
+%             pac.neutral.(pac.subjects{lol}) = [];
+%         end
     elseif groups == 1
         tstr = {'t1' 't2' 't3'};
         astr = {'a' 'n' 'u'};
@@ -177,8 +236,8 @@ elseif study == 5
         pa.window = [-400 3500];
         pa.duration = pa.window(2) - pa.window(1) +1;
         pa.locs = [0 1000 1250 1500 2000];
-        pa.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
-        pa.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
+        pa.TAeyepath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/eyedata/E5_T3_cbD15/';
+        pa.TAdatapath = '/Volumes/purplab/EXPERIMENTS/1_Current_Experiments/Rachel/Temporal_Attention/data/E5_T3_cbD15/';
         pa.filedir = '/Users/jakeparker/Documents/tempatten/E5/t-a-c';
         pa.trialmat = nan(pa.trials,pa.duration,length(pa.subjects));
         for hi = 1:length(pa.fields)
@@ -244,9 +303,10 @@ if study ~= 5 && study ~= 2
 else
     if study == 5
         if groups == 0
-            pac = pa_tempattenT3(pac);
+            gxy_tempatten
+%             pac = pa_tempattenT3(pac)
             
-            T3figs(pac)
+%             T3figs(pac)
         elseif groups == 1
             pa = pagroups_tempattenT3(pa);
             
