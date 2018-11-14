@@ -9,7 +9,12 @@ if ~(any(model.window(1) == time)) || ~(any(model.window(2) == time))
 end
 
 if model.ampflag
-    if length(model.eventtimes) ~= length(model.ampbounds)
+    for ii = 1:length(model.eventtimes)
+        if (model.ampvals(ii) < model.ampbounds(1,ii)) || (model.ampvals(ii) > model.ampbounds(2,ii))
+            error('At least one given amplitude value in model.ampvals is outside of its\nbounds according to the info in model.ampbounds')
+        end
+    end
+    if length(model.eventtimes) ~= size(model.ampbounds,2)
         error('Number of event amplitude bounds in model not equal to number of events')
     end
     if length(model.eventtimes) ~= length(model.ampvals)
@@ -22,20 +27,30 @@ else
 end
 
 if model.ampflag
-    if length(model.boxtimes) ~= length(model.boxampbounds)
+    for ii = 1:length(model.boxtimes)
+        if (model.boxampvals(ii) < model.boxampbounds(1,ii)) || (model.boxampvals(ii) > model.boxampbounds(2,ii))
+            error('At least one given box amplitude value in model.boxampvals is outside of its\nbounds according to the info in model.boxampbounds')
+        end
+    end
+    if length(model.boxtimes) ~= size(model.boxampbounds,2)
         error('Number of box amplitude bounds in model not equal to number of boxes')
     end
-    if length(model.boxtimes) ~= length(model.boxamps)
+    if length(model.boxtimes) ~= length(model.boxampvals)
         warning('\nNumber of default box amplitude values does not match number of boxes\nDisregard if you do not plan on using functions that explicitly require amplitude values\n')
     end
 else
-    if length(model.boxtimes) ~= length(model.boxamps)
+    if length(model.boxtimes) ~= length(model.boxampvals)
         error('Number of defualt box amplitudes not equal to number of boxes')
     end
 end
 
 if model.latflag
-    if length(model.eventtimes) ~= length(model.latbounds)
+    for ii = 1:length(model.eventtimes)
+        if (model.latvals(ii) < model.latbounds(1,ii)) || (model.latvals(ii) > model.latbounds(2,ii))
+            error('At least one given latency value in model.latvals is outside of its\nbounds according to the info in model.latbounds')
+        end
+    end
+    if length(model.eventtimes) ~= size(model.latbounds,2)
         error('Number of event latency bounds in model not equal to number of events')
     end
     if length(model.eventtimes) ~= length(model.latvals)
@@ -48,6 +63,9 @@ else
 end
 
 if model.tmaxflag
+    if (model.tmaxval < model.tmaxbounds(1)) || (model.tmaxval > model.tmaxbounds(2))
+        error('Given tmax value in model.tmaxval is outside of its\nbounds according to the info in model.tmaxbounds')
+    end
     if length(model.tmaxbounds) ~= 2
         error('Invalid input for "model.tmaxbounds"')
     end
@@ -61,6 +79,9 @@ else
 end
 
 if model.yintflag
+    if (model.yintval < model.yintbounds(1)) || (model.yintval > model.yintbounds(2))
+        error('Given yint value in model.yintval is outside of its\nbounds according to the info in model.yintbounds')
+    end
     if length(model.yintbounds) ~= 2
         error('Invalid input for "model.yintbounds"')
     end

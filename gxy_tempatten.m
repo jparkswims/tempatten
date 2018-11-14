@@ -125,7 +125,7 @@ for i = 1:length(subjects)
                 trialmatx(j,:) = [];
                 trialsPresented(j,:) = [];
                 trialOrder(j,:) = [];
-            elseif all(trialmatx(j,-window(1):postcue-window(1))) == 0  
+            elseif all(trialmatx(j,-window(1)+1:postcue-window(1)+1)) == 0  
                 trialmatx(j,:) = nan(1,duration);
             end
         end
@@ -140,36 +140,36 @@ for i = 1:length(subjects)
 %         imagesc(trialmatx)
 %         title(sprintf('imagesc (run %d, subject %s)',r,subjects{i}))
         
-        base = nanmean(trialmatx(:,1:-window(1)),2);
+%         base = nanmean(trialmatx(:,1:-window(1)),2);
+%         
+%         for j = 1:size(trialmatx,1)
+%             trialmatx(j,1:duration) = trialmatx(j,1:duration)-base(j);
+%         end
         
-        for j = 1:size(trialmatx,1)
-            trialmatx(j,1:duration) = trialmatx(j,1:duration)-base(j);
-        end
-        
-        idx = find(strcmp(expt.trials_headers,'cuedInterval'));
-        
-        t1x = zeros(length(find(trialsPresented(:,idx) == 1)),duration);
-        t2x = zeros(length(find(trialsPresented(:,idx) == 2)),duration);
-        neutralx = zeros(length(find(trialsPresented(:,idx) == 0)),duration);
-
-        x = 1;
-        y = 1;
-        z = 1;
-
-        %place trials from trialmatx into one of the three condition variables
-        %using information from the .mat file
-        for j = 1:size(trialmatx,1)
-            if trialsPresented(j,idx) == 1
-                t1x(x,:) = trialmatx(j,:);
-                x = x+1;
-            elseif trialsPresented(j,idx) == 2
-                t2x(y,:) = trialmatx(j,:);
-                y = y+1;
-            elseif trialsPresented(j,idx) == 0
-                neutralx(z,:) = trialmatx(j,:);
-                z = z+1;
-            end
-        end
+%         idx = find(strcmp(expt.trials_headers,'cuedInterval'));
+%         
+%         t1x = zeros(length(find(trialsPresented(:,idx) == 1)),duration);
+%         t2x = zeros(length(find(trialsPresented(:,idx) == 2)),duration);
+%         neutralx = zeros(length(find(trialsPresented(:,idx) == 0)),duration);
+% 
+%         x = 1;
+%         y = 1;
+%         z = 1;
+% 
+%         %place trials from trialmatx into one of the three condition variables
+%         %using information from the .mat file
+%         for j = 1:size(trialmatx,1)
+%             if trialsPresented(j,idx) == 1
+%                 t1x(x,:) = trialmatx(j,:);
+%                 x = x+1;
+%             elseif trialsPresented(j,idx) == 2
+%                 t2x(y,:) = trialmatx(j,:);
+%                 y = y+1;
+%             elseif trialsPresented(j,idx) == 0
+%                 neutralx(z,:) = trialmatx(j,:);
+%                 z = z+1;
+%             end
+%         end
 %         figdir = [filedir '/' subjects{i}];            
 %         
 %         fig = [1 2 3];

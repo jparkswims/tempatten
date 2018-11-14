@@ -12,9 +12,12 @@ pa_model_check(model)
 X = X + model.yintval;
 
 hold on
-plot(time,Ycalc,'--','color',[0.5 0.5 0.5])
-plot([model.window(1) model.window(2)],[model.yintval model.yintval]);
-plot(time,X)
+plot(time,Ycalc,'--','color',[0.6 0.6 0.6],'LineWidth',1.5)
+ax = gca;
+ax.ColorOrderIndex = 1;
+plot(time,X,'LineWidth',1.5)
+plot([model.window(1) model.window(2)],[model.yintval model.yintval],'k','LineWidth',1);
 xlim(model.window)
 yl = ylim;
-plot(repmat(model.timevals + model.latvals,2,1),repmat([yl(1) ; yl(2)],1,length(model.timevals)),'--')
+ax.ColorOrderIndex = 1;
+plot(repmat(model.eventtimes + model.latvals,2,1),repmat([yl(1) ; yl(2)],1,length(model.eventtimes)),'--','LineWidth',1)

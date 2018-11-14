@@ -43,21 +43,22 @@ model.boxtimes = cell(1);
 model.boxlabels = cell(1);
 
 %% define parameter boundaries for constrained optimization
-% cell arrays of two element vectors, each containing the lower and upper
-% bounds (in that order) of each events's and boxes's amplitude values for the
-% constrained optimization (not important if amplitude not to be estimated)
-%   >if you want an event to be unbounded, use [-Inf Inf]
-model.ampbounds = cell(1);
-model.boxampbounds = cell(1);
+% 2 by N matrices which contain the lower and upper bounds of each events's
+% and each boxes's amplitude value for the constrained optimization. N is the 
+% number of events or boxes. The lower bounds are in the first row and the 
+% upper bounds are in the second row. (not important if amplitude not to be estimated)
+model.ampbounds = [];
+model.boxampbounds = [];
 
-% cell arrary of two element vectors, each containing the lower and upper
-% bounds (in that order) of each events's latency value for the
-% constrained optimization (not important if amplitude not to be estimated)
+% a 2 by N matrix which contains the lower and upper bounds of each events's
+% latency for the constrained optimization. N is the number of events. 
+% The lower bounds are in the first row and the upper bounds are in the 
+% second row. (not important if latency not to be estimated)
 % REMINDER: latency refers to the time shift (in ms) relative to a
 % regressor's actual event time (entered in model.eventtimes), NOT the actual
 % time values of the event (a value of 0 means pupil response starts at the 
 % same time as the actual event)
-model.latbounds = cell(1);
+model.latbounds = [];
 
 % two element vectors containing the lower and upper bounds (in that
 % order) of the tmax and y-intercept values for the constrained optimization 

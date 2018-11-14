@@ -82,8 +82,8 @@ elseif strcmp(study,'E5')
     t = 3;
     runs = [1 1 1 1 1 1 1 1 1 1];
     baseline = 200;
-elseif strcmp(study,'E0E3')
-    subjects = {'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp' 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
+elseif strcmp(study,'E0E3') %% delete first 'rd' when done
+    subjects = {'rd' 'ma' 'ad' 'bl' 'ec' 'ty' 'zw' 'hl' 'rd' 'jp' 'bl' 'ca' 'ec' 'en' 'ew' 'id' 'jl' 'jx' 'ld' 'ml' 'rd' 'sj'};
     window = [-500 3500];
     locs = [0 1000 1250 1750];
     filedir = ['/Users/jakeparker/Documents/tempatten/E0E3/' type];

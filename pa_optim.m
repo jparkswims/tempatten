@@ -1,6 +1,12 @@
 function optim = pa_optim(data,samplerate,trialwindow,model)
 % pa_optim
-% modelstate = pa_optim(data,model)
+% modelstate = pa_optim(data,samplerate,trialwindow,model)
+
+%OPTIONS
+%optimization options
+optimplotflag = true;
+%NONLONCON?
+%options for pa_cost
 
 modelstate = model;
 sfact = samplerate/1000;
@@ -32,10 +38,6 @@ data = data(datalb:dataub);
 %recalculate time point vector
 time = model.window(1):1/sfact:model.window(2);
 
-%OPTIONS
-%optimization options
-optimplotflag = true;
-
 %MAKE OPTION/AUTOMATICALLY OPTIMIZE?
 %Factors to scale parameters by so that they are of a similar magnitude.
 %Improves performance of the constrained optimization algorithm (fmincon)
@@ -53,30 +55,30 @@ if model.ampflag
     lb = model.ampbounds(1,:) .* ampfact;
     ub = model.ampbounds(2,:) .* ampfact;
     
-    X = [X model.boxampvals] .* ampfact;
-    lb = [lb model.boxampbounds(1,:)] .* ampfact;
-    ub = [ub model.boxampbounds(2,:)] .* ampfact;
+    X = [X model.boxampvals.*ampfact];
+    lb = [lb model.boxampbounds(1,:).*ampfact];
+    ub = [ub model.boxampbounds(2,:).*ampfact];
 end
 
 if model.latflag
-    X = [X model.vals] .* latfact;
-    lb = [lb model.latbounds(1,:)] .* latfact;
-    ub = [ub model.latbounds(2,:)] .* latfact;
+    X = [X model.latvals.*latfact];
+    lb = [lb model.latbounds(1,:).*latfact];
+    ub = [ub model.latbounds(2,:).*latfact];
 end
     
 if model.tmaxflag
-    X = [X model.tmaxval] .* tmaxfact;
-    lb = [lb model.tmaxbounds(1,:)] .* tmaxfact;
-    ub = [ub model.tmaxbounds(2,:)] .* tmaxfact;
+    X = [X model.tmaxval.*tmaxfact];
+    lb = [lb model.tmaxbounds(1).*tmaxfact];
+    ub = [ub model.tmaxbounds(2).*tmaxfact];
 end
 
 if model.yintflag
-    X = [X model.yintval] .* yintfact;
-    lb = [lb model.yintbounds(1,:)] .* yintfact;
-    ub = [ub model.yintbounds(2,:)] .* yintfact;
+    X = [X model.yintval.*yintfact];
+    lb = [lb model.yintbounds(1).*yintfact];
+    ub = [ub model.yintbounds(2).*yintfact];
 end
 
-f = @(X)optim_cost(X,data,model,ampfact,latfact,tmaxfact,yintfact);
+f = @(X)optim_cost(X,data,model);
 
 if optimplotflag
     options = optimoptions('fmincon','Display','off','OutputFcn',@fmincon_outfun);
@@ -85,15 +87,18 @@ else
 end
 
 modelstate = model;
+SSt = sum((data-nanmean(data)).^2);
 
-[X, cost] = fmincon(f,X,[],[],[],[],lb,ub,nonlcon,options);
+[X, cost] = fmincon(f,X,[],[],[],[],lb,ub,[],options);
 
-optim = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',[],'boxamps',[],'latvals',[],'tmaxval',[],'yintval',[],'cost',cost);
-optim = unloadX(X,optim);
+modelstate = unloadX(X,modelstate);
+optim = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',modelstate.ampvals,'boxampvals',modelstate.boxampvals,'latvals',modelstate.latvals,'tmaxval',modelstate.tmaxval,'yintval',modelstate.yintval);
+optim.cost = cost;
+optim.R2 = 1 - (cost/SSt);
 
     function cost = optim_cost(X,data,modelstate)
         modelstate = unloadX(X,modelstate);
-        cost = pa_cost(data,modelstate);  
+        cost = pa_cost(data,samplerate,modelstate.window,modelstate);  
     end
 
     function stop = fmincon_outfun(X,optimValues,state)
@@ -102,10 +107,13 @@ optim = unloadX(X,optim);
             case 'iter'
                 clf
                 modelstate = unloadX(X,modelstate);
-                plot(time,data,'k')
+                plot(time,data,'k','LineWidth',1.5)
                 pa_plot_model(modelstate);
                 yl = ylim;
-                text(0,yl(2)*.9,num2str(optimValues.funccount),'HorizontalAlignment','center','BackgroundColor',[0.7 0.7 0.7]);
+                xl = xlim;
+                R2 = 1 - (optimValues.fval/SSt);
+                text((xl(2)-xl(1))*.1,yl(2)*.95,['Evals: ' num2str(optimValues.funccount)],'HorizontalAlignment','center','BackgroundColor',[0.7 0.7 0.7]);
+                text((xl(2)-xl(1))*.1,yl(2)*.85,['R^2: ' num2str(R2)],'HorizontalAlignment','center','BackgroundColor',[0.7 0.7 0.7]);
                 pause(0.04)
             case 'interrupt'
                 % No actions here
@@ -133,7 +141,13 @@ optim = unloadX(X,optim);
         end
         if modelstate.latflag
             numL = numevents;
-            modelstate.latvals = X(numA+1:numA+numL) .* (1/latfact);
+            Btemp = modelstate.ampvals;
+            Ltemp = X(numA+1:numA+numL).*(1/latfact);
+            [~,ind] = sort(modelstate.eventtimes + Ltemp);
+            Ltemp = Ltemp(ind);
+            Btemp = Btemp(ind);
+            modelstate.latvals = Ltemp;
+            modelstate.ampvals = Btemp;
         else
             numL = 0;
         end

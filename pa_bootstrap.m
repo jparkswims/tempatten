@@ -35,7 +35,7 @@ data = data(:,datalb:dataub);
 rng(0)
 means = bootstrp(nboots,@nanmean,data);
 
-bootoptims = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',[],'boxamps',[],'latvals',[],'tmaxval',[],'yintval',[],'cost',[]);
+bootoptims = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',[],'boxampvals',[],'latvals',[],'tmaxval',[],'yintval',[],'cost',[],'R2',[]);
 modelsamplerate = model.samplerate;
 modelwindow = model.window;
 
@@ -55,7 +55,7 @@ else
     end
 end
 
-boots = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',nan(nboots,length(model.eventtimes)),'boxamps',nan(nboots,length(model.boxtimes)),'latvals',nan(nboots,length(model.eventtimes)),'tmaxvals',nan(nboots,1),'yintvals',nan(nboots,1),'costs',nan(nboots,1));
+boots = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',nan(nboots,length(model.eventtimes)),'boxamps',nan(nboots,length(model.boxtimes)),'latvals',nan(nboots,length(model.eventtimes)),'tmaxvals',nan(nboots,1),'yintvals',nan(nboots,1),'costs',nan(nboots,1),'R2',nan(nboots,1));
 
 for nb = 1:nboots
     boots.ampvals(nb,:) = bootoptims(nb).ampvals;
@@ -63,5 +63,6 @@ for nb = 1:nboots
     boots.latvals(nb,:) = bootoptims(nb).latvals;
     boots.tmaxvals(nb,:) = bootoptims(nb).tmaxval;
     boots.yintvals(nb,:) = bootoptims(nb).yintval;
-    boots.costs(nb,:) = bootoptims(nb).cost;
+    boots.costs(nb) = bootoptims(nb).cost;
+    boots.R2(nb) = bootoptims(nb).R2;
 end
