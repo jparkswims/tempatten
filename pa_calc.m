@@ -1,6 +1,39 @@
 function [Ycalc, X] = pa_calc(model,options)
 % pa_calc
-% [Ycalc, X] = pa_calc(modelstate)
+% [Ycalc, X] = pa_calc(model)
+% [Ycalc, X] = pa_calc(model,options)
+% [Ycalc, X] = pa_calc(optim,options)
+% 
+% Calculates the time series and its constituent regresssors resulting from the 
+% model parameters and specifications in the given model structure.
+% 
+%   Inputs:
+%   
+%       model = model structure created by pa_model and filled in by user.
+%       Parameter values in model.ampvals, model.boxampvals, model.latvals,
+%       model.tmaxval, and model.yintval must be provided.
+%           *Note - an optim structure from pa_estimate, pa_bootstrap, or
+%           pa_optim can be input in the place of model*
+% 
+%       options = options structure for pa_calc. Default options can be
+%       returned by calling this function with no arguments.
+% 
+%   Outputs:
+% 
+%       Ycalc = time series created using the parameters and specifications
+%       provided in the model input.
+% 
+%       X = 2D matrix of regressors summed together and with the
+%       y-intercept parameter to create Ycalc. 1st dimension is regressor
+%       and 2nd dimension is time.
+% 
+%   Options
+%
+%       n = parameter used to generate pupil response function. Canonical
+%       value of 10.1 is the default. See the function "pupilrf" and 
+%       Hoeks&Levelt 1993 for more information.
+%
+%   Jacob Parker 2018
 
 if nargin < 2
     opts = pa_default_options();
@@ -13,8 +46,7 @@ if nargin < 2
 end
 
 %OPTIONS
-n = 10.1;
-boxscale = 1/500;
+n = options.n;
 
 %check input
 pa_model_check(model)
@@ -36,7 +68,8 @@ end
 for bx = 1:size(X2,1)
     
     h = pupilrf(time,n,model.tmaxval,model.boxtimes{bx}(1));
-    temp = conv(h,(ones(1,model.boxtimes{bx}(2)-model.boxtimes{bx}(1)+1)).*model.boxampvals(bx).*boxscale);
+    temp = conv(h,(ones(1,model.boxtimes{bx}(2)-model.boxtimes{bx}(1)+1)));
+    temp = (temp/max(temp)) .* 0.01 .* model.boxampvals(bx);
     X2(bx,:) = temp(1:model.window(2)-model.window(1)+1);
     
 end

@@ -1,7 +1,4 @@
 function output = blinkinterp(trial,samplerate,th1,th2,bwindow,betblink)
-
-%Jake Parker 2016
-% 
 %Based on method described in Mathôt 2013
 %https://www.researchgate.net/publication/236268543_A_simple_way_to_reconstruct_pupil_size_during_eye_blinks
 %
@@ -10,9 +7,9 @@ function output = blinkinterp(trial,samplerate,th1,th2,bwindow,betblink)
 %data.
 %
 %This code only works if blinks are recorded as zeros preceded by a sharp
-%drop in pupil size values and followed by a sharp rise in pupil size. Also
-%of note, code developed with a 1K Hz sample rate in mind (1 data point for
-%each ms).
+%drop in pupil size values and followed by a sharp rise in pupil size.
+% 
+% *DEVELOPED/OPTIMIZED FOR DATA WITH A SAMPLING RATE OF 1kHz*
 %
 %Blinks are detected by first finding the beginning and end location of
 %each region of zeros in the trial. The code determines if the distance

@@ -1,6 +1,15 @@
 function pa_model_check(model)
 % pa_model_check
-% checkflag = pa_model_check(model)
+% pa_model_check(model)
+% 
+% Checks if the specifications in "model" are valid. If a model is not
+% valid, will throw an error. Otherwise, if a model is valid, no error will
+% be thrown.
+
+if ~isfield(model,'ampflag')
+    warning('Input "model" does not appear to be a model structure, assuming it is an optim structure')
+    return
+end
 
 sfact = model.samplerate/1000;
 time = model.window(1):1/sfact:model.window(2);

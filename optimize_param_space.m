@@ -1,6 +1,13 @@
 function Xout = optimize_param_space(Xin,LB,UB)
-% optimize_param_space
+% optimize_param_space *beta*
 % Xout = optimize_param_space(Xin,LB,UB)
+% 
+% Optimizes a set of parameter points to cover parameter space as evenly as
+% possible. Cost function is calculated as the negative of the sum of the
+% distance of each point with all other points and the boundaries of
+% parameter space.
+% 
+% CURRENTLY BEING DEVELOPED
 
 f = @(X)space_cost(X,LB,UB);
 

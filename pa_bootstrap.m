@@ -1,8 +1,91 @@
-function boots = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum)
+function [boots, bootoptims] = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
 % pa_bootstrap
-% output = pa_bootstrap(data,samplerate,trialwindow,model)
+% boots = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum)
+% boots = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
+% [boots, bootoptims] = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
+% 
+% Bootstrapping procedure for estimating model parameters. Calculates a set
+% of bootstrapped means fro the data provided, then performs the
+% optimization algorithm on each bootstrapped mean.
+% 
+%   Inputs:
+%   
+%       data = a 2D matrix containing all of the trials for one mean. In
+%       the form of trial by time.
+% 
+%       samplerate = sampling rate of data in Hz.
+% 
+%       trialwindow = a 2 element vector containing the starting and ending
+%       times (in ms) of the trial epoch.
+% 
+%       model = model structure created by pa_model and filled in by user.
+%       Parameter values in model.ampvals, model.boxampvals, model.latvals,
+%       model.tmaxval, and model.yintval do NOT need to be provided (unless
+%       any of those parameters are not being estimated).
+% 
+%       nboots = number of bootstrap iterations to perform.
+% 
+%       wnum = number of workers used by matlab's parallel pool to complete
+%       the process (parpool will not be initialized if set to 1).
+% 
+%       options = options structure for pa_bootstrap. Default options can be
+%       returned by calling this function with no arguments, or see
+%       pa_default_options.
+% 
+%   Outputs:
+% 
+%       boots = a structure containing the parameters estimated for each
+%       bootstrap iteration. It contains the following fields:
+%           eventtimes = a copy of eventtimes from "model".
+%           boxtimes = a copy of boxtimes from "model".
+%           samplerate = a copy of samplerate from "model".
+%           window = a copy of window from "model".
+% 
+%           ampvals = the estimated event amplitude values for each
+%           bootstrap iteration, where the fist dimension is bootstrap
+%           iteration and the second dimension is event.
+%           boxampvals = the estimated box regressor amplitude values.
+%           latvals = the estimated event latency values.
+%           tmaxval = the estimated tmax values.
+%           yintval = the estimated y-intercept values.
+% 
+%           cost = the sum of square errors between the optimized
+%           parameters and the actual data.
+%           R2 = the R^2 goodness of fit value.
+% 
+%           ampmedians, boxampmedians, latmedians, tmaxmedian, yintmedian =
+%           the medians of ampvals, boxampvals, latvals, tmaxvals, and
+%           yintvals respectively.
+% 
+%           amp95CIs, boxamp95CIs, lat95CIs, tmax95CI, yint95CI = the 95%
+%           confidence intervals of ampvals, boxampvals, latvals, tmaxvals,
+%           and yintvals respectively.
+% 
+%       bootoptims = an optional output option. A structure with a length
+%       of nboots, where each element is an optim structure output by
+%       running pa_estimate for single bootstrap iteration.
+%           *Note - each element can be input into pa_plot_model, pa_calc, 
+%           or pa_cost in the place of the "model" input*
+% 
+%   Options
+% 
+%       pa_estimate_options = options structure for pa_estimate, 
+%       which pa_bootstrap uses to perform each bootstrap iteration.
+%
+%   Jacob Parker 2018
 
-%NOTE: DATA IS A 2D MATRIX (TRIAL VS TIME)
+if nargin < 7
+    opts = pa_default_options();
+    options = opts.pa_bootstrap;
+    clear opts
+    if nargin < 1
+        boots = options;
+        return
+    end
+end
+
+%OPTIONS
+pa_estimate_options = options.pa_estimate;
 
 sfact = samplerate/1000;
 time = trialwindow(1):1/sfact:trialwindow(2);
@@ -35,7 +118,7 @@ data = data(:,datalb:dataub);
 rng(0)
 means = bootstrp(nboots,@nanmean,data);
 
-bootoptims = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',[],'boxampvals',[],'latvals',[],'tmaxval',[],'yintval',[],'cost',[],'R2',[]);
+bootoptims = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'samplerate',model.samplerate,'window',model.window,'ampvals',[],'boxampvals',[],'latvals',[],'tmaxval',[],'yintval',[],'cost',[],'R2',[]);
 modelsamplerate = model.samplerate;
 modelwindow = model.window;
 
@@ -44,18 +127,19 @@ fprintf('\nBeginning bootstrapping, %d iterations to be completed\n',nboots)
 if wnum == 1
     for nb = 1:nboots
         fprintf('\nStart iteration %d\n',nb)
-        bootoptims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model);
+        bootoptims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model,pa_estimate_options);
         fprintf('\nEnd iteration %d\n',nb)
     end
 else
+    parpool(wnum)
     parfor nb = 1:nboots
         fprintf('\nStart iteration %d\n',nb)
-        bootoptims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model);
+        bootoptims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model,pa_estimate_options);
         fprintf('\nEnd iteration %d\n',nb)
     end
 end
 
-boots = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',nan(nboots,length(model.eventtimes)),'boxamps',nan(nboots,length(model.boxtimes)),'latvals',nan(nboots,length(model.eventtimes)),'tmaxvals',nan(nboots,1),'yintvals',nan(nboots,1),'costs',nan(nboots,1),'R2',nan(nboots,1));
+boots = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'samplerate',model.samplerate,'window',model.window,'ampvals',nan(nboots,length(model.eventtimes)),'boxamps',nan(nboots,length(model.boxtimes)),'latvals',nan(nboots,length(model.eventtimes)),'tmaxvals',nan(nboots,1),'yintvals',nan(nboots,1),'costs',nan(nboots,1),'R2',nan(nboots,1));
 
 for nb = 1:nboots
     boots.ampvals(nb,:) = bootoptims(nb).ampvals;
@@ -66,3 +150,15 @@ for nb = 1:nboots
     boots.costs(nb) = bootoptims(nb).cost;
     boots.R2(nb) = bootoptims(nb).R2;
 end
+
+boots.ampmedians = nanmedian(boots.ampvals,1);
+boots.boxampmedians = nanmedian(boots.boxampvals,1);
+boots.latmedians = nanmedian(boots.latvals,1);
+boots.tmaxmedian = nanmedian(boots.tmaxvals,1);
+boots.yintmedian = nanmedian(boots.yintvals,1);
+
+boots.amp95CIs = [prctile(boots.ampvals,2.5,1) ; prctile(boots.ampvals,97.5,1)];
+boots.boxamp95CIs = [prctile(boots.boxampvals,2.5,1) ; prctile(boots.boxampvals,97.5,1)];
+boots.lat95CIs = [prctile(boots.latvals,2.5,1) ; prctile(boots.latvals,97.5,1)];
+boots.tmax95CI = [prctile(boots.tmaxvals,2.5) ; prctile(boots.tmaxvals,97.5)];
+boots.yint95CI = [prctile(boots.yintvals,2.5) ; prctile(boots.yintvals,97.5)];

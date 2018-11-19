@@ -1,15 +1,87 @@
-function params = pa_generate_params(num,parammode,model)
+function params = pa_generate_params(num,parammode,model,options)
 % pa_generate_params
-% params = pa_generate_params(model)
+% params = pa_generate_params(num, parammode, model)
+% params = pa_generate_params(num, parammode, model,options)
+% 
+% Generates random parameters using the specifications of a given model.
+% 
+%   Inputs:
+%   
+%       num = number of sets of parameters to be generated.
+%           *IMPORTANT - if 'uniform' used, this number must be divisible
+%           by options.nbins such that the resulting number is a whole
+%           number!
+% 
+%       parammode ('uniform', 'normal', or 'space_optimal') = mode used to
+%       generate parameters.
+%           'uniform' - parameters are sampled in a roughly uniform manner
+%           from the range of their respective bounds. For each parameter,
+%           a uniform distribution is created using rand, then points are
+%           sampled from 50 bins along this distribution spanning its
+%           entire range. To change the number of bins, see options.nbins.
+%           'normal' - parameters are drawn from a normal distrubtion
+%           centered around the values provided in the input model
+%           structure. The standard deviation is set by options.sigma.
+%           'space_optimal' - finds the "num" number of points that
+%           optimally cover the parameter space as defined by the
+%           parameter bounds. Uses fmincon, so parameters need to be scaled
+%           using options.ampfact, options.latfact, options.tmaxfact, and
+%           options.yintfact.
+% 
+%       model = model structure created by pa_model and filled in by user.
+%           *IMPORTANT - parameter values in model.ampvals,
+%           model.boxampvals, model.latvals, model.tmaxval, and
+%           model.yintval must be provided if 'normal' parammode is used!
+% 
+%       options = options structure for pa_generate_params. Default options 
+%       can be returned by calling this function with no arguments, or see
+%       pa_default_options.
+% 
+%   Outputs:
+% 
+%      params = an output structure containing all sets of parameters
+%      generated. Contains the following fields:
+%           ampvals = 2D matrix of generated event amplitude parameters.
+%           Each row is one set of parameters.
+%           boxampvals = 2D matrix of generated box amplitude parameters.
+%           latvals = 2D matrix of generated event latency parameters.
+%           tmaxvals = column vector of generated tmax parameters.
+%           yintvals = column vector of generated y-intercept parameters.
+%           
+% 
+%   Options
+% 
+%       nbins (50) = if 'uniform' parammode is used, specifies the number of
+%       bins that are sampled from across the range of each parameter.
+% 
+%       sigma (0.05) = if 'normal' parammode is used, specifies the standard
+%       deviation of the normal distribution each parameter is drawn from.
+% 
+%       ampfact (1/10), latfact (1/1000), tmaxfact (1/1000), and yintfact
+%       (10) = if 'space_optimal' parammode is used, these options specify
+%       the scaling factors for amplitude, latency, tmax, and y-intercept
+%       parameters respectively. This is necessary because fmincon is used
+%       to determine the optimal sets of parameters.
+%
+%   Jacob Parker 2018
+
+if nargin < 4
+    opts = pa_default_options();
+    options = opts.pa_generate_params;
+    clear opts
+    if nargin < 1
+        params = options;
+        return
+    end
+end
 
 %OPTIONS
-%parammode = 'uniform'; %'uniform', 'normal', or 'space_optimal'
-nbins = 50;
-sigma = 0.05;
-ampfact = 1/10;
-latfact = 1/1000;
-tmaxfact = 1/1000;
-yintfact = 10;
+nbins = options.nbins;
+sigma = options.sigma;
+ampfact = options.ampfact;
+latfact = options.latfact;
+tmaxfact = options.tmaxfact;
+yintfact = options.yintfact;
 
 %check inputs
 pa_model_check(model)

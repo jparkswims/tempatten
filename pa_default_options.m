@@ -19,7 +19,6 @@ options = struct('pa_calc',[],'pa_cost',[],'pa_optim',[],'pa_estimate',[],'pa_bo
 
 %% pa_calc
 options.pa_calc.n = 10.1;
-options.pa_calc.boxscale = 1/500;
 
 %% pa_cost
 options.pa_cost.pa_calc = options.pa_calc;
@@ -61,6 +60,9 @@ options.pa_estimate.pa_optim = options.pa_optim;
 %% pa_bootstrap
 options.pa_bootstrap.pa_esimate = options.pa_estimate;
 
+%% pa_plot_model
+options.pa_plot_model.pa_calc = options.pa_calc;
+
 %% pa_fake_data
 options.pa_fake_data.pa_generate_params = options.pa_generate_params;
 
@@ -81,5 +83,9 @@ options.pa_estimate_sj.pa_estimate = options.pa_estimate;
 options.pa_bootstrap_sj.pa_bootstrap = options.pa_bootstrap;
 
 %% pa_batch_process
+options.pa_batch_process.estflag = true;
 options.pa_batch_process.pa_estimate_sj = options.pa_estimate_sj;
+options.pa_batch_process.bootflag = true;
+options.pa_batch_process.nboots = [];
+options.pa_batch_process.wnum = [];
 options.pa_batch_process.pa_bootstrap_sj = options.pa_bootstrap_sj;
