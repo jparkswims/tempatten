@@ -1,6 +1,6 @@
-function model = pa_model()
-% pa_model
-% model = pa_model()
+function model = pret_model()
+% pret_model
+% model = pret_model()
 % 
 % Creates a structure with all of the fields that must be filled in by the
 % user to create a specific model. This structure provides information to

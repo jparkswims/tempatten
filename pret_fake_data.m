@@ -1,7 +1,7 @@
-function [data, outparams] = pa_fake_data(numtseries,parammode,samplerate,trialwindow,model,options)
-% pa_fake_data
-% data = pa_fake_data(numtseries,parammode,samplerate,trialwindow,model)
-% data = pa_fake_data(numtseries,parammode,samplerate,trialwindow,model,options)
+function [data, outparams] = pret_fake_data(numtseries,parammode,samplerate,trialwindow,model,options)
+% pret_fake_data
+% data = pret_fake_data(numtseries,parammode,samplerate,trialwindow,model)
+% data = pret_fake_data(numtseries,parammode,samplerate,trialwindow,model,options)
 % 
 % Generates fake pupil size time series using randomly generated parameters for
 % a given model.
@@ -10,17 +10,17 @@ function [data, outparams] = pa_fake_data(numtseries,parammode,samplerate,trialw
 %   
 %       numtseries = number of time series to generate
 %           *IMPORTANT - if 'uniform' used, this number must be divisible
-%           by options.pa_generate_params.nbins such that the resulting number 
+%           by options.pret_generate_params.nbins such that the resulting number 
 %           is a whole number!
 % 
 %       parammode ('uniform', 'normal', or 'space_optimal') = mode used to
-%       generate parameters in the function pa_generate_params.
+%       generate parameters in the function pret_generate_params.
 %           'uniform' - parameters are sampled in a roughly uniform manner
 %           from the range of their respective bounds. For each parameter,
 %           a uniform distribution is created using rand, then points are
 %           sampled from 50 bins along this distribution spanning its
 %           entire range. To change the number of bins, see 
-%           options.pa_generate_params.nbins.
+%           options.pret_generate_params.nbins.
 %           'normal' - parameters are drawn from a normal distrubtion
 %           centered around the values provided in the input model
 %           structure. The standard deviation is set by options.sigma.
@@ -37,14 +37,14 @@ function [data, outparams] = pa_fake_data(numtseries,parammode,samplerate,trialw
 %       times (in ms) of the trial epoch. Can be different than
 %       model.window if desired.
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %           *IMPORTANT - parameter values in model.ampvals,
 %           model.boxampvals, model.latvals, model.tmaxval, and
 %           model.yintval must be provided if 'normal' parammode is used!
 % 
-%       options = options structure for pa_fake_data. Default options 
+%       options = options structure for pret_fake_data. Default options 
 %       can be returned by calling this function with no arguments, or see
-%       pa_default_options.
+%       pret_default_options.
 % 
 %   Outputs:
 % 
@@ -63,16 +63,16 @@ function [data, outparams] = pa_fake_data(numtseries,parammode,samplerate,trialw
 % 
 %   Options
 % 
-%       pa_generate_params = options structure for pa_generate_params,
-%       which pa_fake_data uses to generate parameter values that the
+%       pret_generate_params = options structure for pret_generate_params,
+%       which pret_fake_data uses to generate parameter values that the
 %       artificial time series are constructed from. Options for the
 %       various "parammode" options are in here.
 %
 %   Jacob Parker 2018
 
 if nargin < 6
-    opts = pa_default_options();
-    options = opts.pa_fake_data;
+    opts = pret_default_options();
+    options = opts.pret_fake_data;
     clear opts
     if nargin < 1
         data = options;
@@ -81,10 +81,10 @@ if nargin < 6
 end
 
 %OPTIONS
-pa_generate_params_options = options.pa_generate_params;
+pret_generate_params_options = options.pret_generate_params;
 
 %check inputs
-pa_model_check(model)
+pret_model_check(model)
 
 sfact = samplerate/1000;
 time = trialwindow(1):1/sfact:trialwindow(2);
@@ -101,7 +101,7 @@ modelstate.samplerate = samplerate;
 
 
 %generate parameters to create time series with
-params = pa_generate_params(numtseries,parammode,model,pa_generate_params_options);
+params = pret_generate_params(numtseries,parammode,model,pret_generate_params_options);
 
 %generate time series from parameters
 for ts = 1:numtseries
@@ -114,7 +114,7 @@ for ts = 1:numtseries
     if ~isempty(model.boxtimes)
         modelstate.boxampvals = params.boxampvals(ts,:);
     end
-    data(ts,:) = pa_calc(modelstate);
+    data(ts,:) = pret_calc(modelstate);
 end
 
 outparams = struct('eventimes',model.eventtimes,'boxtimes',model.boxtimes,'ampvals',params.ampvals,'boxampvals',params.boxampvals,'latvals',params.latvals,'tmaxvals',params.tmaxvals,'yintvals',params.yintvals);

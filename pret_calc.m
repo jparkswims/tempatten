@@ -1,21 +1,21 @@
-function [Ycalc, X] = pa_calc(model,options)
-% pa_calc
-% [Ycalc, X] = pa_calc(model)
-% [Ycalc, X] = pa_calc(model,options)
-% [Ycalc, X] = pa_calc(optim,options)
+function [Ycalc, X] = pret_calc(model,options)
+% pret_calc
+% [Ycalc, X] = pret_calc(model)
+% [Ycalc, X] = pret_calc(model,options)
+% [Ycalc, X] = pret_calc(optim,options)
 % 
 % Calculates the time series and its constituent regresssors resulting from the 
 % model parameters and specifications in the given model structure.
 % 
 %   Inputs:
 %   
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval must be provided.
-%           *Note - an optim structure from pa_estimate, pa_bootstrap, or
-%           pa_optim can be input in the place of model*
+%           *Note - an optim structure from pret_estimate, pret_bootstrap, or
+%           pret_optim can be input in the place of model*
 % 
-%       options = options structure for pa_calc. Default options can be
+%       options = options structure for pret_calc. Default options can be
 %       returned by calling this function with no arguments.
 % 
 %   Outputs:
@@ -36,8 +36,8 @@ function [Ycalc, X] = pa_calc(model,options)
 %   Jacob Parker 2018
 
 if nargin < 2
-    opts = pa_default_options();
-    options = opts.pa_calc;
+    opts = pret_default_options();
+    options = opts.pret_calc;
     clear opts
     if nargin < 1
         Ycalc = options;
@@ -49,7 +49,7 @@ end
 n = options.n;
 
 %check input
-pa_model_check(model)
+pret_model_check(model)
 
 sfact = model.samplerate/1000;
 time = model.window(1):1/sfact:model.window(2);

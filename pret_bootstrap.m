@@ -1,8 +1,8 @@
-function [boots, bootestims] = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
-% pa_bootstrap
-% boots = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum)
-% boots = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
-% [boots, bootestims] = pa_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
+function [boots, bootestims] = pret_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
+% pret_bootstrap
+% boots = pret_bootstrap(data,samplerate,trialwindow,model,nboots,wnum)
+% boots = pret_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
+% [boots, bootestims] = pret_bootstrap(data,samplerate,trialwindow,model,nboots,wnum,options)
 % 
 % Bootstrapping procedure for estimating model parameters. Calculates a set
 % of bootstrapped means fro the data provided, then performs the
@@ -18,7 +18,7 @@ function [boots, bootestims] = pa_bootstrap(data,samplerate,trialwindow,model,nb
 %       trialwindow = a 2 element vector containing the starting and ending
 %       times (in ms) of the trial epoch.
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval do NOT need to be provided (unless
 %       any of those parameters are not being estimated).
@@ -28,9 +28,9 @@ function [boots, bootestims] = pa_bootstrap(data,samplerate,trialwindow,model,nb
 %       wnum = number of workers used by matlab's parallel pool to complete
 %       the process (parpool will not be initialized if set to 1).
 % 
-%       options = options structure for pa_bootstrap. Default options can be
+%       options = options structure for pret_bootstrap. Default options can be
 %       returned by calling this function with no arguments, or see
-%       pa_default_options.
+%       pret_default_options.
 % 
 %   Outputs:
 % 
@@ -63,23 +63,23 @@ function [boots, bootestims] = pa_bootstrap(data,samplerate,trialwindow,model,nb
 % 
 %       bootestims = an optional output option. A structure with a length
 %       of nboots, where each element is an estim structure output by
-%       running pa_estimate for single bootstrap iteration.
-%           *Note - each element can be input into pa_plot_model, pa_calc, 
-%           or pa_cost in the place of the "model" input*
+%       running pret_estimate for single bootstrap iteration.
+%           *Note - each element can be input into pret_plot_model, pret_calc, 
+%           or pret_cost in the place of the "model" input*
 % 
 %   Options
 % 
 %       bootplotflag (true/false) = plot summary figures with the
 %       distribution of each parameter's bootstrap estimations.
 % 
-%       pa_estimate_options = options structure for pa_estimate, 
-%       which pa_bootstrap uses to perform each bootstrap iteration.
+%       pret_estimate_options = options structure for pret_estimate, 
+%       which pret_bootstrap uses to perform each bootstrap iteration.
 %
 %   Jacob Parker 2018
 
 if nargin < 7
-    opts = pa_default_options();
-    options = opts.pa_bootstrap;
+    opts = pret_default_options();
+    options = opts.pret_bootstrap;
     clear opts
     if nargin < 1
         boots = options;
@@ -89,14 +89,14 @@ end
 
 %OPTIONS
 bootplotflag = options.bootplotflag;
-pa_estimate_options = options.pa_estimate;
+pret_estimate_options = options.pret_estimate;
 
 sfact = samplerate/1000;
 time = trialwindow(1):1/sfact:trialwindow(2);
 
 %check inputs
 %simple check of input model structure
-pa_model_check(model)
+pret_model_check(model)
 
 %samplerate, trialwindow vs data
 if length(time) ~= size(data,2)
@@ -131,7 +131,7 @@ fprintf('\nBeginning bootstrapping, %d iterations to be completed\n',nboots)
 if wnum == 1
     for nb = 1:nboots
         fprintf('\nStart iteration %d\n',nb)
-        bootestims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model,pa_estimate_options);
+        bootestims(nb) = pret_estimate(means(nb,:),modelsamplerate,modelwindow,model,pret_estimate_options);
         fprintf('\nEnd iteration %d\n',nb)
     end
 else
@@ -141,7 +141,7 @@ else
     end
     parfor nb = 1:nboots
         fprintf('\nStart iteration %d\n',nb)
-        bootestims(nb) = pa_estimate(means(nb,:),modelsamplerate,modelwindow,model,pa_estimate_options);
+        bootestims(nb) = pret_estimate(means(nb,:),modelsamplerate,modelwindow,model,pret_estimate_options);
         fprintf('\nEnd iteration %d\n',nb)
     end
 end

@@ -1,7 +1,7 @@
-function [estim, searchoptims] = pa_estimate(data,samplerate,trialwindow,model,options)
-% pa_estimate
-% optim = pa_estimate(data,samplerate,trialwindow,model)
-% optim = pa_estimate(data,samplerate,trialwindow,model,options)
+function [estim, searchoptims] = pret_estimate(data,samplerate,trialwindow,model,options)
+% pret_estimate
+% optim = pret_estimate(data,samplerate,trialwindow,model)
+% optim = pret_estimate(data,samplerate,trialwindow,model,options)
 % 
 % Optimization algorithm for estimating the model parameters that result in
 % the best fit with the data. First, the cost function is evaluated for a
@@ -21,14 +21,14 @@ function [estim, searchoptims] = pa_estimate(data,samplerate,trialwindow,model,o
 %       times (in ms) of the trial epoch. Will NOT be the window the model
 %       is estimated on (that is in model.window).
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval do not need to be provided (unless
 %       any of those parameters are not being estimated).
 % 
-%       options = options structure for pa_estimate. Default options can be
+%       options = options structure for pret_estimate. Default options can be
 %       returned by calling this function with no arguments, or see
-%       pa_default_options.
+%       pret_default_options.
 % 
 %   Outputs:
 % 
@@ -46,7 +46,7 @@ function [estim, searchoptims] = pa_estimate(data,samplerate,trialwindow,model,o
 %           cost = the sum of square errors between the optimized
 %           parameters and the actual data.
 %           R2 = the R^2 goodness of fit value.
-%       *Note - can be input into pa_plot_model, pa_calc, or pa_cost in the 
+%       *Note - can be input into pret_plot_model, pret_calc, or pret_cost in the 
 %       place of the "model" input*
 % 
 %       searchoptims = an optional output structure containing the
@@ -64,24 +64,24 @@ function [estim, searchoptims] = pa_estimate(data,samplerate,trialwindow,model,o
 % 
 %       options.parammode ('uniform') = the mode used to generate the
 %       parameters for the search of parameter space. See
-%       pa_generate_params for more information.
+%       pret_generate_params for more information.
 % 
-%       pa_generate_params_options = options structure for pa_generate_params, 
-%       which pa_estimate uses to generate the parameters for the search of
+%       pret_generate_params_options = options structure for pret_generate_params, 
+%       which pret_estimate uses to generate the parameters for the search of
 %       parameter space.
 % 
-%       pa_optim_options = options structure for pa_optim, 
-%       which pa_estimate uses to perform each individual optimization.
+%       pret_optim_options = options structure for pret_optim, 
+%       which pret_estimate uses to perform each individual optimization.
 % 
-%       pa_cost_options = options structure for pa_cost, which pa_estimate 
+%       pret_cost_options = options structure for pret_cost, which pret_estimate 
 %       uses to evaluate the cost function at each point sampled from
 %       parameter space.
 %
 %   Jacob Parker 2018
 
 if nargin < 5
-    opts = pa_default_options();
-    options = opts.pa_estimate;
+    opts = pret_default_options();
+    options = opts.pret_estimate;
     clear opts
     if nargin < 1
         estim = options;
@@ -91,9 +91,9 @@ end
 
 %OPTIONS
 %return output optimization parameters from each starting point?
-pa_generate_params_options = options.pa_generate_params;
-pa_optim_options = options.pa_optim;
-pa_cost_options = options.pa_cost;
+pret_generate_params_options = options.pret_generate_params;
+pret_optim_options = options.pret_optim;
+pret_cost_options = options.pret_cost;
 searchnum = options.searchnum;
 optimnum = options.optimnum;
 parammode = options.parammode;
@@ -103,7 +103,7 @@ time = trialwindow(1):1/sfact:trialwindow(2);
 
 %check inputs
 %simple check of input model structure
-pa_model_check(model)
+pret_model_check(model)
 
 %data is a vector
 if size(data,1) ~= 1
@@ -126,7 +126,7 @@ if ~(any(model.window(1) == time)) || ~(any(model.window(2) == time ))
 end
 
 %generate starting parameters for coarse search in parameter space
-params = pa_generate_params(searchnum,parammode,model,pa_generate_params_options);
+params = pret_generate_params(searchnum,parammode,model,pret_generate_params_options);
 
 %ADD PARAM PRESORTING/MORE EVEN SAMPLING?
 %OPTIMAL PARAMETER SPACE SAMPLING (KEEP IN MIND)
@@ -159,7 +159,7 @@ for op = 1:optimnum
     modelstate.tmaxval = modelstate.search.tmaxval(modelstate.search.optimindex(op),:);
     modelstate.yintval = modelstate.search.yintval(modelstate.search.optimindex(op),:);
     
-    searchoptims(op) = pa_optim(data,model.samplerate,model.window,modelstate,pa_optim_options);
+    searchoptims(op) = pret_optim(data,model.samplerate,model.window,modelstate,pret_optim_options);
     tempcosts = [tempcosts searchoptims(op).cost];
     fprintf('%d ',op)
 end
@@ -177,7 +177,7 @@ estim = searchoptims(minind);
             modelstate.tmaxval = modelstate.search.tmaxval(ss);
             modelstate.yintval = modelstate.search.yintval(ss);
             modelstate.boxampvals = modelstate.search.boxampvals(ss,:);
-            costs(ss) = pa_cost(data,modelstate.samplerate,modelstate.window,modelstate,pa_cost_options);
+            costs(ss) = pret_cost(data,modelstate.samplerate,modelstate.window,modelstate,pret_cost_options);
         end
         
         [~,sortind] = sort(costs);

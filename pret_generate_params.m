@@ -1,7 +1,7 @@
-function params = pa_generate_params(num,parammode,model,options)
-% pa_generate_params
-% params = pa_generate_params(num, parammode, model)
-% params = pa_generate_params(num, parammode, model,options)
+function params = pret_generate_params(num,parammode,model,options)
+% pret_generate_params
+% params = pret_generate_params(num, parammode, model)
+% params = pret_generate_params(num, parammode, model,options)
 % 
 % Generates random parameters using the specifications of a given model.
 % 
@@ -16,9 +16,10 @@ function params = pa_generate_params(num,parammode,model,options)
 %       generate parameters.
 %           'uniform' - parameters are sampled in a roughly uniform manner
 %           from the range of their respective bounds. For each parameter,
-%           a uniform distribution is created using rand, then points are
-%           sampled from 50 bins along this distribution spanning its
-%           entire range. To change the number of bins, see options.nbins.
+%           the range is split up into options.nbins number of bins and a
+%           floor(num/nbins) number of points is randomly generated from
+%           each bin using rand. The remainder of this division is then
+%           sampled from the entire range if it is not zero.
 %           'normal' - parameters are drawn from a normal distrubtion
 %           centered around the values provided in the input model
 %           structure. The standard deviation is set by options.sigma.
@@ -28,14 +29,14 @@ function params = pa_generate_params(num,parammode,model,options)
 %           using options.ampfact, options.latfact, options.tmaxfact, and
 %           options.yintfact.
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %           *IMPORTANT - parameter values in model.ampvals,
 %           model.boxampvals, model.latvals, model.tmaxval, and
 %           model.yintval must be provided if 'normal' parammode is used!
 % 
-%       options = options structure for pa_generate_params. Default options 
+%       options = options structure for pret_generate_params. Default options 
 %       can be returned by calling this function with no arguments, or see
-%       pa_default_options.
+%       pret_default_options.
 % 
 %   Outputs:
 % 
@@ -66,8 +67,8 @@ function params = pa_generate_params(num,parammode,model,options)
 %   Jacob Parker 2018
 
 if nargin < 4
-    opts = pa_default_options();
-    options = opts.pa_generate_params;
+    opts = pret_default_options();
+    options = opts.pret_generate_params;
     clear opts
     if nargin < 1
         params = options;
@@ -85,7 +86,7 @@ tmaxfact = options.tmaxfact;
 yintfact = options.yintfact;
 
 %check inputs
-pa_model_check(model)
+pret_model_check(model)
 
 rng(0)
 
@@ -100,17 +101,11 @@ params.boxampvals = nan(num,length(model.boxtimes));
 params = rmfield(params,'blank');
 
 if strcmp(parammode,'uniform')
-
-    %nbins vs num
-    %% RELAX THIS REQUIREMENT
-    if rem(num,nbins) ~= 0
-        error('"num" must be divisible by nbins such that num/nbins is an integer')
-    end
     
     %amplitude
     if model.ampflag
         for cc = 1:length(model.eventtimes)
-            params.ampvals(:,cc) = model.ampbounds(1,cc) + unidist((model.ampbounds(2,cc)-model.ampbounds(1,cc)).*rand(num*10,1),nbins,num/nbins);
+            params.ampvals(:,cc) = unibin(num,model.ampbounds(1,cc),model.ampbounds(2,cc),nbins);
         end
     else
         params.ampvals = repmat(model.ampvals,num,1);
@@ -119,7 +114,7 @@ if strcmp(parammode,'uniform')
     %latency
     if model.latflag
         for cc = 1:length(model.eventtimes)
-            params.latvals(:,cc) = model.latbounds(1,cc) + unidist((model.latbounds(2,cc)-model.latbounds(1,cc)).*rand(num*10,1),nbins,num/nbins);
+            params.latvals(:,cc) = unibin(num,model.latbounds(1,cc),model.latbounds(2,cc),nbins);
         end
     else
         params.latvals = repmat(model.latvals,num,1);
@@ -127,14 +122,14 @@ if strcmp(parammode,'uniform')
     
     %tmax
     if model.tmaxflag
-        params.tmaxvals = model.tmaxbounds(1) + unidist((model.tmaxbounds(2)-model.tmaxbounds(1)).*rand(num*10,1),nbins,num/nbins);
+        params.tmaxvals = unibin(num,model.tmaxbounds(1),model.tmaxbounds(2),nbins);
     else
         params.tmaxvals = repmat(model.tmaxval,num,1);
     end
     
     %y-intercept
     if model.yintflag
-        params.yintvals = model.yintbounds(1) + unidist((model.yintbounds(2)-model.yintbounds(1)).*rand(num*10,1),nbins,num/nbins);
+        params.yintvals = unibin(num,model.yintbounds(1),model.yintbounds(2),nbins);
     else
         params.yintvals = repmat(model.yintval,num,1);
     end
@@ -142,7 +137,7 @@ if strcmp(parammode,'uniform')
     %box amplitude
     if model.ampflag
         for cc = 1:length(model.boxtimes)
-            params.boxampvals(:,cc) = model.boxampbounds(1,cc) + unidist((model.boxampbounds(2,cc)-model.boxampbounds(1,cc)).*rand(num*10,1),nbins,num/nbins);
+            params.boxampvals(:,cc) = unibin(num,model.boxampbounds(1,cc),model.ampbounds(2,cc),nbins);
         end
     else
         params.boxampvals = repmat(model.boxampvals,num,1);
@@ -282,46 +277,22 @@ elseif strcmp(parammode,'space_optimal')
     
 end
 
-function output = unidist(x,nbins,spb)
-        
-        [~,index] = makedist(x,nbins);
-        uindex = [];
-        
-        for bb = 1:nbins
-            if sum(index{bb}) >= spb
-                uindex = [uindex ; randsample(index{bb},spb)];
-            end
+    function dist = unibin(num,lb,ub,nbins)
+        %generates a kind of uniform distrubution of num numbers by defining a range,
+        %splitting that range into nbins number of bins, then using rand to
+        %generate floor(num/nbins) in each bin. The remainder of this
+        %division is sampled from across the entire range.
+        pbb = floor(num/nbins);
+        rmn = rem(num,nbins);
+        temp = nan(num,1);
+        bins = linspace(lb,ub,nbins+1);
+        for b = 1:nbins
+            temp(pbb*(b-1)+1:pbb*b) = (bins(b+1)-bins(b)).*rand(pbb,1) + bins(b);
         end
-        
-        output = x(uindex);
-        
-    end
-
-    function [dist,index,bins,hdist,hbins] = makedist(x,nbins)
-        
-        xbins = linspace(min(x),max(x),nbins+1);
-        dist = nan(nbins,1);
-        index = cell(nbins,1);
-        
-        for nn = 1:nbins
-            if nn == nbins
-                xlog = (x >= xbins(nn)) & (x <= xbins(nn+1));
-            else
-                xlog = (x >= xbins(nn)) & (x < xbins(nn+1));
-            end
-            dist(nn) = sum(xlog);
-            index{nn} = find(xlog);
+        if rmn ~= 0
+            temp(num-rmn+1:num) = (ub-lb).*rand(rmn,1) + lb;
         end
-        
-        bins = xbins(1:end-1)+(diff(xbins)./2);
-        
-        hbins = repmat(xbins,2,1);
-        hbins = reshape(hbins,1,2*size(hbins,2));
-        
-        hdist = repmat(dist',[2,1]);
-        hdist = reshape(hdist,1,2*size(hdist,2));
-        hdist = [0 hdist 0];
-        
+        dist = randsample(temp,num);
     end
 
 end

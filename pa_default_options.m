@@ -26,6 +26,7 @@ options.pa_cost.pa_calc = options.pa_calc;
 %% pa_optim
 options.pa_optim.optimplotflag = true;
 options.pa_optim.ampfact = 1/10;
+options.pa_optim.boxampfact = 1/10;
 options.pa_optim.latfact = 1/1000;
 options.pa_optim.tmaxfact = 1/1000;
 options.pa_optim.yintfact = 10;
@@ -44,6 +45,7 @@ options.pa_optim.fmincon_options.Display = 'off';
 options.pa_generate_params.nbins = 50;
 options.pa_generate_params.sigma = 0.05;
 options.pa_generate_params.ampfact = 1/10;
+options.pa_generate_params.boxampfact = 1/10;
 options.pa_generate_params.latfact = 1/1000;
 options.pa_generate_params.tmaxfact = 1/1000;
 options.pa_generate_params.yintfact = 10;
@@ -58,7 +60,8 @@ options.pa_estimate.pa_cost = options.pa_cost;
 options.pa_estimate.pa_optim = options.pa_optim;
 
 %% pa_bootstrap
-options.pa_bootstrap.pa_esimate = options.pa_estimate;
+options.pa_bootstrap.bootplotflag = true;
+options.pa_bootstrap.pa_estimate = options.pa_estimate;
 
 %% pa_plot_model
 options.pa_plot_model.pa_calc = options.pa_calc;
@@ -89,3 +92,6 @@ options.pa_batch_process.bootflag = true;
 options.pa_batch_process.nboots = [];
 options.pa_batch_process.wnum = [];
 options.pa_batch_process.pa_bootstrap_sj = options.pa_bootstrap_sj;
+
+%% pret_plot_boots
+options.pret_plot_boots = [];

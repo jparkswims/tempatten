@@ -1,7 +1,7 @@
-function optim = pa_optim(data,samplerate,trialwindow,model,options)
-% pa_optim
-% optim = pa_optim(data,samplerate,trialwindow,model)
-% optim = pa_optim(data,samplerate,trialwindow,model,options)
+function optim = pret_optim(data,samplerate,trialwindow,model,options)
+% pret_optim
+% optim = pret_optim(data,samplerate,trialwindow,model)
+% optim = pret_optim(data,samplerate,trialwindow,model,options)
 % 
 % Constrained optimization to find the model parameters for a given model
 % that best matches the time series input as "data". Performs a single
@@ -16,12 +16,12 @@ function optim = pa_optim(data,samplerate,trialwindow,model,options)
 %       trialwindow = a 2 element vector containing the starting and ending
 %       times (in ms) of the trial epoch.
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval MUST be provided. These values are
 %       the starting point for the optimization.
 % 
-%       options = options structure for pa_optim. Default options can be
+%       options = options structure for pret_optim. Default options can be
 %       returned by calling this function with no arguments.
 % 
 %   Outputs:
@@ -40,7 +40,7 @@ function optim = pa_optim(data,samplerate,trialwindow,model,options)
 %           cost = the sum of square errors between the optimized
 %           parameters and the actual data.
 %           R2 = the R^2 goodness of fit value.
-%       *Note - can be input into pa_plot_model, pa_calc, or pa_cost in the 
+%       *Note - can be input into pret_plot_model, pret_calc, or pret_cost in the 
 %       place of the "model" input*
 % 
 %   Options
@@ -48,7 +48,7 @@ function optim = pa_optim(data,samplerate,trialwindow,model,options)
 %       optim_plot_flag (true/false) = plot optimization in realtime? Set
 %       to false if you want speed.
 % 
-%       pa_cost_options = options structure for pa_cost, which pa_optim uses
+%       pret_cost_options = options structure for pret_cost, which pret_optim uses
 %       as the cost function for fmincon.
 % 
 %       ampfact (1/10) = scaling factor for the event amplitude parameters. 
@@ -69,8 +69,8 @@ function optim = pa_optim(data,samplerate,trialwindow,model,options)
 %   Jacob Parker 2018
 
 if nargin < 5
-    opts = pa_default_options();
-    options = opts.pa_optim;
+    opts = pret_default_options();
+    options = opts.pret_optim;
     clear opts
     if nargin < 1
         optim = options;
@@ -80,7 +80,7 @@ end
 
 %OPTIONS
 optimplotflag = options.optimplotflag;
-pa_cost_options = options.pa_cost;
+pret_cost_options = options.pret_cost;
 
 %Factors to scale parameters by so that they are of a similar magnitude.
 %Improves performance of the constrained optimization algorithm (fmincon)
@@ -103,7 +103,7 @@ sfact = samplerate/1000;
 time = trialwindow(1):1/sfact:trialwindow(2);
 
 %check inputs
-pa_model_check(model)
+pret_model_check(model)
 
 %data is a vector
 if size(data,1) ~= 1
@@ -191,7 +191,7 @@ optim.BIC = (length(data) * log(cost/length(data))) + (numparams *log(length(dat
 
     function cost = optim_cost(X,data,modelstate)
         modelstate = unloadX(X,modelstate);
-        cost = pa_cost(data,samplerate,modelstate.window,modelstate,pa_cost_options);  
+        cost = pret_cost(data,samplerate,modelstate.window,modelstate,pret_cost_options);  
     end
 
     function stop = fmincon_outfun(X,optimValues,state)
@@ -201,7 +201,7 @@ optim.BIC = (length(data) * log(cost/length(data))) + (numparams *log(length(dat
                 clf
                 modelstate = unloadX(X,modelstate);
                 plot(time,data,'k','LineWidth',1.5)
-                pa_plot_model(modelstate);
+                pret_plot_model(modelstate);
                 yl = ylim;
                 xl = xlim;
                 R2 = 1 - (optimValues.fval/SSt);

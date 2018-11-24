@@ -1,19 +1,19 @@
-function fh = pa_plot_model(model,options)
-% pa_plot_model(model)
-% pa_plot_model(model,options)
+function fh = pret_plot_model(model,options)
+% pret_plot_model(model)
+% pret_plot_model(model,options)
 % 
 % Plots the time series and its constituent regresssors resulting from the 
 % model parameters and specifications in the given model structure.
 % 
 %   Inputs:
 %       
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval must be provided.
-%           *Note - an estim/optim structure from pa_estimate, pa_bootstrap, or
-%           pa_optim can be input in the place of model*
+%           *Note - an estim/optim structure from pret_estimate, pret_bootstrap, or
+%           pret_optim can be input in the place of model*
 % 
-%       options = options structure for pa_calc. Default options can be
+%       options = options structure for pret_calc. Default options can be
 %       returned by calling this function with no arguments.
 % 
 %   Outputs:
@@ -22,15 +22,15 @@ function fh = pa_plot_model(model,options)
 % 
 %   Options:
 % 
-%       pa_calc_options = options structure for pa_calc, which
-%       pa_plot_model uses to calculate the model time series and
+%       pret_calc_options = options structure for pret_calc, which
+%       pret_plot_model uses to calculate the model time series and
 %       regressors that are plotted.
 % 
 % Jacob Parker 2018
 
 if nargin < 2
-    opts = pa_default_options();
-    options = opts.pa_plot_model;
+    opts = pret_default_options();
+    options = opts.pret_plot_model;
     clear opts
     if nargin < 1
         fh = options;
@@ -39,15 +39,15 @@ if nargin < 2
 end
 
 %OPTIONS
-pa_calc_options = options.pa_calc;
+pret_calc_options = options.pret_calc;
 
 sfact = model.samplerate/1000;
 time = model.window(1):1/sfact:model.window(2);
 
 %check inputs
-pa_model_check(model)
+pret_model_check(model)
 
-[Ycalc, X] = pa_calc(model,pa_calc_options);
+[Ycalc, X] = pret_calc(model,pret_calc_options);
 
 X = X + model.yintval;
 

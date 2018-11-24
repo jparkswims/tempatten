@@ -1,6 +1,6 @@
-function pa_model_check(model)
-% pa_model_check
-% pa_model_check(model)
+function pret_model_check(model)
+% pret_model_check
+% pret_model_check(model)
 % 
 % Checks if the specifications in "model" are valid. If a model is not
 % valid, will throw an error. Otherwise, if a model is valid, no error will

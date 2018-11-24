@@ -1,7 +1,7 @@
-function sjs = pa_batch_process(sjs,model,options)
-% pa_batch_process
-% sjs = pa_batch_process(sjs,models)
-% sjs = pa_batch_process(sjs,models,options)
+function sjs = pret_batch_process(sjs,model,nboots,wnum,options)
+% pret_batch_process
+% sjs = pret_batch_process(sjs,models,nboots,wnum)
+% sjs = pret_batch_process(sjs,models,nboots,wnum,options)
 % 
 % Performs the estimation procedure and/or the bootstrapping procedure to
 % estimate model parameters for the data for each sj structure in sjs.
@@ -9,9 +9,9 @@ function sjs = pa_batch_process(sjs,model,options)
 %   Inputs:
 %
 %       sjs = structure in which each field is an sj structure output by
-%       pa_preprocess.
+%       pret_preprocess.
 % 
-%       model = model structure created by pa_model and filled in by user.
+%       model = model structure created by pret_model and filled in by user.
 %       Parameter values in model.ampvals, model.boxampvals, model.latvals,
 %       model.tmaxval, and model.yintval do NOT need to be provided (unless
 %       any of those parameters are not being estimated).
@@ -20,9 +20,15 @@ function sjs = pa_batch_process(sjs,model,options)
 %           number of models and each element is a separate model
 %           structure*
 % 
-%       options = options structure for pa_batch_process. Default options can be
+%       nboots = if doing bootstrapping procedure, how many bootstrap
+%       iterations to do. Can be empty if not.
+% 
+%       wnum = if doing bootstrapping procedure, how many matlab workers to
+%       use while doing the bootstrapping procedure. Can be empty if not.
+% 
+%       options = options structure for pret_batch_process. Default options can be
 %       returned by calling this function with no arguments, or see
-%       pa_default_options.
+%       pret_default_options.
 %
 %   Output
 %
@@ -31,41 +37,35 @@ function sjs = pa_batch_process(sjs,model,options)
 %           *if estimation done*
 %           optim = a Nx1 structure, where N is the number of models input
 %           in "model". Each element of this structure is an optim
-%           structure for a single model. See pa_optim or pa_estimate for
+%           structure for a single model. See pret_optim or pret_estimate for
 %           more information about this structure.
 %           *if bootstrapping done*
 %           boots = a Nx1 structure, where N is the number of models input
 %           in "model". Each element of this structure is an boots
-%           structure for a single model. See pa_bootstrap for more
+%           structure for a single model. See pret_bootstrap for more
 %           information about this structure.
 %
 %   Options
 % 
 %       estflag (true/false) = do estimation procedure on the data in each
-%       sj structure? Implemented by pa_estimate_sj.
+%       sj structure? Implemented by pret_estimate_sj.
 % 
 %       bootflag (true/false) = do bootstrapping procedure on the data in each
-%       sj structure? Implemented by pa_boostrap_sj.
+%       sj structure? Implemented by pret_boostrap_sj.
 % 
-%       nboots = if doing bootstrapping procedure, how many bootstrap
-%       iterations to do.
-% 
-%       wnum = if doing bootstrapping procedure, how many matlab workers to
-%       use while doing the bootstrapping procedure.
-%
-%       pa_estimate_sj_options = options structure for pa_estimate_sj, 
-%       which pa_batch_process uses to perform parameter estimation for the
+%       pret_estimate_sj_options = options structure for pret_estimate_sj, 
+%       which pret_batch_process uses to perform parameter estimation for the
 %       data in each sj structure.
 % 
-%       pa_bootstrap_sj_options = options structure for pa_bootstrap_sj, 
-%       which pa_batch_process uses to perform the bootstrapping procedure for the
+%       pret_bootstrap_sj_options = options structure for pret_bootstrap_sj, 
+%       which pret_batch_process uses to perform the bootstrapping procedure for the
 %       data in each sj structure.
 %
 %   Jacob Parker 2018
 
-if nargin < 3
-    opts = pa_default_options();
-    options = opts.pa_batch_process;
+if nargin < 5
+    opts = pret_default_options();
+    options = opts.pret_batch_process;
     clear opts
     if nargin < 1
         sjs = options;
@@ -76,18 +76,16 @@ end
 %OPTIONS
 estflag = options.estflag;
 bootflag = options.bootflag;
-nboots = options.nboots;
-wnum = options.wnum;
-pa_estimate_sj_options = options.pa_estimate_sj;
-pa_bootstrap_sj_options = options.pa_bootstrap_sj;
+pret_estimate_sj_options = options.pret_estimate_sj;
+pret_bootstrap_sj_options = options.pret_bootstrap_sj;
 
 %check model
 for mm = 1:length(model)
     try
-        pa_model_check(model(mm))
+        pret_model_check(model(mm))
     catch
         fprintf('\nError in model %d\n',mm)
-        pa_model_check(model(mm))
+        pret_model_check(model(mm))
     end
 end
 
@@ -95,10 +93,10 @@ sjfields = fieldnames(sjs);
 
 for s = 1:length(sjfields)
     if estflag
-        sjs.(sjfields{s}) = pa_estimate_sj(sjs.(sjfields{s}),model,pa_estimate_sj_options);
+        sjs.(sjfields{s}) = pret_estimate_sj(sjs.(sjfields{s}),model,pret_estimate_sj_options);
     end
     if bootflag
-        sjs.(sjfields{s}) = pa_bootstrap_sj(sjs.(sjfields{s}),model,nboots,wnum,pa_bootstrap_sj_options);
+        sjs.(sjfields{s}) = pret_bootstrap_sj(sjs.(sjfields{s}),model,nboots,wnum,pret_bootstrap_sj_options);
     end
 end
     
